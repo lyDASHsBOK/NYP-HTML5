@@ -31,17 +31,10 @@ function loadingStart()
 
 function assetsLoaded()
 {
-    var stage = stretcher;
-
-    canvas.addEventListener('click', onCanvasClicked);
 
     //start main game here
-	game = new gameClass(stretcher);
+	var game = new GameClass(stretcher, imgContainer);
+    canvas.addEventListener('click', game.onMouseClick);
 
-	game.LoadImage();
-	
-}
-
-function onCanvasClicked(e){
-   game.OnMouseclick(e);
+	game.start();
 }
