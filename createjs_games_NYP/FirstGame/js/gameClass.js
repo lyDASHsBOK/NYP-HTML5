@@ -5,7 +5,7 @@ function GameClass(stage, imgContainer)
     this.stage_ = stage;
 	this.bg = new createjs.Bitmap(imgContainer["imgs/bg.png"]);
 	this.red = new Creep(1);
-	this.blue = new BlueCreep(2);
+	this.blue = new BlueCreep(3);
 	
     this.bg.addEventListener('click', this.onMouseClick);
 
