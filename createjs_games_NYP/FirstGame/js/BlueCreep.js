@@ -16,6 +16,5 @@ function BlueCreep(speed) {
 }
 
 BlueCreep.prototype.move =  function() {
-	this.x = this.x;
 	this.x = this.x + this.speed_;
 };
