@@ -1,9 +1,6 @@
 
-
-
 function GameClass(stage, imgContainer)
 {
-	
 	console.log("hi!");
     this.stage_ = stage;
 	this.bg = new createjs.Bitmap(imgContainer["imgs/bg.png"]);

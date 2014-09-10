@@ -11,7 +11,7 @@ goog.require("org.createjs.easeljs.SoundJS");
 goog.require("bok.apps.preloader.CanvasPreloaderApp");
 goog.require("root.gameClass");
 
-var canvas, preloaderApp, game, stretcher;
+var canvas, preloaderApp, stretcher;
 window.addEventListener('load', loadingStart);
 
 imgContainer = {};
