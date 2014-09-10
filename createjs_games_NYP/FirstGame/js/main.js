@@ -9,7 +9,7 @@
 goog.provide("root.main");
 goog.require("org.createjs.easeljs.SoundJS");
 goog.require("bok.apps.preloader.CanvasPreloaderApp");
-goog.require("root.gameClass");
+goog.require("root.gameclass");
 
 var canvas, preloaderApp, stretcher;
 window.addEventListener('load', loadingStart);
