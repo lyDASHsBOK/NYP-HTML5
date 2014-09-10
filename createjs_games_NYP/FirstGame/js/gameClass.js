@@ -9,6 +9,8 @@ function GameClass(stage, imgContainer)
 	this.bg = new createjs.Bitmap(imgContainer["imgs/bg.png"]);
 	this.red = new createjs.Bitmap(imgContainer["imgs/red.png"]);
 	this.blue = new createjs.Bitmap(imgContainer["imgs/blue.png"]);
+
+    this.bg.addEventListener('click', this.onMouseClick);
 }
 
 GameClass.prototype.loadImage = function() {
@@ -20,8 +22,9 @@ GameClass.prototype.loadImage = function() {
 };
 
 GameClass.prototype.onMouseClick = function(e) {
-    console.log('clicked!');
+    console.log('stage clicked!');
 };
+
 GameClass.prototype.start = function() {
     this.loadImage();
 };
