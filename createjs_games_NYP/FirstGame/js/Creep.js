@@ -23,6 +23,6 @@ function Creep(speed) {
 }
 
 Creep.prototype.move = function() {
-	console.log("red!");
+	//console.log("red!");
 	this.x = this.x + this.speed_; 
 };

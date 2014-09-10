@@ -23,6 +23,6 @@ function BlueCreep(speed) {
 }
 
 BlueCreep.prototype.move = function() {
-	console.log("blue!");
+	//console.log("blue!");
 	this.x = this.x + this.speed_; 
 };

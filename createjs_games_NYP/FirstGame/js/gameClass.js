@@ -31,6 +31,6 @@ GameClass.prototype.onMouseClick = function(e) {
 
 GameClass.prototype.start = function() {
     this.loadImage();
-	this.red.addEventListener('tick' Delegate.create(this, this.tick);
+	this.red.addEventListener('tick', Delegate.create(this, this.tick));
 };
 
