@@ -19,8 +19,3 @@ function Creep() {
 
     this.addChild(new createjs.Bitmap(imgContainer["imgs/red.png"]));
 }
-
-Creep.prototype.move = function() {
-	console.log("red!");
-	this.x = this.x + 1; 
-};
