@@ -25,15 +25,16 @@ function GameClass(stage, imgContainer)
 	this.maxNumberOfEnemy = 3;
 	//this.blue = new BlueCreep(2,0,150);
 	
-	var ScoreText = new createjs.Text("Score:", "18pt Calibri" ,"Black"); 
+	 this.Hud = new HUDClass(); 
 	
 	
 	this.spawnEnemySprites('redobj');
 	this.spawnEnemySprites('redobj');
 	this.spawnEnemySprites('redobj');
 
+		
+	console.log(this.red[0]);
 	this.stage_.addEventListener('mousedown', Delegate.create(this,this.onMouseClick));
-	
 	
 }
 
@@ -42,6 +43,8 @@ GameClass.prototype.tick = function(event) {
 		this.red[i].move();
    }
    this.SpawnEnemy();
+   
+    this.Hud.update();
   // this.blue.move();
 };
 
@@ -54,7 +57,7 @@ GameClass.prototype.loadImage = function() {
 		for(var i = 0; i < this.red.length; i++){
 					this.stage_.addChild(this.red[i]);
 				}
-	this.stage_.addChild(this.ScoreText);
+	this.stage_.addChild(this.Hud);
 	
 	
 	
@@ -68,6 +71,7 @@ GameClass.prototype.onMouseClick = function(e) {
 		{
 			this.stage_.removeChild(this.red[i]);
 			this.red.splice(i,1);
+			this.Hud.Score += 11;
 			break;
 		}
 	}
@@ -90,7 +94,6 @@ GameClass.prototype.SpawnEnemy = function(){
 				for(var i = 0; i < this.red.length; i++){
 					this.stage_.addChild(this.red[i]);
 				}
-				
 				this.spawn = false;
 			}
 		}
