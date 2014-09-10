@@ -7,20 +7,20 @@
  */
 
 //this function does the inheritance
-BOK.inherits(Creep, createjs.Container);
+BOK.inherits(BlueCreep, Creep);
 
 /**
  * @constructor
  * */
-function Creep() {
+function BlueCreep() {
     //this line is a must-have in prototype-chain style inheritance
     //Compare to JAVA this works as super();
     createjs.Container.call(this);
 
-    this.addChild(new createjs.Bitmap(imgContainer["imgs/red.png"]));
+    this.addChild(new createjs.Bitmap(imgContainer["imgs/blue.png"]));
 }
 
-Creep.prototype.move = function() {
-	console.log("red!");
-	this.x = this.x + 1; 
+BlueCreep.prototype.move = function() {
+	console.log("blue!");
+	this.x = this.x + 10; 
 };
