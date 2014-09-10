@@ -18,7 +18,10 @@ function Creep(speed) {
 	
     createjs.Container.call(this);
 	this.speed_ = speed;
-    this.addChild(new createjs.Bitmap(imgContainer["imgs/red.png"]));
+
+    //we store the reference of creep img in a member varibale so it can be accessed later
+    this.creepImg_ = new createjs.Bitmap(imgContainer["imgs/red.png"]);
+    this.addChild(this.creepImg_);
 }
 
 Creep.prototype.move =  function() {
