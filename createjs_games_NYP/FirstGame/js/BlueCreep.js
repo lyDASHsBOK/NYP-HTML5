@@ -6,15 +6,12 @@ BOK.inherits(BlueCreep, Creep);
  * @constructor
  * */
 function BlueCreep(speed) {
-    //this line is a must-have in prototype-chain style inheritance
-    //Compare to JAVA this works as super();
-    createjs.Container.call(this);
-	
-	this.speed_ = speed;
-	
-    this.addChild(new createjs.Bitmap(imgContainer["imgs/blue.png"]));
+    //in inheritance you always invoke the constructor of the base class, not any other ones.
+    Creep.call(this, speed);
+
+    this.removeChild(this.creepImg_);
+    this.creepImg_ = new createjs.Bitmap(imgContainer["imgs/blue.png"]);
+    this.addChild(this.creepImg_);
 }
 
-BlueCreep.prototype.move =  function() {
-	this.x = this.x + this.speed_;
-};
+//since we handle different speed using the speed property, there is no need implement the same move function

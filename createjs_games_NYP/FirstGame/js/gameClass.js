@@ -33,5 +33,7 @@ GameClass.prototype.onMouseClick = function(e) {
 
 GameClass.prototype.start = function() {
     this.loadImage();
-	this.red.addEventListener('tick', Delegate.create(this,this.tick));
+
+    //this is the proper way of monitoring system tick in createjs
+	createjs.Ticker.addEventListener('tick', Delegate.create(this,this.tick));
 };
