@@ -12,14 +12,10 @@ BOK.inherits(Creep, createjs.Container);
 /**
  * @constructor
  * */
-function Creep(speed) {
+function Creep() {
     //this line is a must-have in prototype-chain style inheritance
     //Compare to JAVA this works as super();
     createjs.Container.call(this);
-	this.speed_ = speed;
+
     this.addChild(new createjs.Bitmap(imgContainer["imgs/red.png"]));
 }
-
-Creep.prototype.move =  function(event) {
-	this.x = this.x + this.speed_;
-};
