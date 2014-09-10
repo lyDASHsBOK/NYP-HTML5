@@ -13,6 +13,13 @@ function GameClass(stage, imgContainer)
 	}
 }
 
+GameClass.prototype.respawn = function(){
+	for( var i = 0; i < 2; i++){
+		this.stage_.addChild(this.red[i]);
+		this.red[i].x = 0;
+	}
+};
+
 GameClass.prototype.tick = function(event) {
 	for( var i = 0; i < this.red.length; i++){
 			this.red[i].move();
@@ -26,6 +33,11 @@ GameClass.prototype.tick = function(event) {
 			}
 	}
    this.blue.move();
+   
+   	if(this.red.length == 0)
+	{
+		this.respawn();
+	}
 };
 
 			
