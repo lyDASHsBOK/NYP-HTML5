@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Created by Enveesoft.
  * User: Liu Xinyi
  * Date: 14-9-10
@@ -15,6 +15,7 @@ BOK.inherits(Creep, createjs.Container);
 function Creep(speed) {
     //this line is a must-have in prototype-chain style inheritance
     //Compare to JAVA this works as super();
+	
     createjs.Container.call(this);
 
 	this.speed_ = speed;
@@ -23,6 +24,9 @@ function Creep(speed) {
 }
 
 Creep.prototype.move = function() {
-	//console.log("red!");
 	this.x = this.x + this.speed_; 
+}
+
+Creep.prototype.move =  function() {
+	this.x = this.x + this.speed_;
 };

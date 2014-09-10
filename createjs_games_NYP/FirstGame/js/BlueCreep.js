@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Created by Enveesoft.
  * User: Liu Xinyi
  * Date: 14-9-10
@@ -15,14 +15,14 @@ BOK.inherits(BlueCreep, Creep);
 function BlueCreep(speed) {
     //this line is a must-have in prototype-chain style inheritance
     //Compare to JAVA this works as super();
-    createjs.Container.call(this);
 
 	this.speed_ =speed;
 		
     this.addChild(new createjs.Bitmap(imgContainer["imgs/blue.png"]));
 }
 
-BlueCreep.prototype.move = function() {
-	//console.log("blue!");
-	this.x = this.x + this.speed_; 
+
+
+BlueCreep.prototype.move =  function() {
+	this.x = this.x + this.speed_;
 };
