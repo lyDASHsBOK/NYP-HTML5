@@ -6,9 +6,11 @@ function GameClass(stage, imgContainer)
 	this.bg = new createjs.Bitmap(imgContainer["imgs/bg.png"]);
 	this.red = new Creep();
 	this.blue = new createjs.Bitmap(imgContainer["imgs/blue.png"]);
-	
+	this.blue = new BlueCreep();
+	this.red.move();
+	this.blue.move();
     this.bg.addEventListener('click', this.onMouseClick);
-	
+
 }
 
 GameClass.prototype.loadImage = function() {
@@ -26,3 +28,4 @@ GameClass.prototype.onMouseClick = function(e) {
 GameClass.prototype.start = function() {
     this.loadImage();
 };
+
