@@ -34,7 +34,5 @@ function assetsLoaded()
 
     //start main game here
 	var game = new GameClass(stretcher, imgContainer);
-    canvas.addEventListener('click', game.onMouseClick);
-
 	game.start();
 }
