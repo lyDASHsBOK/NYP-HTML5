@@ -1,13 +1,14 @@
-
 function GameClass(stage, imgContainer)
 {
+	
 	console.log("hi!");
     this.stage_ = stage;
 	this.bg = new createjs.Bitmap(imgContainer["imgs/bg.png"]);
 	this.red = new Creep(1);
 	this.blue = new BlueCreep(2);
+
+   // this.bg.addEventListener('click', this.onMouseClick);
 	
-    this.bg.addEventListener('click', this.onMouseClick);
 
 }
 
@@ -31,6 +32,15 @@ GameClass.prototype.onMouseClick = function(e) {
 
 GameClass.prototype.start = function() {
     this.loadImage();
-	this.red.addEventListener('tick', Delegate.create(this, this.tick));
+
+    //this is the proper way of monitoring system tick in createjs
+	createjs.Ticker.addEventListener('tick', Delegate.create(this,this.tick));
 };
 
+
+=======
+
+    //this is the proper way of monitoring system tick in createjs
+	createjs.Ticker.addEventListener('tick', Delegate.create(this,this.tick));
+};
+>>>>>>> 68985ea6199f58a8b21bba9f478b74f4a29bad86
