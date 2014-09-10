@@ -22,5 +22,5 @@ function BlueCreep() {
 
 BlueCreep.prototype.move = function() {
 	console.log("blue!");
-	this.x = this.x + 10; 
+	this.x = this.x + 11; 
 };
