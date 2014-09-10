@@ -31,7 +31,6 @@ function loadingStart()
 
 function assetsLoaded()
 {
-
     //start main game here
 	var game = new GameClass(stretcher, imgContainer);
 	game.start();
