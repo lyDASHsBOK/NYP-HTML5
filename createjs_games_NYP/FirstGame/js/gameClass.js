@@ -20,19 +20,51 @@ function GameClass(stage, imgContainer){
 	this.spawnEnemySprites('redobj');
 	this.spawnEnemySprites('redobj');
 	
-	this.gameOverText = new createjs.Text("GameOver", "30pt Calibri" ,"Black"); 
-	this.gameOverText.x = this.stage_.dWidth_ * 0.3;
+	this.gameOverText = new createjs.Bitmap(imgContainer["imgs/gameOver.png"]); 
+	this.gameOverText.x = this.stage_.dWidth_ * 0.4;
 	this.gameOverText.y = this.stage_.dHeight_ * 0.2;
+	this.gameOverText.scaleX = 0.5;
+	this.gameOverText.scaleY = 0.5;
+	
+	this.isMainMenu = true;
+	
+	this.mainMenuText = new createjs.Text("Click anywhere to start the game", "20pt Calibri" ,"Black"); 
+	this.mainMenuText.x = this.stage_.dWidth_ * 0.2;
+	this.mainMenuText.y = this.stage_.dHeight_ * 0.2;
+	this.alphaText = true;
 	
 	console.log(this.red[0]);
 	this.stage_.addEventListener('mousedown', Delegate.create(this,this.onMouseClick));
 }
 /**
+ * @ flashText
+ * */
+GameClass.prototype.flashText = function(){
+	
+	if( this.alphaText == true){
+		if(this.mainMenuText.alpha > 0){
+			this.mainMenuText.alpha -= 0.02;
+		}
+		else
+		{
+			this.alphaText = false;
+		}
+	}
+	else if(this.alphaText == false){
+		if(this.mainMenuText.alpha < 1){
+			this.mainMenuText.alpha += 0.02;
+		}
+		else{
+			this.alphaText = true;
+		}
+	}
+	
+};
+/**
  * @ tick
  * */
 GameClass.prototype.tick = function(event) {
-	if(this.gameOver  == false)
-	{
+	if(this.gameOver  == false && this.isMainMenu == false){
 		for(var i = 0; i < this.red.length; i++){
 			this.red[i].move();
 		}
@@ -43,14 +75,16 @@ GameClass.prototype.tick = function(event) {
 		this.hud.update();
 		this.checkGameOver();
 	}
+	else{
+		this.flashText();
+	}
 };
 /**
  * @ checkGameOver
  * */
 GameClass.prototype.checkGameOver = function(){
 	for(var i = 0; i < this.red.length; i++){
-		if(this.red[i].x  >= this.stage_.dWidth_)
-		{
+		if(this.red[i].x  >= this.stage_.dWidth_){
 			this.gameOver = true;
 			this.stage_.addChild(this.gameOverText);
 			this.gameOverText.addEventListener('mousedown', Delegate.create(this,this.restart));
@@ -59,11 +93,9 @@ GameClass.prototype.checkGameOver = function(){
 	}
 	//By any chance if bot red and blue reach the gamve over line this check it to 
 	//make sure that it will no add the gameOverText again
-	if(this.gameOver == false)
-	{
+	if(this.gameOver == false){
 		for(var i = 0; i < this.blue.length; i++){
-			if(this.blue[i].x > this.stage_.dWidth_)
-			{
+			if(this.blue[i].x > this.stage_.dWidth_){
 				this.gameOver = true;
 				this.stage_.addChild(this.gameOverText);
 				this.gameOverText.addEventListener('mousedown', Delegate.create(this,this.restart));
@@ -78,13 +110,15 @@ GameClass.prototype.checkGameOver = function(){
  * */
 GameClass.prototype.loadImage = function() {
    
-   this.stage_.addChild(this.bg);
-	
-	for(var i = 0; i < this.red.length; i++){
-		this.stage_.addChild(this.red[i]);
+	if(this.isMainMenu == false){
+		for(var i = 0; i < this.red.length; i++){
+			this.stage_.addChild(this.red[i]);
+		}
+		this.stage_.addChild(this.hud);
 	}
-	
-	this.stage_.addChild(this.hud);
+	else{
+		this.stage_.addChild(this.mainMenuText);
+	}
 };
 /**
  * @ reset
@@ -128,11 +162,10 @@ GameClass.prototype.restart = function(e) {
  * */
 GameClass.prototype.onMouseClick = function(e) {
 
-	if(this.gameOver == false)
-	{
+	console.log("click");
+	if(this.gameOver == false && this.isMainMenu == false){
 		for(var i = 0; i < this.red.length; i++){
-			if(collision(this.red[i].x + 32,this.red[i].y + 32,32, e.localX, e.localY) == true)
-			{
+			if(collision(this.red[i].x + 32,this.red[i].y + 32,32, e.localX, e.localY) == true){
 				this.stage_.removeChild(this.red[i]);
 				this.red.splice(i,1);
 				this.hud.score += 11;
@@ -142,8 +175,7 @@ GameClass.prototype.onMouseClick = function(e) {
 		}
 		
 		for(var i = 0; i < this.blue.length; i++){
-			if(collision(this.blue[i].x + 32,this.blue[i].y + 32,32, e.localX, e.localY) == true)
-			{
+			if(collision(this.blue[i].x + 32,this.blue[i].y + 32,32, e.localX, e.localY) == true){
 				this.stage_.removeChild(this.blue[i]);
 				this.blue.splice(i,1);
 				this.hud.score += 11;
@@ -152,6 +184,12 @@ GameClass.prototype.onMouseClick = function(e) {
 			}
 		}
 	}
+	else{
+		this.isMainMenu = false;
+		this.loadImage();
+		this.stage_.removeChild(this.mainMenuText);
+	}
+	
 };
 /**
  * @ onMouseClick
@@ -191,24 +229,25 @@ GameClass.prototype.spawnEnemy = function(){
 		}
 		this.hud.score++;
 	}
-	
 }; 
 /**
  * @ spawnEnemySprites
  * */	
 GameClass.prototype.spawnEnemySprites = function(type) {
 	if(type == 'redobj'){
-		this.red.push(new Creep(1+this.hud.level*0.03,RandomRange( 0 ,this.stage_.dWidth_*0.3), RandomRange(0, this.stage_.dHeight_*0.4)));
+		this.red.push(new Creep(1+this.hud.level*0.03,RandomRange( 0 ,this.stage_.dWidth_*0.3), RandomRange(0, this.stage_.dHeight_*0.5)));
 	}
 	else if(type == 'blueobj'){
-		this.blue.push(new BlueCreep(1.5+this.hud.level*0.02,RandomRange( 0 ,this.stage_.dWidth_*0.3), RandomRange(0, this.stage_.dHeight_*0.4)));
+		this.blue.push(new BlueCreep(1.5+this.hud.level*0.02,RandomRange( 0 ,this.stage_.dWidth_*0.3), RandomRange(0, this.stage_.dHeight_*0.5)));
 	}
 }; 
 /**
  * @ start
  * */
 GameClass.prototype.start = function() {
-    this.loadImage();
+
+   	this.stage_.addChild(this.bg);
+	this.loadImage();
     //this is the proper way of monitoring system tick in createjs
 	createjs.Ticker.addEventListener('tick', Delegate.create(this,this.tick));
 };

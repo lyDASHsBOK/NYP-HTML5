@@ -34,13 +34,11 @@ function HUDClass() {
  * @ update
  * */
 HUDClass.prototype.update =  function() {	
-	
 	if(this.score > 100){
 			this.level = Math.floor(this.score  * 0.01);
 	}
 	this.scoreText.text = "Score:" + this.score;
 	this.LevelText.text = "Level:" + this.level;
-
 };
 
 /**

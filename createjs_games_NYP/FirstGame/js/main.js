@@ -18,14 +18,14 @@ imgContainer = {};
 /**
  * @ loadingStart
  * */
-function loadingStart()
-{
+function loadingStart(){
     canvas = document.getElementById('canvas');
     stretcher = new Stretcher(canvas);
     preloaderApp = new CanvasPreloaderApp([
         'imgs/bg.png',
         'imgs/blue.png',
-        'imgs/red.png'
+        'imgs/red.png',
+		'imgs/gameOver.png'
     ], imgContainer, stretcher);
     preloaderApp.addEventListener(Event.COMPLETE, assetsLoaded);
 
@@ -36,8 +36,7 @@ function loadingStart()
 /**
  * @ assetsLoaded
  * */
-function assetsLoaded()
-{
+function assetsLoaded(){
 
     //start main game here
 	var game = new GameClass(stretcher, imgContainer);
