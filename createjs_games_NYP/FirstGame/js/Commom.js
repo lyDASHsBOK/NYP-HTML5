@@ -9,14 +9,16 @@
 /**
  * @ collision
  * */
-function collision(x,y,r,x1,y1){
-	return ( x1 < x+r && x1 > x-r && y1 < y+r && y1 > y-r)
-}
+ 
+var Util = {};
 
+Util.collision = function collision(x,y,r,x1,y1){
+	return ( x1 < x+r && x1 > x-r && y1 < y+r && y1 > y-r)
+};
 /**
  * @ RandomRange
  * */
-function RandomRange(min,max){
+Util.RandomRange = function collision(min,max){
 	var range = ( max - min ) + 1;
 	return (Math.random() * range ) + min;
-}
+};
