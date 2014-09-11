@@ -1,9 +1,15 @@
-
+/**
+ * Created by Enveesoft.
+ * User: winston HO
+ * Date: 14-9-10
+ * Time: 14:11
+ * Write the description in this section.
+ */
 //this function does the inheritance
 BOK.inherits(BlueCreep, Creep);
 
 /**
- * @constructor
+ * @ constructor
  * */
 function BlueCreep(speed,x,y) {
     //in inheritance you always invoke the constructor of the base class, not any other ones.

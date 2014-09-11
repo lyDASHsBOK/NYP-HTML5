@@ -10,7 +10,7 @@
 BOK.inherits(HUDClass, createjs.Container);
 
 /**
- * @constructor
+ * @ constructor
  * */
 function HUDClass() {
     //this line is a must-have in prototype-chain style inheritance
@@ -18,11 +18,11 @@ function HUDClass() {
 	
     createjs.Container.call(this);
 	
-	this.Score = 0;
-	this.Level = 0;
+	this.score = 0;
+	this.level = 0;
 	
-	this.ScoreText = new createjs.Text("Score:", "18pt Calibri" ,"Black"); 
-	this.addChild(this.ScoreText);
+	this.scoreText = new createjs.Text("Score:", "18pt Calibri" ,"Black"); 
+	this.addChild(this.scoreText);
 	
 	this.LevelText = new createjs.Text("Level:", "18pt Calibri" ,"Black"); 
 	this.LevelText.x = 500;
@@ -30,14 +30,26 @@ function HUDClass() {
 	this.addChild(this.LevelText);
 	
 }
-
+/**
+ * @ update
+ * */
 HUDClass.prototype.update =  function() {	
+	if(this.score > 100){
+			this.level = Math.floor(this.score  * 0.01);
+	}
+	this.scoreText.text = "Score:" + this.score;
+	this.LevelText.text = "Level:" + this.level;
+};
+
+/**
+ * @ reset
+ * */
+HUDClass.prototype.reset =  function() {	
 	
-	if(this.Score > 100){
-			this.Level = Math.floor(this.Score  * 0.01);
-		}
-	this.ScoreText.text = "Score:" + this.Score;
-	this.LevelText.text = "Level:" + this.Level;
+	this.score = 0;
+	this.level = 0;
 
 };
+
+
 
