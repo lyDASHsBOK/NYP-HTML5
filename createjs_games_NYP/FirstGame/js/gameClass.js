@@ -41,7 +41,7 @@ function GameClass(stage, imgContainer){
  * */
 GameClass.prototype.flashText = function(){
 	
-	if( this.alphaText == true){
+	if( this.alphaText){
 		if(this.mainMenuText.alpha > 0){
 			this.mainMenuText.alpha -= 0.02;
 		}
@@ -50,7 +50,7 @@ GameClass.prototype.flashText = function(){
 			this.alphaText = false;
 		}
 	}
-	else if(this.alphaText == false){
+	else if(!this.alphaText){
 		if(this.mainMenuText.alpha < 1){
 			this.mainMenuText.alpha += 0.02;
 		}
@@ -64,7 +64,7 @@ GameClass.prototype.flashText = function(){
  * @ tick
  * */
 GameClass.prototype.tick = function(event) {
-	if(this.gameOver  == false && this.isMainMenu == false){
+	if(!this.gameOver && !this.isMainMenu){
 		for(var i = 0; i < this.red.length; i++){
 			this.red[i].move();
 		}
@@ -93,7 +93,7 @@ GameClass.prototype.checkGameOver = function(){
 	}
 	//By any chance if bot red and blue reach the gamve over line this check it to 
 	//make sure that it will no add the gameOverText again
-	if(this.gameOver == false){
+	if(!this.gameOver){
 		for(var i = 0; i < this.blue.length; i++){
 			if(this.blue[i].x > this.stage_.dWidth_){
 				this.gameOver = true;
@@ -110,7 +110,7 @@ GameClass.prototype.checkGameOver = function(){
  * */
 GameClass.prototype.loadImage = function() {
    
-	if(this.isMainMenu == false){
+	if(!this.isMainMenu){
 		for(var i = 0; i < this.red.length; i++){
 			this.stage_.addChild(this.red[i]);
 		}
@@ -163,9 +163,9 @@ GameClass.prototype.restart = function(e) {
 GameClass.prototype.onMouseClick = function(e) {
 
 	console.log("click");
-	if(this.gameOver == false && this.isMainMenu == false){
+	if(!this.gameOver && !this.isMainMenu){
 		for(var i = 0; i < this.red.length; i++){
-			if(collision(this.red[i].x + 32,this.red[i].y + 32,32, e.localX, e.localY) == true){
+			if(Util.collision(this.red[i].x + 32,this.red[i].y + 32,32, e.localX, e.localY)){
 				this.stage_.removeChild(this.red[i]);
 				this.red.splice(i,1);
 				this.hud.score += 11;
@@ -175,7 +175,7 @@ GameClass.prototype.onMouseClick = function(e) {
 		}
 		
 		for(var i = 0; i < this.blue.length; i++){
-			if(collision(this.blue[i].x + 32,this.blue[i].y + 32,32, e.localX, e.localY) == true){
+			if(Util.collision(this.blue[i].x + 32,this.blue[i].y + 32,32, e.localX, e.localY)){
 				this.stage_.removeChild(this.blue[i]);
 				this.blue.splice(i,1);
 				this.hud.score += 11;
@@ -202,12 +202,12 @@ GameClass.prototype.spawnEnemy = function(){
 		this.spawn = true;
 	}
 	if(this.hud.level % 5 == 0 && this.hud.level != 0){
-		if(this.blue.length < this.maxNumberOfBlueEnemy && this.spawn  == true){
+		if(this.blue.length < this.maxNumberOfBlueEnemy && this.spawn){
 			this.spawnEnemySprites('blueobj');
 		}
 	}
 	//spawn the enemy
-	if(this.spawn == true){
+	if(this.spawn){
 		if(this.red.length < this.maxNumberOfEnemy){
 			this.spawnEnemySprites('redobj');
 		}
@@ -235,10 +235,10 @@ GameClass.prototype.spawnEnemy = function(){
  * */	
 GameClass.prototype.spawnEnemySprites = function(type) {
 	if(type == 'redobj'){
-		this.red.push(new Creep(1+this.hud.level*0.03,RandomRange( 0 ,this.stage_.dWidth_*0.3), RandomRange(0, this.stage_.dHeight_*0.5)));
+		this.red.push(new Creep(1+this.hud.level*0.03,Util.RandomRange( 0 ,this.stage_.dWidth_*0.3), Util.RandomRange(0, this.stage_.dHeight_*0.5)));
 	}
 	else if(type == 'blueobj'){
-		this.blue.push(new BlueCreep(1.5+this.hud.level*0.02,RandomRange( 0 ,this.stage_.dWidth_*0.3), RandomRange(0, this.stage_.dHeight_*0.5)));
+		this.blue.push(new BlueCreep(1.5+this.hud.level*0.02,Util.RandomRange( 0 ,this.stage_.dWidth_*0.3), Util.RandomRange(0, this.stage_.dHeight_*0.5)));
 	}
 }; 
 /**
