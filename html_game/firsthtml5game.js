@@ -180,7 +180,6 @@
 			score++;
 		}
 	}
-
 	/**
 	* Mouse Input
 	*/

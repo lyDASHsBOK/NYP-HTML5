@@ -10,7 +10,7 @@
 BOK.inherits(Creep, createjs.Container);
 
 /**
- * @constructor
+ * @ constructor
  * */
 function Creep(speed,x,y) {
     //this line is a must-have in prototype-chain style inheritance
@@ -28,7 +28,9 @@ function Creep(speed,x,y) {
 	this.x = x;
 	this.y = y;
 }
-
+/**
+ * @ move
+ * */
 Creep.prototype.move =  function() {
 	this.x = this.x + this.speed_;
 };
