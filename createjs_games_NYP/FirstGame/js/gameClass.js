@@ -1,12 +1,15 @@
 
+//TODO: Try not to leave functions on global namespace, move these to a Helper or Util class or namespace
 	//circle - circle collision detition
 	function collision(x,y,r,x1,y1){
+        //TODO: this line can be simplified to:
+        //return x1 < x + r && x1 > x - r && y1 < y + r && y1 > y - r;
 		if( x1 < x+r && x1 > x-r && y1 < y+r && y1 > y-r){
 			return true;
 		}
 		return false;
 	}
-	
+
 	//randomFunction
 	function RandomRange(min,max){
 		var range = ( max - min ) + 1;
@@ -43,7 +46,7 @@ GameClass.prototype.tick = function(event) {
 		this.red[i].move();
    }
    this.SpawnEnemy();
-   
+
     this.Hud.update();
   // this.blue.move();
 };
@@ -97,7 +100,7 @@ GameClass.prototype.SpawnEnemy = function(){
 				this.spawn = false;
 			}
 		}
-	}
+	}   //TODO: use ';' here to end the statement (a = function(){} counts as a statement, function a(){} is not)
 	
 	GameClass.prototype.spawnEnemySprites = function(type) {
 		if(type == 'redobj'){
@@ -106,7 +109,7 @@ GameClass.prototype.SpawnEnemy = function(){
 		else if(type == 'blueobj'){
 			
 		}
-	}
+	}   //TODO: same here
 
 GameClass.prototype.start = function() {
     this.loadImage();
