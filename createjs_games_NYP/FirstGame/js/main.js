@@ -15,22 +15,28 @@ var canvas, preloaderApp, game, stretcher;
 window.addEventListener('load', loadingStart);
 
 imgContainer = {};
-function loadingStart()
-{
+/**
+ * @ loadingStart
+ * */
+function loadingStart(){
     canvas = document.getElementById('canvas');
     stretcher = new Stretcher(canvas);
     preloaderApp = new CanvasPreloaderApp([
         'imgs/bg.png',
         'imgs/blue.png',
-        'imgs/red.png'
+        'imgs/red.png',
+		'imgs/gameOver.png'
     ], imgContainer, stretcher);
     preloaderApp.addEventListener(Event.COMPLETE, assetsLoaded);
 
     preloaderApp.start();
+	createjs.Sound.registerSound("sound/AMemoryAway.ogg","bgm");
+	createjs.Sound.registerSound("sound/Blop-Mark_DiAngelo-79054334.mp3","pop");
 }
-
-function assetsLoaded()
-{
+/**
+ * @ assetsLoaded
+ * */
+function assetsLoaded(){
 
     //start main game here
 	var game = new GameClass(stretcher, imgContainer);
