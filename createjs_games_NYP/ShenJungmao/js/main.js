@@ -24,7 +24,9 @@ function loadingStart(){
     preloaderApp = new CanvasPreloaderApp([
         'imgs/bg.jpg',
 		'imgs/pot1.png',
-		'imgs/pot2.png'
+		'imgs/pot2.png',
+		'imgs/stay.png',
+		'imgs/weizhu.png'
     ], imgContainer, stretcher);
     preloaderApp.addEventListener(Event.COMPLETE, assetsLoaded);
 
