@@ -7,12 +7,12 @@
  */
 
 //this function does the inheritance
-BOK.inherits(circleClass, createjs.Container);
+BOK.inherits(Circle, createjs.Container);
 
 /**
  * @ constructor
  * */
-function circleClass(x,y ,value) {
+function Circle(x,y ,value) {
     //this line is a must-have in prototype-chain style inheritance
     //Compare to JAVA this works as super();
 	
@@ -40,11 +40,11 @@ function circleClass(x,y ,value) {
 	this.y = y;
 }
 
-circleClass.prototype.getRadius = function()
+Circle.prototype.getRadius = function()
 {
 	return this.creepImg_.image.width * this.creepImg_.scaleY * 0.5;
 }
-circleClass.prototype.changeColor = function()
+Circle.prototype.changeColor = function()
 {
 	this.click  = true;
 	this.addChild(this.creepImg1_);
