@@ -7,6 +7,8 @@ function GameClass(stage, imgContainer){
 	this.bg = new createjs.Bitmap(imgContainer["imgs/bg.jpg"]);
 	this.floorTile = [];
 	
+
+	
 	this.tempY = 500;
 	this.tempX = 10;
 	for(var  i = 0; i < 9; i++ ){
@@ -33,6 +35,8 @@ function GameClass(stage, imgContainer){
 		 this.floorTile[this.temp].changeColor();
 		 }
 	 }
+	 
+	this.ai = new aiClass(this.floorTile[40].x , this.floorTile[40].y - this.floorTile[40].getRadius()*2);
 	this.stage_.addEventListener('mousedown', Delegate.create(this,this.onMouseClick));
 };
 /**
@@ -54,6 +58,7 @@ GameClass.prototype.loadImage = function() {
 		{
 			this.stage_.addChild(this.floorTile[i]);
 		}
+		this.stage_.addChild(this.ai);
 };
 /**
  * @ reset
