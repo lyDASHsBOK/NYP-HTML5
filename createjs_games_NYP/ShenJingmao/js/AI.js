@@ -12,13 +12,13 @@ BOK.inherits(AI, createjs.Container);
 /**
  * @ constructor
  * */
-function AI(x,y) {
+function AI(x,y , whichTile) {
     //this line is a must-have in prototype-chain style inheritance
     //Compare to JAVA this works as super();
 	
     createjs.Container.call(this);
 	
-	
+	this.whichTile_ = whichTile;
 	this.staydata = {
 		// image to use
 		framerate : 20,

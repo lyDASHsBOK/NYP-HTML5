@@ -26,7 +26,7 @@ function Game(stage, imgContainer){
 	}
 	this.numberOfColorTileAtStart =   Math.floor(Util.RandomRange(5,15));
 	
-	 for(var i = 0; i < this.numberOfColorTileAtStart; i++){
+	 /*for(var i = 0; i < this.numberOfColorTileAtStart; i++){
 		 this.temp =  Math.floor(Util.RandomRange(0,80));
 		 if( this.temp >= 36 &&  this.temp <= 44){
 			this.temp +=10;
@@ -34,9 +34,10 @@ function Game(stage, imgContainer){
 		if(!this.floorTile[this.temp].click){
 		 this.floorTile[this.temp].changeColor();
 		 }
-	 }
+	 }*/
 	 
-	this.ai = new AI(this.floorTile[40].x , this.floorTile[40].y - this.floorTile[40].getRadius()*2);
+	 var startTile = 40;
+	this.ai = new AI(this.floorTile[startTile].x , this.floorTile[startTile].y - this.floorTile[startTile].getRadius()*2,  startTile);
 	this.stage_.addEventListener('mousedown', Delegate.create(this,this.onMouseClick));
 };
 /**
@@ -80,12 +81,99 @@ Game.prototype.onMouseClick = function(e) {
 		var tempYValue = Math.floor((e.localY - 500) / 60) ;
 		for(var i = tempYValue *9; i <  tempYValue *9 + 9; i++ ){
 			if( Util.collision(this.floorTile[i].x + this.floorTile[i].getRadius() ,this.floorTile[i].y + this.floorTile[i].getRadius(), this.floorTile[i].getRadius() , e.localX ,e.localY) &&  !this.floorTile[i].click ){
-				console.log("hi");
+				
 				this.floorTile[i].changeColor();
 			}
 		}
 	}
 	
+	this.aiWhichRow = Math.floor((this.ai.y + this.floorTile[40].getRadius()*2 - 500) / 60) ;
+	
+	
+
+	/*
+	//left movement
+	if( this.ai.whichTile_ -1 >= this.aiWhichRow*9 &&  !this.floorTile[this.ai.whichTile_ -1].click ){
+		this.ai.x = this.floorTile[this.ai.whichTile_ -1].x;
+		this.ai.whichTile_ = this.ai.whichTile_ -1;
+	}
+	
+	//right movement
+	
+	if( this.ai.whichTile_ + 1 <= this.aiWhichRow*9 + 8 && !this.floorTile[this.ai.whichTile_  + 1].click ){
+		this.ai.x = this.floorTile[this.ai.whichTile_ +1].x;
+		this.ai.whichTile_ = this.ai.whichTile_ +1;
+	}
+	
+	//topLeft
+
+	if(this.aiWhichRow % 2 == 0){
+		if(  this.ai.whichTile_ -10 > 0 && this.ai.whichTile_  !=  this.aiWhichRow * 9 &&  !this.floorTile[this.ai.whichTile_  - 10 ].click ){
+			this.ai.x = this.floorTile[this.ai.whichTile_ -10].x;
+			this.ai.y = this.floorTile[this.ai.whichTile_ -10].y - this.floorTile[40].getRadius()*2;
+			this.ai.whichTile_ = this.ai.whichTile_ - 10;
+		}
+	}
+	else{
+		if( this.ai.whichTile_ -9 > 0 && !this.floorTile[this.ai.whichTile_ - 9].click ){
+			this.ai.x = this.floorTile[this.ai.whichTile_ -9].x;
+			this.ai.y = this.floorTile[this.ai.whichTile_ - 9].y - this.floorTile[40].getRadius()*2;
+			this.ai.whichTile_ = this.ai.whichTile_ -9;
+		}
+	}
+	
+	// top right
+	
+	
+	if(this.aiWhichRow % 2 == 0){
+		if(  this.ai.whichTile_ - 9 > 0 &&  !this.floorTile[this.ai.whichTile_  - 9 ].click ){
+			this.ai.x = this.floorTile[this.ai.whichTile_ - 9].x;
+			this.ai.y = this.floorTile[this.ai.whichTile_ - 9].y - this.floorTile[40].getRadius()*2;
+			this.ai.whichTile_ = this.ai.whichTile_ - 9;
+		}
+	}
+	else{
+		if( this.ai.whichTile_ -8 > 0 &&  this.ai.whichTile_  !=  this.aiWhichRow * 9 + 8 && !this.floorTile[this.ai.whichTile_ - 8].click ){
+			this.ai.x = this.floorTile[this.ai.whichTile_ -8].x;
+			this.ai.y = this.floorTile[this.ai.whichTile_ - 8].y - this.floorTile[40].getRadius()*2;
+			this.ai.whichTile_ = this.ai.whichTile_ -8;
+		}
+	}
+	
+	//left bottom
+	
+	if(this.aiWhichRow % 2 == 0){
+		if(  this.ai.whichTile_ + 8 < 80 && this.ai.whichTile_  !=  this.aiWhichRow * 9 &&  !this.floorTile[this.ai.whichTile_  + 8 ].click ){
+			this.ai.x = this.floorTile[this.ai.whichTile_ + 8].x;
+			this.ai.y = this.floorTile[this.ai.whichTile_ + 8].y - this.floorTile[40].getRadius()*2;
+			this.ai.whichTile_ = this.ai.whichTile_ +8;
+		}
+	}
+	else{
+		if( this.ai.whichTile_ + 9 < 80 && !this.floorTile[this.ai.whichTile_ + 9].click ){
+			this.ai.x = this.floorTile[this.ai.whichTile_  + 9].x;
+			this.ai.y = this.floorTile[this.ai.whichTile_ + 9].y - this.floorTile[40].getRadius()*2;
+			this.ai.whichTile_ = this.ai.whichTile_ +9;
+		}
+	}
+		
+	
+	//right bottom
+	if(this.aiWhichRow % 2 == 0){
+		if(  this.ai.whichTile_ + 9 < 80 &&  !this.floorTile[this.ai.whichTile_  + 9 ].click ){
+			this.ai.x = this.floorTile[this.ai.whichTile_ + 9].x;
+			this.ai.y = this.floorTile[this.ai.whichTile_ + 9].y - this.floorTile[40].getRadius()*2;
+			this.ai.whichTile_ = this.ai.whichTile_ + 9;
+		}
+	}
+	else{
+		if( this.ai.whichTile_ + 10 < 80 &&  this.ai.whichTile_  !=  this.aiWhichRow * 9 + 8 && !this.floorTile[this.ai.whichTile_ + 10].click ){
+			this.ai.x = this.floorTile[this.ai.whichTile_ + 10].x;
+			this.ai.y = this.floorTile[this.ai.whichTile_ + 10].y - this.floorTile[40].getRadius()*2;
+			this.ai.whichTile_ = this.ai.whichTile_ + 10;
+		}
+	}
+	*/
 };
 /**
  * @ start
