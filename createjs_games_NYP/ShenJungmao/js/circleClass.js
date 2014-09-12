@@ -25,7 +25,7 @@ function circleClass(x,y ,value) {
 	this.creepImg_.scaleY = 1.3;
 	this.creepImg1_.scaleX = 1.3;
 	this.creepImg1_.scaleY = 1.3;
-	this.click = 0;
+	this.click = false;
     this.addChild(this.creepImg_);
 	
 	this.value_ = value;
@@ -46,6 +46,6 @@ circleClass.prototype.getRadius = function()
 }
 circleClass.prototype.changeColor = function()
 {
-	this.click  = 1;
+	this.click  = true;
 	this.addChild(this.creepImg1_);
 }
