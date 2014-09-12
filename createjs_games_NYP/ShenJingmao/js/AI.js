@@ -7,12 +7,12 @@
  */
 
 //this function does the inheritance
-BOK.inherits(aiClass, createjs.Container);
+BOK.inherits(AI, createjs.Container);
 
 /**
  * @ constructor
  * */
-function aiClass(x,y) {
+function AI(x,y) {
     //this line is a must-have in prototype-chain style inheritance
     //Compare to JAVA this works as super();
 	
@@ -62,7 +62,7 @@ function aiClass(x,y) {
  * @ changeAnimation
  * change the animation
  * */
-aiClass.prototype.changeAnimation = function(isWeiZhu){
+AI.prototype.changeAnimation = function(isWeiZhu){
 	if(isWeiZhu){
 		this.removeChild(this.stayAnimation);
 		this.addChild(this.weizhuAnimation);

@@ -1,7 +1,7 @@
 /**
  * @ constructor
  * */
-function GameClass(stage, imgContainer){
+function Game(stage, imgContainer){
 
     this.stage_ = stage;
 	this.bg = new createjs.Bitmap(imgContainer["imgs/bg.jpg"]);
@@ -13,7 +13,7 @@ function GameClass(stage, imgContainer){
 	this.tempX = 10;
 	for(var  i = 0; i < 9; i++ ){
 		for(var  j = 0; j < 9; j++ ){
-			this.floorTile.push(new circleClass( j  * 65 + this.tempX,this.tempY, (i * 9) + j ));
+			this.floorTile.push(new Circle( j  * 65 + this.tempX,this.tempY, (i * 9) + j ));
 		}
 		if( i % 2 == 0 ){
 			this.tempX  = 40;
@@ -36,23 +36,23 @@ function GameClass(stage, imgContainer){
 		 }
 	 }
 	 
-	this.ai = new aiClass(this.floorTile[40].x , this.floorTile[40].y - this.floorTile[40].getRadius()*2);
+	this.ai = new AI(this.floorTile[40].x , this.floorTile[40].y - this.floorTile[40].getRadius()*2);
 	this.stage_.addEventListener('mousedown', Delegate.create(this,this.onMouseClick));
 };
 /**
  * @ tick
  * */
-GameClass.prototype.tick = function(event) {
+Game.prototype.tick = function(event) {
 };
 /**
  * @ checkGameOver
  * */
-GameClass.prototype.checkGameOver = function(){
+Game.prototype.checkGameOver = function(){
 };
 /**
  * @ loadImage
  * */
-GameClass.prototype.loadImage = function() {
+Game.prototype.loadImage = function() {
     	this.stage_.addChild(this.bg);
 		for(var i =0; i < this.floorTile.length; i++)
 		{
@@ -63,18 +63,18 @@ GameClass.prototype.loadImage = function() {
 /**
  * @ reset
  * */
-GameClass.prototype.reset = function() {
+Game.prototype.reset = function() {
 };
 /**
  * @ restart
  * */
-GameClass.prototype.restart = function(e) {
+Game.prototype.restart = function(e) {
 	
 };
 /**
  * @ onMouseClick
  * */
-GameClass.prototype.onMouseClick = function(e) {
+Game.prototype.onMouseClick = function(e) {
 
 	if( e.localY > 500 && e.localY < 1140){
 		var tempYValue = Math.floor((e.localY - 500) / 60) ;
@@ -90,7 +90,7 @@ GameClass.prototype.onMouseClick = function(e) {
 /**
  * @ start
  * */
-GameClass.prototype.start = function() {
+Game.prototype.start = function() {
 
   
 	this.loadImage();
