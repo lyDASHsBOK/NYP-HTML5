@@ -14,7 +14,7 @@ goog.require("org.createjs.tweenjs.TweenJS");
 
 BOK.inherits(SplashScreenApp, App);
 
-SplashScreenApp.DISPLAY_TEXT = 'BOK TEAM';
+SplashScreenApp.DISPLAY_TEXT = 'Huan & Win';
 
 /**
  * @param {Element|createjs.Container} stage
