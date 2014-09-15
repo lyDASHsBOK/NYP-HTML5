@@ -26,21 +26,16 @@ function Circle(x,y ,value) {
 	this.creepImg1_.scaleX = 1.3;
 	this.creepImg1_.scaleY = 1.3;
 	this.click = false;
+	this.hasMoved = false;
     this.addChild(this.creepImg_);
 	
 	this.value_ = value;
 	
-	
-	this.valueText = new createjs.Text( this.value_, "20pt Calibri" ,"Black"); 
-	this.valueText.x = 20;
-	this.valueText.y= 20;
-	this.addChild(this.valueText);
-	
-	this.DebugText = new createjs.Text( "c", "20pt Calibri" ,"Black"); 
-	this.DebugText.x = 20;
-	this.DebugText.y= 20;
-	
-	
+	// for debug 
+	//this.valueText = new createjs.Text( this.value_, "20pt Calibri" ,"Black"); 
+	//this.valueText.x = 20;
+	//this.valueText.y= 20;
+	//this.addChild(this.valueText);
 	
 	this.x = x;
 	this.y = y;
@@ -56,10 +51,8 @@ Circle.prototype.changeColor = function()
 	this.addChild(this.creepImg1_);
 }
 
-Circle.prototype.DebugTextShow = function()
+Circle.prototype.reset = function()
 {
-	this.addChild(this.DebugText);
-};
-
-
-
+	this.click  = false;
+	this.removeChild(this.creepImg1_);
+}

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Created by Enveesoft.
  * User: WINSTON HO
  * Date: 14-9-10
@@ -50,6 +50,7 @@ HUDClass.prototype.reset =  function() {
 	this.level = 0;
 
 };
+
 
 
 

@@ -6,19 +6,22 @@
  * Write the description in this section.
  */
  
-/**
- * @ collision
- * */
+
  
 var Util = {};
 
-Util.collision = function collision(x,y,r,x1,y1){
+/**
+ * @ collision
+ * a simple point circle collision detition
+ * */
+Util.collision = function (x,y,r,x1,y1){
 	return ( x1 < x+r && x1 > x-r && y1 < y+r && y1 > y-r)
 };
 /**
  * @ RandomRange
+ * randomise a range from min to max number in float 
  * */
-Util.RandomRange = function collision(min,max){
+Util.RandomRange = function (min,max){
 	var range = ( max - min ) + 1;
 	return (Math.random() * range ) + min;
 };

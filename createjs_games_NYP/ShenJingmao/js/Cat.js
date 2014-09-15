@@ -7,12 +7,12 @@
  */
 
 //this function does the inheritance
-BOK.inherits(AI, createjs.Container);
+BOK.inherits(CAT, createjs.Container);
 
 /**
  * @ constructor
  * */
-function AI(x,y , whichTile) {
+function CAT(x,y , whichTile) {
     //this line is a must-have in prototype-chain style inheritance
     //Compare to JAVA this works as super();
 	
@@ -51,7 +51,8 @@ function AI(x,y , whichTile) {
 	
 	this.weizhuAnimation = new createjs.Sprite(this.weizhuSpriteSheet);
 	this.weizhuAnimation.gotoAndPlay("weizhu");
-
+	this.isWeiZhu = false;
+	
     //we store the reference of creep img in a member varibale so it can be accessed later
     this.addChild(this.stayAnimation);
 	
@@ -62,8 +63,8 @@ function AI(x,y , whichTile) {
  * @ changeAnimation
  * change the animation
  * */
-AI.prototype.changeAnimation = function(isWeiZhu){
-	if(isWeiZhu){
+CAT.prototype.changeAnimation = function(){
+	if(this.isWeiZhu){
 		this.removeChild(this.stayAnimation);
 		this.addChild(this.weizhuAnimation);
 	}
