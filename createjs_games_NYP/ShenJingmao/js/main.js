@@ -12,15 +12,22 @@ goog.require("bok.apps.preloader.CanvasPreloaderApp");
 goog.require("root.Game");
 
 var canvas, preloaderApp, game, stretcher;
-window.addEventListener('load', loadingStart);
+window.addEventListener('load', splashScreenStart);
+
+//splash screen
+function splashScreenStart() {
+    canvas = document.getElementById('canvas');
+    stretcher = new Stretcher(canvas);
+    var splash = new SplashScreenApp(stretcher.stage);
+    splash.addEventListener(Event.COMPLETE, loadingStart);
+    splash.start();
+}
 
 imgContainer = {};
 /**
  * @ loadingStart
  * */
 function loadingStart(){
-    canvas = document.getElementById('canvas');
-    stretcher = new Stretcher(canvas);
     preloaderApp = new CanvasPreloaderApp([
         'imgs/bg.jpg',
 		'imgs/pot1.png',
