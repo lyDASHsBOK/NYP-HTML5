@@ -9,7 +9,7 @@
 goog.provide("root.main");
 goog.require("org.createjs.easeljs.SoundJS");
 goog.require("bok.apps.preloader.CanvasPreloaderApp");
-goog.require("root.gameClass");
+goog.require("root.Game");
 
 var canvas, preloaderApp, game, stretcher;
 window.addEventListener('load', loadingStart);
@@ -24,7 +24,9 @@ function loadingStart(){
     preloaderApp = new CanvasPreloaderApp([
         'imgs/bg.jpg',
 		'imgs/pot1.png',
-		'imgs/pot2.png'
+		'imgs/pot2.png',
+		'imgs/stay.png',
+		'imgs/weizhu.png'
     ], imgContainer, stretcher);
     preloaderApp.addEventListener(Event.COMPLETE, assetsLoaded);
 
@@ -35,6 +37,6 @@ function loadingStart(){
  * */
 function assetsLoaded(){
     //start main game here
-	var game = new GameClass(stretcher, imgContainer);
+	var game = new Game(stretcher, imgContainer);
 	game.start();
 }
