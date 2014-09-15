@@ -36,12 +36,6 @@ function Circle(x,y ,value) {
 	this.valueText.y= 20;
 	this.addChild(this.valueText);
 	
-	this.DebugText = new createjs.Text( "c", "20pt Calibri" ,"Black"); 
-	this.DebugText.x = 20;
-	this.DebugText.y= 20;
-	
-	
-	
 	this.x = x;
 	this.y = y;
 }
@@ -55,11 +49,3 @@ Circle.prototype.changeColor = function()
 	this.click  = true;
 	this.addChild(this.creepImg1_);
 }
-
-Circle.prototype.DebugTextShow = function()
-{
-	this.addChild(this.DebugText);
-};
-
-
-
