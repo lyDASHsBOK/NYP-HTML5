@@ -23,12 +23,12 @@ function SplashScreenApp(stage)
 {
 	App.call(this);
 
-    if(stage instanceof createjs.Stage)
+    if(stage.stage instanceof createjs.Stage)
     {
         this.stage_ = new createjs.Container();
         stage.addChild(this.stage_);
-        this.width_ = stage.canvas.width;
-        this.height_ = stage.canvas.height;
+        this.width_ = stage.stage.canvas.width;
+        this.height_ = stage.stage.canvas.height;
     }
     else
     {
@@ -51,8 +51,8 @@ function SplashScreenApp(stage)
 
 }
 
-SplashScreenApp.TEXT_X = 450;
-SplashScreenApp.TEXT_Y = 370;
+SplashScreenApp.TEXT_X = 50;
+SplashScreenApp.TEXT_Y = 550;
 
 /**
  * @override
@@ -80,13 +80,14 @@ SplashScreenApp.prototype.show_ = function()
 	text.alpha = 0;
 	
 	var temp = [];
+	var temp1 = [];
     var that = this;
 	var stage = this.stage_;
 	var spawnSpeed = 1;
 	var dotCount = 0;
 	var finishFunc = Delegate.create(this, this.finish_);
 	this.spawnFunc = function(){
-		if(spawnSpeed > 25)
+		if(spawnSpeed > 10)
 		{
 			/*
 			stage.addChild(back);
@@ -108,7 +109,7 @@ SplashScreenApp.prototype.show_ = function()
 					/*for(i=0; i< temp.length; ++i){
 						createjs.Tween.get(temp[i]).to({x:0,y:0, alpha:1}, 1200,createjs.Ease.bounceOut);
 					 }*/
-					 
+					 console.log(temp.length + temp1.length);
 					 for(i=0; i< temp.length; ++i){
 						randX = Math.floor( Math.random()*800);
 						randY = Math.floor(Math.random()*800);
@@ -142,9 +143,9 @@ SplashScreenApp.prototype.show_ = function()
 
 			var dot = new createjs.Shape();
 			var dotRed = new createjs.Shape();
-			var dotGreen = new createjs.Shape();
+			//var dotGreen = new createjs.Shape();
 			var dotGrey = new createjs.Shape();
-			var dotYellow = new createjs.Shape();
+			//var dotYellow = new createjs.Shape();
 			var dotBlue = new createjs.Shape();
 			//var color = 'rgba(255,255,255, 1)';
 			var color = 'rgba('+Math.floor( Util.RandomRange(150,255) )+', '+Math.floor( Util.RandomRange(150,255) )+', '+255+', 1)';
@@ -152,34 +153,35 @@ SplashScreenApp.prototype.show_ = function()
 			dot.x = Math.random()*that.width_;
 			dot.y = Math.random()*that.height_;
 			dotRed.graphics.beginFill('rgba(255,0,0,0.1)').drawCircle(0, 0, 3);
-			dotRed.x = 550;
+			dotRed.x = 300;
 			dotRed.y = 200;
-			dotGreen.graphics.beginFill('rgba(0,100,0,0.1)').drawCircle(0, 0, 3);
-			dotGreen.x = 220;
-			dotGreen.y = 350;
-			dotYellow.graphics.beginFill('rgba(255,255,0,0.1)').drawCircle(0, 0, 3);
-			dotYellow.x = 930;
-			dotYellow.y = 350;
+			//dotGreen.graphics.beginFill('rgba(0,100,0,0.1)').drawCircle(0, 0, 3);
+			//dotGreen.x = 220;
+			//dotGreen.y = 350;
+			//dotYellow.graphics.beginFill('rgba(255,255,0,0.1)').drawCircle(0, 0, 3);
+			//dotYellow.x = 930;
+			//dotYellow.y = 350;
 			dotGrey.graphics.beginFill('rgba(84,84,84,0.1)').drawCircle(0, 0, 3);
-			dotGrey.x = 930;
+			dotGrey.x = 300;
 			dotGrey.y = 620;
 			dotBlue.graphics.beginFill('rgba(0,0,255,0.1)').drawCircle(0, 0, 3);
-			dotBlue.x = 220;
+			dotBlue.x = 0;
 			dotBlue.y = 620;
 			stage.addChild(dotGrey);
-			stage.addChild(dotGreen);
-			stage.addChild(dotYellow);
+			//stage.addChild(dotGreen);
+			//stage.addChild(dotYellow);
 			stage.addChild(dotRed);
 			stage.addChild(dotBlue);
 			stage.addChild(dot);
 			temp.push(dot);
+			temp1.push(dotRed);
+			 
 			
-			createjs.Tween.get(dotGreen).to({x:dotYellow.x, y:dotYellow.y}, 1700,createjs.Ease.linear);
-			createjs.Tween.get(dotYellow).to({x:dotBlue.x, y:dotBlue.y}, 1700,createjs.Ease.linear);
+			//createjs.Tween.get(dotGreen).to({x:dotYellow.x, y:dotYellow.y}, 1700,createjs.Ease.linear);
+			//createjs.Tween.get(dotYellow).to({x:dotBlue.x, y:dotBlue.y}, 1700,createjs.Ease.linear);
 			createjs.Tween.get(dotRed).to({x:dotGrey.x, y:dotGrey.y}, 1700,createjs.Ease.linear);
-			createjs.Tween.get(dotGrey).to({x:dotGreen.x, y:dotGreen.y}, 1700,createjs.Ease.linear);
+			createjs.Tween.get(dotGrey).to({x:0, y:620}, 1700,createjs.Ease.linear);
 			createjs.Tween.get(dotBlue).to({x:dotRed.x, y:dotRed.y}, 1700,createjs.Ease.linear);
-			
 			createjs.Tween.get(dot).to({x:text.x + randX, y:text.y + randY}, 300,createjs.Ease.bounceOut)
 			dotCount++;
 		}
