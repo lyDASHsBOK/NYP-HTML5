@@ -27,6 +27,7 @@ function Circle(x,y ,value) {
 	this.creepImg1_.scaleY = 1.3;
 	this.click = false;
 	this.hasMoved = false;
+	this.hasMovedClosed = false;
     this.addChild(this.creepImg_);
 	
 	this.value_ = value;
