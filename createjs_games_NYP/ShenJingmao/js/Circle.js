@@ -32,10 +32,10 @@ function Circle(x,y ,value) {
 	this.value_ = value;
 	
 	// for debug 
-	//this.valueText = new createjs.Text( this.value_, "20pt Calibri" ,"Black"); 
-	//this.valueText.x = 20;
-	//this.valueText.y= 20;
-	//this.addChild(this.valueText);
+	this.valueText = new createjs.Text( this.value_, "20pt Calibri" ,"Black"); 
+	this.valueText.x = 20;
+	this.valueText.y= 20;
+	this.addChild(this.valueText);
 	
 	this.x = x;
 	this.y = y;

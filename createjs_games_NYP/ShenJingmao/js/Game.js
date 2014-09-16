@@ -73,6 +73,13 @@ function Game(stage, imgContainer){
 	this.cat = new CAT(this.floorTile[startTile].x , this.floorTile[startTile].y - this.floorTile[startTile].getRadius()*2,  startTile);
 	this.mainMenu.addEventListener('mousedown', Delegate.create(this,this.startGame));
 	this.reset();
+	
+	// reset calculation
+					for( var i = 0 ; i < this.pathCalculationArray.length ; i ++){
+						this.pathCalculationArray[i].value_ = 0;
+						this.pathCalculationArray[i].row_ = 0;
+						this.pathCalculationArray[i].alive = true;
+					}
 
 };
 /**
@@ -620,7 +627,7 @@ Game.prototype.onMouseClick = function(e) {
 					for( var i = 1 ; i < this.catPathArray.length ; i ++){
 						for( var j = 0 ; j < this.catPathArray[i].value_.length ; j ++){
 							if(this.outOfBound(this.catPathArray[i].value_[this.catPathArray[i].value_.length-1])){
-								this.pathCalculationArray[this.pathCalculationCount].value_ += this.catPathArray[i].value_[j];
+								this.pathCalculationArray[this.pathCalculationCount].value_ += 1;
 								if( (j == this.catPathArray[i].value_.length-1) ){		
 									this.pathCalculationArray[this.pathCalculationCount].row_ = i;
 									this.pathCalculationArray[this.pathCalculationCount].alive = false;	
@@ -664,12 +671,7 @@ Game.prototype.onMouseClick = function(e) {
 					}	
 					this.catPathAmount = 1;
 					
-					// reset calculation
-					for( var i = 0 ; i < this.pathCalculationArray.length ; i ++){
-						this.pathCalculationArray[i].value_ = 0;
-						this.pathCalculationArray[i].row_ = 0;
-						this.pathCalculationArray[i].alive = true;
-					}
+					
 				
 				}else{
 					if(!this.gameOver && !this.isWin){
