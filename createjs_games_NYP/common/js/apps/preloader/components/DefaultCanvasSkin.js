@@ -86,7 +86,7 @@ DefaultCanvasSkin.prototype.finish = function()
         .to({alpha:0}, 50).to({alpha:1}, 50)
         .call(function(){
             for(i=0; i<that.entities_.length; ++i)
-                createjs.Tween.get(that.entities_[i]).to({x:BOK.randN(400)-200,y:BOK.randN(400)-300, alpha:0}, 1200);
+            createjs.Tween.get(that.entities_[i]).to({x:BOK.randN(400)-200,y:BOK.randN(400)-300, alpha:0}, 1200);
             createjs.Tween.get(that.entities_[0]).wait(1500).call(Delegate.create(this, this.skinDisplayFinish));
         });
 };
