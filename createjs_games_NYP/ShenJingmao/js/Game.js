@@ -23,7 +23,7 @@ function Game(stage, imgContainer){
 	this.reply.x = this.hud.x + 340;
 	this.reply.y = this.hud.y + 500;
 	
-	this.pathFind = new PathFinding();
+	this.simplePathFind = new SimplePathFinding();
 	
 	this.tempY = 500;
 	this.tempX = 10;
@@ -42,6 +42,8 @@ function Game(stage, imgContainer){
 	}
 	
 	this.numberOfColorTileAtStart =   Math.floor(Util.RandomRange(5,15));
+	
+
 	
 	 for(var i = 0; i < this.numberOfColorTileAtStart; i++){
 		 this.temp =  Math.floor(Util.RandomRange(0,80));
@@ -115,8 +117,7 @@ Game.prototype.reset = function() {
 	this.cat.isWeiZhu = false;
 	this.cat.changeAnimation();
 
-	// reset path
-	this.pathFind.reset();
+
 	
 	if(this.gameOver){
 		this.hud.addGameOver(false);
@@ -138,46 +139,7 @@ Game.prototype.restart = function(e) {
 	this.stage_.addEventListener('click', Delegate.create(this,this.onMouseClick));
 	this.reset();
 };
-/**
- * @ winLose
- * @ handel the wining and losing condition
- * @ escape OR dead
- * */
-Game.prototype.winLose = function() {
-	
-	if(Check.outOfBound(this.cat.whichTile_)){
-		this.gameOver = true;
-		this.hud.addGameOver(true);
-		this.stage_.addChild(this.reply);
-		this.stage_.removeEventListener('click');
-		this.reply.addEventListener('mousedown', Delegate.create(this,this.restart));
-	}
-	if(!this.isWin){
-	if(this.pathFind.hiveCheck[1].value_ >= 0 && this.pathFind.hiveCheck[1].value_ < 81){
-			if(this.floorTile[this.pathFind.hiveCheck[1].value_].click && this.floorTile[this.pathFind.hiveCheck[2].value_].click && 
-			this.floorTile[this.pathFind.hiveCheck[3].value_].click && this.floorTile[this.pathFind.hiveCheck[4].value_].click &&
-			this.floorTile[this.pathFind.hiveCheck[5].value_].click && this.floorTile[this.pathFind.hiveCheck[6].value_].click){
-				this.isWin = true;
-				this.hud.addWining(true , this.numberOfMove);
-				this.stage_.addChild(this.reply);
-				this.stage_.removeEventListener('click');
-				this.reply.addEventListener('mousedown', Delegate.create(this,this.restart));
-			}
-		}
-	}
- };
- /**
- * @ compare
- * */
- Game.prototype.getSmallerValue = function(value) {
-	if(this.smallestValue == 0){
-		this.smallestValue = value;
-	}
-	
-	if(value < this.smallestValue){
-		this.smallestValue = value;
-	}
- };
+
 /**
  * @ onMouseClick
  * */
@@ -199,58 +161,11 @@ Game.prototype.onMouseClick = function(e) {
 				//find the cat which row is on
 				this.catWhichRow = Math.floor((this.cat.y + this.floorTile[40].getRadius()*2 - 500) / 60) ;
 				
-				
-				this.pathFind.hiveUpdate(this.cat.whichTile_ , this.catWhichRow);	
-				
-				this.winLose();
-				
-				 
-				if(!this.cat.isWeiZhu && !this.gameOver ){
-					this.pathFind.floorTile = this.floorTile.slice();
-					// decision to move
-					this.pathFind.checkPathFind(this.cat.whichTile_ , this.catWhichRow);
-					
-					// check if cat is weizhu
-					if(this.pathFind.pathCalculationCount == 0){
-						this.cat.isWeiZhu = true;
-						this.cat.changeAnimation();
-					}
-					
-					this.smallestValue = 0;
-					// compare path
-					for( var i = 0 ; i < this.pathFind.pathCalculationArray.length ; i ++){
-						if(!this.pathFind.pathCalculationArray[i].alive){
-							this.getSmallerValue(this.pathFind.pathCalculationArray[i].value_ );
-						}
-					}
-					
-					this.floorTile = this.pathFind.floorTile ;
-					
-					for( var i = 0 ; i < this.pathFind.pathCalculationArray.length ; i ++){
-						if( this.smallestValue == this.pathFind.pathCalculationArray[i].value_ ){
-							this.moveDecision(this.pathFind.catPathArray[this.pathFind.pathCalculationArray[i].row_].value_[1]);
-							break;
-						}
-					}
-					
-					this.pathFind.reset();
-					
-				}else{
-					if(!this.gameOver && !this.isWin){
-						if(!this.floorTile[this.pathFind.hiveCheck[1].value_].click){
-							this.moveTopLeft();
-						}else if(!this.floorTile[this.pathFind.hiveCheck[2].value_].click){
-							this.moveTopRight();
-						}else if(!this.floorTile[this.pathFind.hiveCheck[3].value_].click){
-							this.moveLeft();
-						}else if(!this.floorTile[this.pathFind.hiveCheck[4].value_].click){
-							this.moveRight();
-						}else if(!this.floorTile[this.pathFind.hiveCheck[5].value_].click){
-							this.moveBottomLeft();
-						}else
-							this.moveBottomRight();
-					}
+				if(this.simplePathFind.leftCheck(this.floorTile , this.cat.whichTile_))
+				{
+					this.moveLeft();
 				}
+			
 			}
 		}
 	}
@@ -263,7 +178,7 @@ Game.prototype.onMouseClick = function(e) {
  * with the hive
  * */
 Game.prototype.moveDecision = function(desination){
-	if(this.pathFind.hiveCheck[1].value_ == desination){
+	/*if(this.pathFind.hiveCheck[1].value_ == desination){
 		this.moveTopLeft();
 	}else if(this.pathFind.hiveCheck[2].value_ == desination){
 		this.moveTopRight();
@@ -275,7 +190,7 @@ Game.prototype.moveDecision = function(desination){
 		this.moveBottomLeft();
 	}else if(this.pathFind.hiveCheck[6].value_ == desination){
 		this.moveBottomRight();
-	}
+	}*/
 };
 /**
  * @ movement
