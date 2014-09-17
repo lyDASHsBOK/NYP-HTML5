@@ -25,9 +25,8 @@ function Circle(x,y ,value) {
 	this.creepImg_.scaleY = 1.3;
 	this.creepImg1_.scaleX = 1.3;
 	this.creepImg1_.scaleY = 1.3;
-	this.click = false;
-	this.hasMoved = false;
-	this.hasMovedClosed = false;
+
+	
     this.addChild(this.creepImg_);
 	
 	this.value_ = value;
@@ -48,12 +47,10 @@ Circle.prototype.getRadius = function()
 }
 Circle.prototype.changeColor = function()
 {
-	this.click  = true;
 	this.addChild(this.creepImg1_);
 }
 
 Circle.prototype.reset = function()
 {
-	this.click  = false;
 	this.removeChild(this.creepImg1_);
 }
