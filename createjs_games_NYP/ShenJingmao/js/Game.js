@@ -6,7 +6,7 @@ function Game(stage, imgContainer){
     this.stage_ = stage;
 	this.bg = new createjs.Bitmap(imgContainer["imgs/bg.jpg"]);
 	this.floorTile = [];
-	this.hiveCheck = [];
+
 	this.gameOver = false;
 	this.isWin = false;
 	this.isMainMenu = true;
@@ -23,23 +23,7 @@ function Game(stage, imgContainer){
 	this.reply.x = this.hud.x + 340;
 	this.reply.y = this.hud.y + 500;
 	
-	//check cat path
-	this.catPathArray = [];
-	this.catPathAmount = 1;
-	this.catPathArray.push( new Path() );
-	
-	//calculation of shortest path
-	this.pathCalculationArray = [];
-	this.pathCalculationCount = 0;
-	for( var i = 0; i < 6; i ++){
-		this.pathCalculationArray.push(new Hive(0,0));
-	}
-	this.smallestValue = 0;
-	
-	//hive
-	for( var i = 0; i < 7; i ++){
-		this.hiveCheck.push(new Hive(0,0));
-	}
+	this.pathFind = new PathFinding();
 	
 	this.tempY = 500;
 	this.tempX = 10;
@@ -132,21 +116,7 @@ Game.prototype.reset = function() {
 	this.cat.changeAnimation();
 
 	// reset path
-	for( var i = 1 ; i < this.catPathArray.length ; i ++){
-		this.tempLength = this.catPathArray[i].value_.length;
-		for( var j = 0 ; j < this.tempLength ; j ++){
-			this.catPathArray[i].value_.pop();
-		}
-		this.catPathArray.pop();
-	}	
-	this.catPathAmount = 1;
-	
-	// reset calculation
-	for( var i = 0 ; i < this.pathCalculationArray.length ; i ++){
-		this.pathCalculationArray[i].value_ = 0;
-		this.pathCalculationArray[i].row_ = 0;
-		this.pathCalculationArray[i].alive = true;
-	}
+	this.pathFind.reset();
 	
 	if(this.gameOver){
 		this.hud.addGameOver(false);
@@ -168,448 +138,34 @@ Game.prototype.restart = function(e) {
 	this.stage_.addEventListener('click', Delegate.create(this,this.onMouseClick));
 	this.reset();
 };
-
 /**
- * @ hiveUpdate
- * take the cat position and row
- * set the value of hive depend on the row
- * 0-origin 1-topleft 2-topright 3-left 4-right 5-botleft 6-botright
+ * @ winLose
+ * @ handel the wining and losing condition
+ * @ escape OR dead
  * */
-Game.prototype.hiveUpdate = function(pos){
-
-	if(this.catWhichRow % 2 == 0){
-		this.hiveCheck[1].value_ = pos-10;	
-		this.hiveCheck[2].value_ = pos-9;	
-		this.hiveCheck[5].value_ = pos+8;		
-		this.hiveCheck[6].value_ = pos+9;
-	}
-	else{
-		this.hiveCheck[1].value_ = pos-9;		
-		this.hiveCheck[2].value_ = pos-8;		
-		this.hiveCheck[5].value_ = pos+9;		
-		this.hiveCheck[6].value_ = pos+10;
-	}
-	this.hiveCheck[0].value_ = pos;
-	this.hiveCheck[3].value_ = pos-1;
-	this.hiveCheck[4].value_ = pos+1;
-};
-
-
-/**
- * @ outOfBound
- * check whether the cat is escaped
- * return ture if is escaped
- * else return false
- * */
-Game.prototype.outOfBound = function(number) {
-	if( number >= 0 && number <= 8){
-		return true;
-	}
-	if( number >= 72 && number <= 80){
-		return true;
-	}
-	for(var i = 0; i < 9; i++){
-		if( number == i*9){
-			return true;
-		}
-	}
-	for(var i = 0; i < 9; i++){
-		if( number == i*9+8){
-			return true;
-		}
-	}
-		
-	return false;
-};
-
-
- /**
- * @ checkMovement
- * recursion function to keep looping 
- * return back when escaped
- * check the row to decide how much to minus
- * if the tile to move is colored 
- * go to next function depend on the initial direction path
- * else set the tile has moved so we wont move back again
- * push the tile into a array to keep track of the path
- * */
-Game.prototype.topLeftCheck = function(number, row, dir, dir1){
-	if(this.outOfBound(number)){
-		this.catPathArray[this.catPathAmount].value_.push(number);
-		return number;
-	}
+Game.prototype.winLose = function() {
 	
-	if(row % 2 == 0){	
-		if(this.floorTile[number-10].click || this.floorTile[number-10].hasMoved || this.floorTile[number-10].hasMovedClosed){
-			if(dir1 == 'topright'){
-				return this.pathFinding(number, row, 'right', dir1);
-			}else if(dir1 == 'left'){
-				return this.pathFinding(number, row, 'botleft', dir1);
-			}if(dir1 == 'right'){
-				return this.pathFinding(number, row, 'botleft', dir1);
-			}if(dir1 == 'botleft'){
-				return this.pathFinding(number, row, 'topright', dir1);
-			}if(dir1 == 'botright'){
-				//stuck		
-				for( var i = 0; i < this.floorTile.length; i ++){
-					if(this.floorTile[i].hasMoved){
-						this.floorTile[i].hasMoved = false;
-					}
-				}
-				this.floorTile[number].hasMovedClosed = true;
-				this.catPathArray.push( new Path() );
-				this.catPathAmount += 1;
-				return this.pathFinding(this.cat.whichTile_,this.catWhichRow, dir1, dir1);
-			}else{
-				// 'topleft'
-				return this.pathFinding(number, row, 'topright', dir1);
-			}
-		}	
-		this.floorTile[number].hasMoved = true;
-		this.catPathArray[this.catPathAmount].value_.push(number);
-		return number + this.topLeftCheck(number-10, row-1, dir1, dir1);
-	}else{
-		if(this.floorTile[number-9].click || this.floorTile[number-9].hasMoved || this.floorTile[number-9].hasMovedClosed){
-			if(dir1 == 'topright'){
-				return this.pathFinding(number, row, 'right', dir1);
-			}else if(dir1 == 'left'){
-				return this.pathFinding(number, row, 'botleft', dir1);
-			}if(dir1 == 'right'){
-				return this.pathFinding(number, row, 'botleft', dir1);
-			}if(dir1 == 'botleft'){
-				return this.pathFinding(number, row, 'topright', dir1);
-			}if(dir1 == 'botright'){
-				//stuck		
-				for( var i = 0; i < this.floorTile.length; i ++){
-					if(this.floorTile[i].hasMoved){
-						this.floorTile[i].hasMoved = false;
-					}
-				}
-				this.floorTile[number].hasMovedClosed = true;
-				this.catPathArray.push( new Path() );
-				this.catPathAmount += 1;
-				return this.pathFinding(this.cat.whichTile_,this.catWhichRow, dir1, dir1);
-			}else{
-				// 'topleft'
-				return this.pathFinding(number, row, 'topright', dir1);
+	if(Check.outOfBound(this.cat.whichTile_)){
+		this.gameOver = true;
+		this.hud.addGameOver(true);
+		this.stage_.addChild(this.reply);
+		this.stage_.removeEventListener('click');
+		this.reply.addEventListener('mousedown', Delegate.create(this,this.restart));
+	}
+	if(!this.isWin){
+	if(this.pathFind.hiveCheck[1].value_ >= 0 && this.pathFind.hiveCheck[1].value_ < 81){
+			if(this.floorTile[this.pathFind.hiveCheck[1].value_].click && this.floorTile[this.pathFind.hiveCheck[2].value_].click && 
+			this.floorTile[this.pathFind.hiveCheck[3].value_].click && this.floorTile[this.pathFind.hiveCheck[4].value_].click &&
+			this.floorTile[this.pathFind.hiveCheck[5].value_].click && this.floorTile[this.pathFind.hiveCheck[6].value_].click){
+				this.isWin = true;
+				this.hud.addWining(true , this.numberOfMove);
+				this.stage_.addChild(this.reply);
+				this.stage_.removeEventListener('click');
+				this.reply.addEventListener('mousedown', Delegate.create(this,this.restart));
 			}
 		}
-		this.floorTile[number].hasMoved = true;
-		this.catPathArray[this.catPathAmount].value_.push(number);
-		return number + this.topLeftCheck(number-9, row-1, dir1, dir1);
 	}
-	
-};
-
-Game.prototype.topRightCheck = function(number, row, dir, dir1){
-	if(this.outOfBound(number)){
-		this.catPathArray[this.catPathAmount].value_.push(number);
-		return number;
-	}
-	
-	if(row % 2 == 0){	
-		if(this.floorTile[number-9].click || this.floorTile[number-9].hasMoved || this.floorTile[number-9].hasMovedClosed){	
-			if(dir1 == 'topleft'){
-				return this.pathFinding(number, row, 'left', dir1);
-			}else if(dir1 == 'left'){
-				return this.pathFinding(number, row, 'botright', dir1);
-			}if(dir1 == 'right'){
-				return this.pathFinding(number, row, 'botright', dir1);
-			}if(dir1 == 'botleft'){
-				//stuck		
-				for( var i = 0; i < this.floorTile.length; i ++){
-					if(this.floorTile[i].hasMoved){
-						this.floorTile[i].hasMoved = false;
-					}
-				}
-				this.floorTile[number].hasMovedClosed = true;
-				this.catPathArray.push( new Path() );
-				this.catPathAmount += 1;
-				return this.pathFinding(this.cat.whichTile_,this.catWhichRow, dir1, dir1);
-			}if(dir1 == 'botright'){
-				return this.pathFinding(number, row, 'topleft', dir1);
-			}else{
-				// 'topright'
-				return this.pathFinding(number, row, 'topleft', dir1);
-			}
-		}
-		this.floorTile[number].hasMoved = true;
-		this.catPathArray[this.catPathAmount].value_.push(number);
-		return number + this.pathFinding(number-9, row-1, dir1, dir1);
-	}else{
-		if(this.floorTile[number-8].click || this.floorTile[number-8].hasMoved || this.floorTile[number-8].hasMovedClosed ){
-			if(dir1 == 'topleft'){
-				return this.pathFinding(number, row, 'left', dir1);
-			}else if(dir1 == 'left'){
-				return this.pathFinding(number, row, 'botright', dir1);
-			}if(dir1 == 'right'){
-				return this.pathFinding(number, row, 'botright', dir1);
-			}if(dir1 == 'botleft'){
-				//stuck		
-				for( var i = 0; i < this.floorTile.length; i ++){
-					if(this.floorTile[i].hasMoved){
-						this.floorTile[i].hasMoved = false;
-					}
-				}
-				this.floorTile[number].hasMovedClosed = true;
-				this.catPathArray.push( new Path() );
-				this.catPathAmount += 1;
-				return this.pathFinding(this.cat.whichTile_,this.catWhichRow, dir1, dir1);
-			}if(dir1 == 'botright'){
-				return this.pathFinding(number, row, 'topleft', dir1);
-			}else{
-				// 'topright'
-				return this.pathFinding(number, row, 'topleft', dir1);
-			}
-		}
-		this.floorTile[number].hasMoved = true;
-		this.catPathArray[this.catPathAmount].value_.push(number);
-		return number + this.pathFinding(number-8, row-1, dir1, dir1);
-	}
-};
-
-Game.prototype.leftCheck = function(number, row, dir, dir1){
-	if(this.outOfBound(number)){
-		this.catPathArray[this.catPathAmount].value_.push(number);
-		return number;
-	}
-	if(this.floorTile[number-1].click || this.floorTile[number-1].hasMoved || this.floorTile[number-1].hasMovedClosed){
-			if(dir1 == 'topleft'){
-				return this.pathFinding(number, row, 'right', dir1);
-			}else if(dir1 == 'topright'){
-				return this.pathFinding(number, row, 'botright', dir1);
-			}if(dir1 == 'right'){
-				//stuck		
-				for( var i = 0; i < this.floorTile.length; i ++){
-					if(this.floorTile[i].hasMoved){
-						this.floorTile[i].hasMoved = false;
-					}
-				}
-				this.floorTile[number].hasMovedClosed = true;
-				this.catPathArray.push( new Path() );
-				this.catPathAmount += 1;
-				return this.pathFinding(this.cat.whichTile_,this.catWhichRow, dir1, dir1);
-			}if(dir1 == 'botleft'){
-				return this.pathFinding(number, row, 'right', dir1);
-			}if(dir1 == 'botright'){
-				return this.pathFinding(number, row, 'topright', dir1);
-			}else{
-				// 'left'
-				return this.pathFinding(number, row, 'topleft', dir1);
-			}
-	}
-	this.floorTile[number].hasMoved = true;
-	this.catPathArray[this.catPathAmount].value_.push(number);
-	return number + this.pathFinding(number-1, row, dir1, dir1);
-	
-};
-
-Game.prototype.rightCheck = function(number, row, dir, dir1){
-	if(this.outOfBound(number)){
-		this.catPathArray[this.catPathAmount].value_.push(number);
-		return number;
-	}
-	if(this.floorTile[number+1].click || this.floorTile[number+1].hasMoved || this.floorTile[number+1].hasMovedClosed){
-			if(dir1 == 'topleft'){
-				return this.pathFinding(number, row, 'botleft', dir1);
-			}else if(dir1 == 'topright'){
-				return this.pathFinding(number, row, 'left', dir1);
-			}if(dir1 == 'left'){
-				//stuck		
-				for( var i = 0; i < this.floorTile.length; i ++){
-					if(this.floorTile[i].hasMoved){
-						this.floorTile[i].hasMoved = false;
-					}
-				}
-				this.floorTile[number].hasMovedClosed = true;
-				this.catPathArray.push( new Path() );
-				this.catPathAmount += 1;
-				return this.pathFinding(this.cat.whichTile_,this.catWhichRow, dir1, dir1);
-			}if(dir1 == 'botleft'){
-				return this.pathFinding(number, row, 'topleft', dir1);
-			}if(dir1 == 'botright'){
-				return this.pathFinding(number, row, 'left', dir1);
-			}else{
-				// 'right'
-				return this.pathFinding(number, row, 'topright', dir1);
-			}
-	}
-	this.floorTile[number].hasMoved = true;
-	this.catPathArray[this.catPathAmount].value_.push(number);
-	return number + this.pathFinding(number+1, row, dir1, dir1);
-
-};
-
-Game.prototype.botLeftCheck = function(number, row, dir, dir1){
-	if(this.outOfBound(number)){
-		this.catPathArray[this.catPathAmount].value_.push(number);
-		return number;
-	}
-	
-	if(row % 2 == 0){	
-		if(this.floorTile[number+8].click || this.floorTile[number+8].hasMoved || this.floorTile[number+8].hasMovedClosed){
-			if(dir1 == 'topleft'){
-				return this.pathFinding(number, row, 'botright', dir1);
-			}else if(dir1 == 'topright'){
-				//stuck		
-				for( var i = 0; i < this.floorTile.length; i ++){
-					if(this.floorTile[i].hasMoved){
-						this.floorTile[i].hasMoved = false;
-					}
-				}
-				this.floorTile[number].hasMovedClosed = true;
-				this.catPathArray.push( new Path() );
-				this.catPathAmount += 1;
-				return this.pathFinding(this.cat.whichTile_,this.catWhichRow, dir1, dir1);
-			}if(dir1 == 'left'){	
-				return this.pathFinding(number, row, 'topright', dir1);
-			}if(dir1 == 'right'){
-				return this.pathFinding(number, row, 'left', dir1);
-			}if(dir1 == 'botright'){
-				return this.pathFinding(number, row, 'right', dir1);
-			}else{
-				// 'botleft'
-				return this.pathFinding(number, row, 'botright', dir1);
-			}
-		}
-		this.floorTile[number].hasMoved = true;
-		this.catPathArray[this.catPathAmount].value_.push(number);
-		return number + this.pathFinding(number+8, row+1, dir1, dir1);
-	}else{
-		if(this.floorTile[number+9].click || this.floorTile[number+9].hasMoved || this.floorTile[number+9].hasMovedClosed){
-			if(dir1 == 'topleft'){
-				return this.pathFinding(number, row, 'botright', dir1);
-			}else if(dir1 == 'topright'){
-				//stuck		
-				for( var i = 0; i < this.floorTile.length; i ++){
-					if(this.floorTile[i].hasMoved){
-						this.floorTile[i].hasMoved = false;
-					}
-				}
-				this.floorTile[number].hasMovedClosed = true;
-				this.catPathArray.push( new Path() );
-				this.catPathAmount += 1;
-				return this.pathFinding(this.cat.whichTile_,this.catWhichRow, dir1, dir1);
-			}if(dir1 == 'left'){	
-				return this.pathFinding(number, row, 'topright', dir1);
-			}if(dir1 == 'right'){
-				return this.pathFinding(number, row, 'left', dir1);
-			}if(dir1 == 'botright'){
-				return this.pathFinding(number, row, 'right', dir1);
-			}else{
-				// 'botleft'
-				return this.pathFinding(number, row, 'botright', dir1);
-			}
-		}
-		this.floorTile[number].hasMoved = true;
-		this.catPathArray[this.catPathAmount].value_.push(number);
-		return number + this.pathFinding(number+9, row+1, dir1, dir1);
-	}
-};
-
-Game.prototype.botRightCheck = function(number, row, dir, dir1){
-	if(this.outOfBound(number)){
-		this.catPathArray[this.catPathAmount].value_.push(number);
-		return number;
-	}
-	
-	if(row % 2 == 0){	
-		if(this.floorTile[number+9].click  || this.floorTile[number+9].hasMoved || this.floorTile[number+9].hasMovedClosed){
-			if(dir1 == 'topleft'){
-				//stuck		
-				for( var i = 0; i < this.floorTile.length; i ++){
-					if(this.floorTile[i].hasMoved){
-						this.floorTile[i].hasMoved = false;
-					}
-				}
-				this.floorTile[number].hasMovedClosed = true;
-				this.catPathArray.push( new Path() );
-				this.catPathAmount += 1;
-				return this.pathFinding(this.cat.whichTile_,this.catWhichRow, dir1, dir1);
-			}else if(dir1 == 'topright'){
-				return this.pathFinding(number, row, 'botleft', dir1);
-			}if(dir1 == 'left'){	
-				return this.pathFinding(number, row, 'right', dir1);
-			}if(dir1 == 'right'){
-				return this.pathFinding(number, row, 'topleft', dir1);
-			}if(dir1 == 'botleft'){
-				return this.pathFinding(number, row, 'left', dir1);
-			}else{
-				// 'botright'
-				return this.pathFinding(number, row, 'botleft', dir1);
-			}
-		}
-		this.floorTile[number].hasMoved = true;
-		this.catPathArray[this.catPathAmount].value_.push(number);
-		return number + this.pathFinding(number+9, row+1, dir1, dir1);
-	}else{
-		if(this.floorTile[number+10].click || this.floorTile[number+10].hasMoved || this.floorTile[number+10].hasMovedClosed){
-			if(dir1 == 'topleft'){
-				//stuck		
-				for( var i = 0; i < this.floorTile.length; i ++){
-					if(this.floorTile[i].hasMoved){
-						this.floorTile[i].hasMoved = false;
-					}
-				}
-				this.floorTile[number].hasMovedClosed = true;
-				this.catPathArray.push( new Path() );
-				this.catPathAmount += 1;
-				return this.pathFinding(this.cat.whichTile_,this.catWhichRow, dir1, dir1);
-			}else if(dir1 == 'topright'){
-				return this.pathFinding(number, row, 'botleft', dir1);
-			}if(dir1 == 'left'){	
-				return this.pathFinding(number, row, 'right', dir1);
-			}if(dir1 == 'right'){
-				return this.pathFinding(number, row, 'topleft', dir1);
-			}if(dir1 == 'botleft'){
-				return this.pathFinding(number, row, 'left', dir1);
-			}else{
-				// 'botright'
-				return this.pathFinding(number, row, 'botleft', dir1);
-			}
-		}
-		this.floorTile[number].hasMoved = true;
-		this.catPathArray[this.catPathAmount].value_.push(number);
-		return number + this.pathFinding(number+10, row+1, dir1, dir1);
-	}
-};
-
-/**
- * @ pathFinding
- * dir- the step moving to
- * dir1- starting path direction
- * */
-Game.prototype.pathFinding = function(number, row, dir, dir1){
-	
-	this.catAbleToMove = 0;
-	
-	for(var i = 1 ; i < 7 ; i++){
-		if(this.floorTile[this.hiveCheck[i].value_].hasMovedClosed || this.floorTile[this.hiveCheck[i].value_].click){
-			this.catAbleToMove += 1;
-		}
-	}
-
-	if(this.catAbleToMove < 6 && !this.cat.isWeiZhu ){
-				
-	
-		if(dir == 'topleft'){
-			this.topLeftCheck(number, row, dir, dir1);
-		}else if(dir == 'topright'){
-			this.topRightCheck(number, row, dir, dir1);
-		}else if(dir == 'left'){
-			 this.leftCheck(number, row, dir, dir1);
-		}else if(dir == 'right'){
-			this.rightCheck(number, row, dir, dir1);
-		}else if(dir == 'botleft'){
-			this.botLeftCheck(number, row, dir, dir1);
-		}else if(dir == 'botright'){
-			this.botRightCheck(number, row, dir, dir1);
-		}		
-	}else{
-		return number;
-	}	
-};
- 
+ };
  /**
  * @ compare
  * */
@@ -621,20 +177,6 @@ Game.prototype.pathFinding = function(number, row, dir, dir1){
 	if(value < this.smallestValue){
 		this.smallestValue = value;
 	}
- };
- 
- /**
- * @ resetMoveBack
- * */
- Game.prototype.resetMoveBack = function() {
-	for(var i = 0; i < this.floorTile.length; i ++){
-		if( this.floorTile[i].hasMoved ){
-			 this.floorTile[i].hasMoved = false;
-		}
-		if( this.floorTile[i].hasMovedClosed ){
-			 this.floorTile[i].hasMovedClosed = false;
-		}
-	}	
  };
 /**
  * @ onMouseClick
@@ -657,133 +199,53 @@ Game.prototype.onMouseClick = function(e) {
 				//find the cat which row is on
 				this.catWhichRow = Math.floor((this.cat.y + this.floorTile[40].getRadius()*2 - 500) / 60) ;
 				
-				this.hiveUpdate(this.cat.whichTile_);				
 				
-				/**
-				 * @ escape OR dead
-				 * */
-				if(this.outOfBound(this.cat.whichTile_)){
-					this.gameOver = true;
-					this.hud.addGameOver(true);
-					this.stage_.addChild(this.reply);
-					this.stage_.removeEventListener('click');
-					this.reply.addEventListener('mousedown', Delegate.create(this,this.restart));
-				}
-				if(!this.isWin){
+				this.pathFind.hiveUpdate(this.cat.whichTile_ , this.catWhichRow);	
 				
-				if(this.hiveCheck[1].value_ >= 0 && this.hiveCheck[1].value_ < 81){
-						if(this.floorTile[this.hiveCheck[1].value_].click && this.floorTile[this.hiveCheck[2].value_].click && 
-						this.floorTile[this.hiveCheck[3].value_].click && this.floorTile[this.hiveCheck[4].value_].click &&
-						this.floorTile[this.hiveCheck[5].value_].click && this.floorTile[this.hiveCheck[6].value_].click){
-							this.isWin = true;
-							this.hud.addWining(true , this.numberOfMove);
-							this.stage_.addChild(this.reply);
-							this.stage_.removeEventListener('click');
-							this.reply.addEventListener('mousedown', Delegate.create(this,this.restart));
-						}
-					}
-				}
-				/**
-				 * @ cat is trap OR Dead
-				 * */
-				if(!this.cat.isWeiZhu && !this.gameOver ){
+				this.winLose();
 				
-					
-					this.catPathArray.push( new Path() );
-					this.pathFinding(this.cat.whichTile_,this.catWhichRow, 'topleft', 'topleft');
-					this.resetMoveBack();
 				 
-					this.catPathArray.push( new Path() );
-					this.catPathAmount += 1;
-					this.pathFinding(this.cat.whichTile_,this.catWhichRow, 'topright', 'topright');
-					this.resetMoveBack();
-					this.catPathArray.push( new Path() );
-					this.catPathAmount += 1;
-					this.pathFinding(this.cat.whichTile_,this.catWhichRow, 'left', 'left');
-					this.resetMoveBack();
-					this.catPathArray.push( new Path() );
-					this.catPathAmount += 1;
-					this.pathFinding(this.cat.whichTile_,this.catWhichRow, 'right', 'right');
-					this.resetMoveBack();
-					this.catPathArray.push( new Path() );
-					this.catPathAmount += 1;
-					this.pathFinding(this.cat.whichTile_,this.catWhichRow, 'botleft', 'botleft');
-					this.resetMoveBack();
-					this.catPathArray.push( new Path() );
-					this.catPathAmount += 1;
-					this.pathFinding(this.cat.whichTile_,this.catWhichRow, 'botright', 'botright');
-					this.resetMoveBack();
-
-					
-					this.pathCalculationCount = 0;
-					
-					// find the correct path
-					for( var i = 1 ; i < this.catPathArray.length ; i ++){
-						for( var j = 0 ; j < this.catPathArray[i].value_.length ; j ++){
-							if(this.outOfBound(this.catPathArray[i].value_[this.catPathArray[i].value_.length-1])){
-								//this.pathCalculationArray[this.pathCalculationCount].value_ += this.catPathArray[i].value_[j];
-								this.pathCalculationArray[this.pathCalculationCount].value_ += 1;
-								if( (j == this.catPathArray[i].value_.length-1) ){		
-									this.pathCalculationArray[this.pathCalculationCount].row_ = i;
-									this.pathCalculationArray[this.pathCalculationCount].alive = false;	
-									if( this.pathCalculationCount < 5){
-										this.pathCalculationCount += 1;
-									}
-								}
-							}
-						}
-					}
+				if(!this.cat.isWeiZhu && !this.gameOver ){
+					this.pathFind.floorTile = this.floorTile.slice();
+					// decision to move
+					this.pathFind.checkPathFind(this.cat.whichTile_ , this.catWhichRow);
 					
 					// check if cat is weizhu
-					if(this.pathCalculationCount == 0){
+					if(this.pathFind.pathCalculationCount == 0){
 						this.cat.isWeiZhu = true;
 						this.cat.changeAnimation();
 					}
-
+					
 					this.smallestValue = 0;
 					// compare path
-					for( var i = 0 ; i < this.pathCalculationArray.length ; i ++){
-						if(!this.pathCalculationArray[i].alive){
-							this.getSmallerValue(this.pathCalculationArray[i].value_ );
+					for( var i = 0 ; i < this.pathFind.pathCalculationArray.length ; i ++){
+						if(!this.pathFind.pathCalculationArray[i].alive){
+							this.getSmallerValue(this.pathFind.pathCalculationArray[i].value_ );
 						}
 					}
-					// decision to move
-					for( var i = 0 ; i < this.pathCalculationArray.length ; i ++){
-						if( this.smallestValue == this.pathCalculationArray[i].value_ ){
-						
-							this.moveDecision(this.catPathArray[this.pathCalculationArray[i].row_].value_[1]);
+					
+					this.floorTile = this.pathFind.floorTile ;
+					
+					for( var i = 0 ; i < this.pathFind.pathCalculationArray.length ; i ++){
+						if( this.smallestValue == this.pathFind.pathCalculationArray[i].value_ ){
+							this.moveDecision(this.pathFind.catPathArray[this.pathFind.pathCalculationArray[i].row_].value_[1]);
 							break;
 						}
 					}
 					
-					// reset path
-					for( var i = 1 ; i < this.catPathArray.length ; i ++){
-						this.tempLength = this.catPathArray[i].value_.length;
-						for( var j = 0 ; j < this.tempLength ; j ++){
-							this.catPathArray[i].value_.pop();
-						}
-						this.catPathArray.pop();
-					}	
-					this.catPathAmount = 1;
+					this.pathFind.reset();
 					
-					// reset calculation
-					for( var i = 0 ; i < this.pathCalculationArray.length ; i ++){
-						this.pathCalculationArray[i].value_ = 0;
-						this.pathCalculationArray[i].row_ = 0;
-						this.pathCalculationArray[i].alive = true;
-					}
-				
 				}else{
 					if(!this.gameOver && !this.isWin){
-						if(!this.floorTile[this.hiveCheck[1].value_].click){
+						if(!this.floorTile[this.pathFind.hiveCheck[1].value_].click){
 							this.moveTopLeft();
-						}else if(!this.floorTile[this.hiveCheck[2].value_].click){
+						}else if(!this.floorTile[this.pathFind.hiveCheck[2].value_].click){
 							this.moveTopRight();
-						}else if(!this.floorTile[this.hiveCheck[3].value_].click){
+						}else if(!this.floorTile[this.pathFind.hiveCheck[3].value_].click){
 							this.moveLeft();
-						}else if(!this.floorTile[this.hiveCheck[4].value_].click){
+						}else if(!this.floorTile[this.pathFind.hiveCheck[4].value_].click){
 							this.moveRight();
-						}else if(!this.floorTile[this.hiveCheck[5].value_].click){
+						}else if(!this.floorTile[this.pathFind.hiveCheck[5].value_].click){
 							this.moveBottomLeft();
 						}else
 							this.moveBottomRight();
@@ -793,7 +255,6 @@ Game.prototype.onMouseClick = function(e) {
 		}
 	}
 };
-
 /**
  * @ moveDecision
  * decide which direction to move
@@ -802,21 +263,20 @@ Game.prototype.onMouseClick = function(e) {
  * with the hive
  * */
 Game.prototype.moveDecision = function(desination){
-	if(this.hiveCheck[1].value_ == desination){
+	if(this.pathFind.hiveCheck[1].value_ == desination){
 		this.moveTopLeft();
-	}else if(this.hiveCheck[2].value_ == desination){
+	}else if(this.pathFind.hiveCheck[2].value_ == desination){
 		this.moveTopRight();
-	}else if(this.hiveCheck[3].value_ == desination){
+	}else if(this.pathFind.hiveCheck[3].value_ == desination){
 		this.moveLeft();
-	}else if(this.hiveCheck[4].value_ == desination){
+	}else if(this.pathFind.hiveCheck[4].value_ == desination){
 		this.moveRight();
-	}else if(this.hiveCheck[5].value_ == desination){
+	}else if(this.pathFind.hiveCheck[5].value_ == desination){
 		this.moveBottomLeft();
-	}else if(this.hiveCheck[6].value_ == desination){
+	}else if(this.pathFind.hiveCheck[6].value_ == desination){
 		this.moveBottomRight();
 	}
 };
-
 /**
  * @ movement
  * find the cat at which row,
@@ -887,10 +347,9 @@ Game.prototype.moveBottomLeft = function(){
 		}
 	}
 };
-
 Game.prototype.moveBottomRight = function(){
 	if(this.catWhichRow % 2 == 0){
-		if(  this.cat.whichTile_ + 9 < 80  ){
+		if( this.cat.whichTile_ + 9 < 80  ){
 			this.cat.x = this.floorTile[this.cat.whichTile_ + 9].x;
 			this.cat.y = this.floorTile[this.cat.whichTile_ + 9].y - this.floorTile[40].getRadius()*2;
 			this.cat.whichTile_ = this.cat.whichTile_ + 9;
@@ -904,12 +363,9 @@ Game.prototype.moveBottomRight = function(){
 		}
 	}
 };
-
 /**
  * @ start
  * */
 Game.prototype.start = function() {
 	this.loadImage();
-    //this is the proper way of monitoring system tick in createjs
-	//createjs.Ticker.addEventListener('tick', Delegate.create(this,this.tick));
 };
