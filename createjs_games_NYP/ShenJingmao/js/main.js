@@ -18,7 +18,7 @@ window.addEventListener('load', splashScreenStart);
 function splashScreenStart() {
     canvas = document.getElementById('canvas');
     stretcher = new Stretcher(canvas);
-    var splash = new SplashScreenApp(stretcher.stage);
+    var splash = new SplashScreenApp(stretcher);
     splash.addEventListener(Event.COMPLETE, loadingStart);
     splash.start();
 }
