@@ -2,14 +2,17 @@ function SimplePathFinding() {
 	
 }
 
-SimplePathFinding.prototype.leftCheck = function( floorTile , whichTile_){
-	if(Check.outOfBound(whichTile_)){
+
+SimplePathFinding.prototype.leftCheck = function( map ){
+	if(Check.outOfBound(map.catTile)){
 		return true;
 	}
-	if(floorTile[whichTile_-1].click ){
+	if(map.isCellClicked(map.catTile-1) ){
 		return false;
 	}
-	return this.leftCheck( floorTile , whichTile_-1);
+
+    map.setCatTile(map.catTile - 1);
+	return this.leftCheck( map);
 };
 
 /*

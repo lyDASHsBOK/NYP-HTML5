@@ -7,7 +7,7 @@ function Game(stage, imgContainer){
 	this.bg = new createjs.Bitmap(imgContainer["imgs/bg.jpg"]);
 	
 	this.mapTileView = [];
-	this.mapTileModel = [];
+	this.mapTileModel = new Map();
 
 	this.gameOver = false;
 	this.isWin = false;
@@ -32,7 +32,7 @@ function Game(stage, imgContainer){
 	for(var  i = 0; i < 9; i++ ){
 		for(var  j = 0; j < 9; j++ ){
 			this.mapTileView.push(new Circle( j  * 65 + this.tempX,this.tempY, (i * 9) + j ) );
-			this.mapTileModel.push(new Map( i * 9 + j ) );
+			this.mapTileModel.addCell(new Cell( i * 9 + j ) );
 		}
 		if( i % 2 == 0 ){
 			this.tempX  = 40;
@@ -53,7 +53,7 @@ function Game(stage, imgContainer){
 		 if( this.temp >= 36 &&  this.temp <= 44){
 			this.temp +=10;
 		 }
-		if(!this.mapTileModel[this.temp].click){
+		if(!this.mapTileModel.isCellClicked(this.temp)){
 			this.mapTileView[this.temp].changeColor();
 		 }
 	 }
@@ -99,7 +99,7 @@ Game.prototype.reset = function() {
 	//reset floor tile
 	for(var  i = 0; i < 81; i++ ){
 		this.mapTileView[i].reset();
-		this.mapTileModel[i].click = false;
+		this.mapTileModel.markCellBlank(i);
 	}
 	this.numberOfColorTileAtStart =   Math.floor(Util.RandomRange(5,15));
 	 for(var i = 0; i < this.numberOfColorTileAtStart; i++){
@@ -107,7 +107,7 @@ Game.prototype.reset = function() {
 		 if( this.temp >= 36 &&  this.temp <= 44){
 			this.temp +=10;
 		 }
-		if(!this.mapTileModel[this.temp].click){
+		if(!this.mapTileModel.isCellClicked(this.temp)){
 			this.mapTileView[this.temp].changeColor();
 		 }
 	 }
@@ -157,15 +157,20 @@ Game.prototype.onMouseClick = function(e) {
 	if( e.localY > 500 && e.localY < 1140 && !this.gameOver && !this.isMainMenu && !this.isWin){
 		var tempYValue = Math.floor((e.localY - 500) / 60) ;
 		for(var i = tempYValue *9; i <  tempYValue *9 + 9; i++ ){
-			if( Util.collision(this.mapTileView[i].x + this.mapTileView[i].getRadius() ,this.mapTileView[i].y + this.mapTileView[i].getRadius(), this.mapTileView[i].getRadius() , e.localX ,e.localY) &&  !this.mapTileModel[i].click ){
+			if( Util.collision(this.mapTileView[i].x + this.mapTileView[i].getRadius() ,this.mapTileView[i].y + this.mapTileView[i].getRadius(), this.mapTileView[i].getRadius() , e.localX ,e.localY) &&  !this.mapTileModel.isCellClicked(i) ){
 				this.numberOfMove +=1;
-				this.mapTileModel[i].click = true;
+				this.mapTileModel.markCellColored(i);
+                this.mapTileModel.setCatTile(this.cat.whichTile_);
 				this.mapTileView[i].changeColor();
+
 		
 				//find the cat which row is on
 				this.catWhichRow = Math.floor((this.cat.y + this.mapTileView[40].getRadius()*2 - 500) / 60) ;
-			
-				if(this.simplePathFind.leftCheck(this.mapTileModel , this.cat.whichTile_)){
+	
+
+				if(this.simplePathFind.leftCheck(this.mapTileModel.clone()))
+				{
+
 					this.moveLeft();
 				}
 			}
