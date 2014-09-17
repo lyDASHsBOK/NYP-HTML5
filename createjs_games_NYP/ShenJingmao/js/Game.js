@@ -5,7 +5,9 @@ function Game(stage, imgContainer){
 
     this.stage_ = stage;
 	this.bg = new createjs.Bitmap(imgContainer["imgs/bg.jpg"]);
-	this.floorTile = [];
+	
+	this.mapTileView = [];
+	this.mapTileModel = [];
 
 	this.gameOver = false;
 	this.isWin = false;
@@ -29,7 +31,8 @@ function Game(stage, imgContainer){
 	this.tempX = 10;
 	for(var  i = 0; i < 9; i++ ){
 		for(var  j = 0; j < 9; j++ ){
-			this.floorTile.push(new Circle( j  * 65 + this.tempX,this.tempY, (i * 9) + j ));
+			this.mapTileView.push(new Circle( j  * 65 + this.tempX,this.tempY, (i * 9) + j ) );
+			this.mapTileModel.push(new Map( i * 9 + j ) );
 		}
 		if( i % 2 == 0 ){
 			this.tempX  = 40;
@@ -50,13 +53,13 @@ function Game(stage, imgContainer){
 		 if( this.temp >= 36 &&  this.temp <= 44){
 			this.temp +=10;
 		 }
-		if(!this.floorTile[this.temp].click){
-		 this.floorTile[this.temp].changeColor();
+		if(!this.mapTileModel[this.temp].click){
+			this.mapTileView[this.temp].changeColor();
 		 }
 	 }
 	 
 	var startTile = 40;
-	this.cat = new CAT(this.floorTile[startTile].x , this.floorTile[startTile].y - this.floorTile[startTile].getRadius()*2,  startTile);
+	this.cat = new CAT(this.mapTileView[startTile].x , this.mapTileView[startTile].y - this.mapTileView[startTile].getRadius()*2,  startTile);
 	this.mainMenu.addEventListener('mousedown', Delegate.create(this,this.startGame));
 	this.reset();
 
@@ -80,9 +83,9 @@ Game.prototype.checkGameOver = function(){
  * */
 Game.prototype.loadImage = function() {
     	this.stage_.addChild(this.bg);
-		for(var i =0; i < this.floorTile.length; i++)
+		for(var i =0; i < this.mapTileView.length; i++)
 		{
-			this.stage_.addChild(this.floorTile[i]);
+			this.stage_.addChild(this.mapTileView[i]);
 		}
 		this.stage_.addChild(this.cat);
 		this.stage_.addChild(this.hud);
@@ -95,24 +98,24 @@ Game.prototype.reset = function() {
 	
 	//reset floor tile
 	for(var  i = 0; i < 81; i++ ){
-		this.floorTile[i].reset();
+		this.mapTileView[i].reset();
+		this.mapTileModel[i].click = false;
 	}
-	
 	this.numberOfColorTileAtStart =   Math.floor(Util.RandomRange(5,15));
 	 for(var i = 0; i < this.numberOfColorTileAtStart; i++){
 		 this.temp =  Math.floor(Util.RandomRange(0,80));
 		 if( this.temp >= 36 &&  this.temp <= 44){
 			this.temp +=10;
 		 }
-		if(!this.floorTile[this.temp].click){
-			this.floorTile[this.temp].changeColor();
+		if(!this.mapTileModel[this.temp].click){
+			this.mapTileView[this.temp].changeColor();
 		 }
 	 }
 	 
 	 //reset AI
 	var startTile = 40;
-	this.cat.x = this.floorTile[startTile].x ;
-	this.cat.y = this.floorTile[startTile].y - this.floorTile[startTile].getRadius()*2;
+	this.cat.x = this.mapTileView[startTile].x ;
+	this.cat.y = this.mapTileView[startTile].y - this.mapTileView[startTile].getRadius()*2;
 	this.cat.whichTile_ = startTile;
 	this.cat.isWeiZhu = false;
 	this.cat.changeAnimation();
@@ -154,14 +157,15 @@ Game.prototype.onMouseClick = function(e) {
 	if( e.localY > 500 && e.localY < 1140 && !this.gameOver && !this.isMainMenu && !this.isWin){
 		var tempYValue = Math.floor((e.localY - 500) / 60) ;
 		for(var i = tempYValue *9; i <  tempYValue *9 + 9; i++ ){
-			if( Util.collision(this.floorTile[i].x + this.floorTile[i].getRadius() ,this.floorTile[i].y + this.floorTile[i].getRadius(), this.floorTile[i].getRadius() , e.localX ,e.localY) &&  !this.floorTile[i].click ){
+			if( Util.collision(this.mapTileView[i].x + this.mapTileView[i].getRadius() ,this.mapTileView[i].y + this.mapTileView[i].getRadius(), this.mapTileView[i].getRadius() , e.localX ,e.localY) &&  !this.mapTileModel[i].click ){
 				this.numberOfMove +=1;
-				this.floorTile[i].changeColor();
+				this.mapTileModel[i].click = true;
+				this.mapTileView[i].changeColor();
 		
 				//find the cat which row is on
-				this.catWhichRow = Math.floor((this.cat.y + this.floorTile[40].getRadius()*2 - 500) / 60) ;
+				this.catWhichRow = Math.floor((this.cat.y + this.mapTileView[40].getRadius()*2 - 500) / 60) ;
 				
-				if(this.simplePathFind.leftCheck(this.floorTile , this.cat.whichTile_))
+				if(this.simplePathFind.leftCheck(this.mapTileModel , this.cat.whichTile_))
 				{
 					this.moveLeft();
 				}
@@ -201,15 +205,15 @@ Game.prototype.moveDecision = function(desination){
 Game.prototype.moveTopLeft = function(){
 	if(this.catWhichRow % 2 == 0){
 		if(  this.cat.whichTile_ -10 > 0 && this.cat.whichTile_  !=  this.catWhichRow * 9 ){
-			this.cat.x = this.floorTile[this.cat.whichTile_ -10].x;
-			this.cat.y = this.floorTile[this.cat.whichTile_ -10].y - this.floorTile[40].getRadius()*2;
+			this.cat.x = this.mapTileView[this.cat.whichTile_ -10].x;
+			this.cat.y = this.mapTileView[this.cat.whichTile_ -10].y - this.mapTileView[40].getRadius()*2;
 			this.cat.whichTile_ = this.cat.whichTile_ - 10;
 		}
 	}
 	else{
 		if( this.cat.whichTile_ -9 > 0 ){
-			this.cat.x = this.floorTile[this.cat.whichTile_ -9].x;
-			this.cat.y = this.floorTile[this.cat.whichTile_ - 9].y - this.floorTile[40].getRadius()*2;
+			this.cat.x = this.mapTileView[this.cat.whichTile_ -9].x;
+			this.cat.y = this.mapTileView[this.cat.whichTile_ - 9].y - this.mapTileView[40].getRadius()*2;
 			this.cat.whichTile_ = this.cat.whichTile_ -9;
 		}
 	}
@@ -218,15 +222,15 @@ Game.prototype.moveTopLeft = function(){
 Game.prototype.moveTopRight = function(){
 	if(this.catWhichRow % 2 == 0){
 		if(  this.cat.whichTile_ - 9 > 0 ){
-			this.cat.x = this.floorTile[this.cat.whichTile_ - 9].x;
-			this.cat.y = this.floorTile[this.cat.whichTile_ - 9].y - this.floorTile[40].getRadius()*2;
+			this.cat.x = this.mapTileView[this.cat.whichTile_ - 9].x;
+			this.cat.y = this.mapTileView[this.cat.whichTile_ - 9].y - this.mapTileView[40].getRadius()*2;
 			this.cat.whichTile_ = this.cat.whichTile_ - 9;
 		}
 	}
 	else{
 		if( this.cat.whichTile_ -8 > 0 &&  this.cat.whichTile_  !=  this.catWhichRow * 9 + 8){
-			this.cat.x = this.floorTile[this.cat.whichTile_ -8].x;
-			this.cat.y = this.floorTile[this.cat.whichTile_ - 8].y - this.floorTile[40].getRadius()*2;
+			this.cat.x = this.mapTileView[this.cat.whichTile_ -8].x;
+			this.cat.y = this.mapTileView[this.cat.whichTile_ - 8].y - this.mapTileView[40].getRadius()*2;
 			this.cat.whichTile_ = this.cat.whichTile_ -8;
 		}
 	}
@@ -234,14 +238,14 @@ Game.prototype.moveTopRight = function(){
 
 Game.prototype.moveLeft = function(){
 	if( this.cat.whichTile_ -1 >= this.catWhichRow*9 ){
-		this.cat.x = this.floorTile[this.cat.whichTile_ -1].x;
+		this.cat.x = this.mapTileView[this.cat.whichTile_ -1].x;
 		this.cat.whichTile_ = this.cat.whichTile_ -1;
 	}
 };
 
 Game.prototype.moveRight = function(){
 	if( this.cat.whichTile_ + 1 <= this.catWhichRow*9 + 8 ){
-		this.cat.x = this.floorTile[this.cat.whichTile_ +1].x;
+		this.cat.x = this.mapTileView[this.cat.whichTile_ +1].x;
 		this.cat.whichTile_ = this.cat.whichTile_ +1;
 	}
 };
@@ -249,15 +253,15 @@ Game.prototype.moveRight = function(){
 Game.prototype.moveBottomLeft = function(){
 	if(this.catWhichRow % 2 == 0){
 		if(  this.cat.whichTile_ + 8 < 80 && this.cat.whichTile_  !=  this.catWhichRow * 9 ){
-			this.cat.x = this.floorTile[this.cat.whichTile_ + 8].x;
-			this.cat.y = this.floorTile[this.cat.whichTile_ + 8].y - this.floorTile[40].getRadius()*2;
+			this.cat.x = this.mapTileView[this.cat.whichTile_ + 8].x;
+			this.cat.y = this.mapTileView[this.cat.whichTile_ + 8].y - this.mapTileView[40].getRadius()*2;
 			this.cat.whichTile_ = this.cat.whichTile_ +8;
 		}
 	}
 	else{
 		if( this.cat.whichTile_ + 9 < 80 ){
-			this.cat.x = this.floorTile[this.cat.whichTile_  + 9].x;
-			this.cat.y = this.floorTile[this.cat.whichTile_ + 9].y - this.floorTile[40].getRadius()*2;
+			this.cat.x = this.mapTileView[this.cat.whichTile_  + 9].x;
+			this.cat.y = this.mapTileView[this.cat.whichTile_ + 9].y - this.mapTileView[40].getRadius()*2;
 			this.cat.whichTile_ = this.cat.whichTile_ +9;
 		}
 	}
@@ -265,15 +269,15 @@ Game.prototype.moveBottomLeft = function(){
 Game.prototype.moveBottomRight = function(){
 	if(this.catWhichRow % 2 == 0){
 		if( this.cat.whichTile_ + 9 < 80  ){
-			this.cat.x = this.floorTile[this.cat.whichTile_ + 9].x;
-			this.cat.y = this.floorTile[this.cat.whichTile_ + 9].y - this.floorTile[40].getRadius()*2;
+			this.cat.x = this.mapTileView[this.cat.whichTile_ + 9].x;
+			this.cat.y = this.mapTileView[this.cat.whichTile_ + 9].y - this.mapTileView[40].getRadius()*2;
 			this.cat.whichTile_ = this.cat.whichTile_ + 9;
 		}
 	}
 	else{
 		if( this.cat.whichTile_ + 10 < 80 &&  this.cat.whichTile_  !=  this.catWhichRow * 9 + 8 ){
-			this.cat.x = this.floorTile[this.cat.whichTile_ + 10].x;
-			this.cat.y = this.floorTile[this.cat.whichTile_ + 10].y - this.floorTile[40].getRadius()*2;
+			this.cat.x = this.mapTileView[this.cat.whichTile_ + 10].x;
+			this.cat.y = this.mapTileView[this.cat.whichTile_ + 10].y - this.mapTileView[40].getRadius()*2;
 			this.cat.whichTile_ = this.cat.whichTile_ + 10;
 		}
 	}
