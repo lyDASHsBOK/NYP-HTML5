@@ -164,12 +164,10 @@ Game.prototype.onMouseClick = function(e) {
 		
 				//find the cat which row is on
 				this.catWhichRow = Math.floor((this.cat.y + this.mapTileView[40].getRadius()*2 - 500) / 60) ;
-				
-				if(this.simplePathFind.leftCheck(this.mapTileModel , this.cat.whichTile_))
-				{
+			
+				if(this.simplePathFind.leftCheck(this.mapTileModel , this.cat.whichTile_)){
 					this.moveLeft();
 				}
-			
 			}
 		}
 	}
