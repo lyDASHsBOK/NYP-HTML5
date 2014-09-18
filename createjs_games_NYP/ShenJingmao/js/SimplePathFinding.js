@@ -18,7 +18,8 @@ function SimplePathFinding() {
 			TOP_RIGHT:3,
 			RIGHT:4,
 			BOTTOM_RIGHT:5,
-			BOTTOM_LEFT:5
+			BOTTOM_LEFT: 6,
+			NO_DIRECTION: 7,
 		}
 }
 
@@ -28,7 +29,7 @@ function SimplePathFinding() {
 *  checking the left direction
 */
 SimplePathFinding.prototype.LeftCheck = function( map ){
-	if(Check.outOfBound(map.catTile)){
+	if(UtilCheck.outOfBound(map.catTile)){
 		map.setCatTile(this.catOriginalTile);
 		return true;
 	}
@@ -45,7 +46,8 @@ SimplePathFinding.prototype.LeftCheck = function( map ){
 *  checking the right direction
 */
 SimplePathFinding.prototype.RightCheck = function( map ){
-	if(Check.outOfBound(map.catTile)){
+	console.log(map.catTile);
+	if(UtilCheck.outOfBound(map.catTile)){
 		map.setCatTile(this.catOriginalTile);
 		return true;
 	}
@@ -65,8 +67,8 @@ SimplePathFinding.prototype.RightCheck = function( map ){
 */
 SimplePathFinding.prototype.TopLeftCheck = function(map){
 	var row = Math.floor(map.catTile / 9 );
-	console.log(row);
-	if(Check.outOfBound(map.catTile)){
+
+	if(UtilCheck.outOfBound(map.catTile)){
 		map.setCatTile(this.catOriginalTile);
 		return true;
 	}
@@ -94,20 +96,22 @@ SimplePathFinding.prototype.TopLeftCheck = function(map){
 */
 SimplePathFinding.prototype.TopRightCheck = function(map){
 	var row = Math.floor(map.catTile / 9 );
-	console.log(row);
-	if(Check.outOfBound(map.catTile)){
+
+	if(UtilCheck.outOfBound(map.catTile)){
 		return true;
 	}
 	
 	if(row % 2 == 0){	
 		if(map.isCellClicked(map.catTile - 9)){
-				return false;
+			map.setCatTile(this.catOriginalTile);
+			return false;
 		}	
 		  map.setCatTile(map.catTile - 9);
 		return this.TopRightCheck(map);
 	}else{
 		if(map.isCellClicked(map.catTile - 8) ){
-				return false;
+			map.setCatTile(this.catOriginalTile);
+			return false;
 		}	
 		  map.setCatTile(map.catTile - 8);
 		return this.TopRightCheck(map);
@@ -119,8 +123,8 @@ SimplePathFinding.prototype.TopRightCheck = function(map){
 */
 SimplePathFinding.prototype.BottomLeftCheck = function(map){
 	var row = Math.floor(map.catTile / 9 );
-	console.log(row);
-	if(Check.outOfBound(map.catTile)){
+
+	if(UtilCheck.outOfBound(map.catTile)){
 		map.setCatTile(this.catOriginalTile);
 		return true;
 	}
@@ -148,8 +152,8 @@ SimplePathFinding.prototype.BottomLeftCheck = function(map){
 */
 SimplePathFinding.prototype.BottomRightCheck = function(map){
 	var row = Math.floor(map.catTile / 9 );
-	console.log(row);
-	if(Check.outOfBound(map.catTile)){
+
+	if(UtilCheck.outOfBound(map.catTile)){
 		map.setCatTile(this.catOriginalTile);
 		return true;
 	}
@@ -180,7 +184,7 @@ SimplePathFinding.prototype.BottomRightCheck = function(map){
 */
 SimplePathFinding.prototype.findPath = function(map){
 	this.catOriginalTile = map.catTile;
-	if(!Check.outOfBound( map.catTile)){
+	if(!UtilCheck.outOfBound( map.catTile)){
 		if(this.LeftCheck(map)){
 			return this.DIRECTION.LEFT;
 		}
@@ -199,13 +203,10 @@ SimplePathFinding.prototype.findPath = function(map){
 		else if(this.BottomLeftCheck(map)){
 			return this.DIRECTION.BOTTOM_LEFT;
 		}
-		else{
-			return 0;
-		}
 	}
-	else{
-		return 0;
-	}
+
+	return this.DIRECTION.NO_DIRECTION;
+	
 };
 
 
