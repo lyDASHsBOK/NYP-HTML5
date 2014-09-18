@@ -1,3 +1,14 @@
+ /**
+ * @ Note
+ * left  = 1
+ * topLeft = 2 
+ * topRight = 3
+ * Right = 4
+ * bottomRight = 5
+ * bottomLeft = 6
+ * */
+
+
 /**
  * @ constructor
  * */
@@ -55,6 +66,7 @@ function Game(stage, imgContainer){
 		 }
 		if(!this.mapTileModel.isCellClicked(this.temp)){
 			this.mapTileView[this.temp].changeColor();
+			this.mapTileModel.markCellColored(this.temp);
 		 }
 	 }
 	 
@@ -109,6 +121,7 @@ Game.prototype.reset = function() {
 		 }
 		if(!this.mapTileModel.isCellClicked(this.temp)){
 			this.mapTileView[this.temp].changeColor();
+			this.mapTileModel.markCellColored(this.temp);
 		 }
 	 }
 	 
@@ -163,14 +176,12 @@ Game.prototype.onMouseClick = function(e) {
                 this.mapTileModel.setCatTile(this.cat.whichTile_);
 				this.mapTileView[i].changeColor();
 
-                //find the cat which row is on
-                this.catWhichRow = Math.floor((this.cat.y + this.mapTileView[40].getRadius()*2 - 500) / 60) ;
+		
+				//find the cat which row is on
+				this.catWhichRow = Math.floor((this.cat.y + this.mapTileView[40].getRadius()*2 - 500) / 60) ;
+	
 
-				if(this.simplePathFind.leftCheck(this.mapTileModel.clone()))
-				{
-					this.moveLeft();
-				}
-			
+				this.moveDecision( this.simplePathFind.publicPathFinding( this.mapTileModel.clone() ) );
 			}
 		}
 	}
@@ -183,19 +194,22 @@ Game.prototype.onMouseClick = function(e) {
  * with the hive
  * */
 Game.prototype.moveDecision = function(desination){
-	/*if(this.pathFind.hiveCheck[1].value_ == desination){
-		this.moveTopLeft();
-	}else if(this.pathFind.hiveCheck[2].value_ == desination){
-		this.moveTopRight();
-	}else if(this.pathFind.hiveCheck[3].value_ == desination){
+	if(desination  == 1){
 		this.moveLeft();
-	}else if(this.pathFind.hiveCheck[4].value_ == desination){
+	}else if( desination == 2){
+		this.moveTopLeft();
+	}else if( desination == 3){
+		this.moveTopRight();
+	}else if(desination == 4){
 		this.moveRight();
-	}else if(this.pathFind.hiveCheck[5].value_ == desination){
-		this.moveBottomLeft();
-	}else if(this.pathFind.hiveCheck[6].value_ == desination){
+	}else if(desination == 5){
 		this.moveBottomRight();
-	}*/
+	}else if(desination == 6){
+		this.moveBottomLeft();
+	}
+	else{
+		console.log("error");
+	}
 };
 /**
  * @ movement
