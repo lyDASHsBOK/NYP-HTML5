@@ -119,6 +119,7 @@ Game.prototype.reset = function() {
 		 if( this.temp >= 36 &&  this.temp <= 44){
 			this.temp +=10;
 		 }
+		 
 		if(!this.mapTileModel.isCellClicked(this.temp)){
 			this.mapTileView[this.temp].changeColor();
 			this.mapTileModel.markCellColored(this.temp);
@@ -194,6 +195,7 @@ Game.prototype.onMouseClick = function(e) {
  * with the hive
  * */
 Game.prototype.moveDecision = function(desination){
+	//console.log(desination);
 	if(desination  == this.simplePathFind.DIRECTION.LEFT){
 		this.moveLeft();
 	}else if( desination == this.simplePathFind.DIRECTION.TOP_LEFT){
@@ -207,8 +209,24 @@ Game.prototype.moveDecision = function(desination){
 	}else if(desination == this.simplePathFind.DIRECTION.BOTTOM_LEFT){
 		this.moveBottomLeft();
 	}
-	else{
-		console.log("error");
+	else if(desination == this.simplePathFind.DIRECTION.NO_DIRECTION){
+		if( UtilCheck.checkLose(this.mapTileModel.clone()) ){
+				this.gameOver = true;
+				this.hud.addGameOver(true);
+				this.stage_.addChild(this.reply);
+				this.stage_.removeEventListener('click');
+				this.reply.addEventListener('mousedown', Delegate.create(this,this.restart));
+		}else if(UtilCheck.checkWin(this.mapTileModel.clone())){
+				this.isWin = true;
+				this.hud.addWining(true , this.numberOfMove);
+				this.stage_.addChild(this.reply);
+				this.stage_.removeEventListener('click');
+				this.reply.addEventListener('mousedown', Delegate.create(this,this.restart));
+		
+		}else if(UtilCheck.checkWeiZhu(this.mapTileModel.clone())){
+			this.cat.isWeiZhu = true;
+			this.cat.changeAnimation();
+		}
 	}
 };
 /**
