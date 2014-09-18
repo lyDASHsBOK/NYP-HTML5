@@ -28,39 +28,56 @@ UtilCheck.outOfBound = function(number) {
 
 
 UtilCheck.checkWin = function(map) {
-	var row = Math.floor(map.catTile / 9 );
-	
-	if(map.isCellClicked(map.catTile + 1) && map.isCellClicked(map.catTile - 1)){
-	
-		if(row % 2 == 0){
-			if( map.isCellClicked(map.catTile - 10) && map.isCellClicked(map.catTile - 9)
-			&& map.isCellClicked(map.catTile + 8) && map.isCellClicked(map.catTile + 9)){
-				return true;
-			}
-			
-		}
-		else{
-			if( map.isCellClicked(map.catTile - 9) && map.isCellClicked(map.catTile - 8)
-			&& map.isCellClicked(map.catTile + 9) && map.isCellClicked(map.catTile + 10)){
-				return true;
-			}
-		}
-	}
-	return false;
+	return this.checkCaptured(map);
 };
 
 UtilCheck.checkLose = function(map) {
-	if(!this.outOfBound( map.catTile)){
-		return false;
-	}
+	return this.outOfBound(map.catTile);
+};
+
+/**
+ * @param {Map} map
+ * */
+UtilCheck.checkWeiZhu = function(map, seed) {
+    var seed = (seed != undefined) ? seed : map.catTile;
+
+    if(map.isCellClicked(seed)) {
+        return true;
+    } else if(this.outOfBound(seed)) {
+        return false;
+    }
+    else {
+        map.markCellColored(seed);
+        var surrounding = map.getSurroundingTiles(seed);
+        for(var i=0; i<surrounding.length; ++i){
+            var tile = surrounding[i];
+            if(!map.isCellClicked(tile)){
+                if(!this.checkWeiZhu(map, tile)) {
+                    return false;
+                }
+            }
+        }
+    }
+
 	return true;
 };
 
-UtilCheck.checkWeiZhu = function(map) {
-	if(this.checkWin(map) && this.checkLose(map)){
-		return false;
-	}
-	return true;
+/**
+ * @param {Map} map
+ * */
+UtilCheck.checkCaptured = function(map) {
+    var isCaptured = true;
+	var surrounding = map.getSurroundingTiles(map.catTile);
+    
+    for(var i=0; i<surrounding.length; ++i){
+        var tile = surrounding[i];
+        if(!map.isCellClicked(tile)) {
+            isCaptured = false;
+            break;
+        }
+    }
+
+	return isCaptured;
 };
 
 
