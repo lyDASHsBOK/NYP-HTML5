@@ -181,7 +181,7 @@ Game.prototype.onMouseClick = function(e) {
 				this.catWhichRow = Math.floor((this.cat.y + this.mapTileView[40].getRadius()*2 - 500) / 60) ;
 	
 
-				this.moveDecision( this.simplePathFind.publicPathFinding( this.mapTileModel.clone() ) );
+				this.moveDecision( this.simplePathFind.findPath( this.mapTileModel.clone() ) );
 			}
 		}
 	}
@@ -194,17 +194,17 @@ Game.prototype.onMouseClick = function(e) {
  * with the hive
  * */
 Game.prototype.moveDecision = function(desination){
-	if(desination  == 1){
+	if(desination  == this.simplePathFind.DIRECTION.LEFT){
 		this.moveLeft();
-	}else if( desination == 2){
+	}else if( desination == this.simplePathFind.DIRECTION.TOP_LEFT){
 		this.moveTopLeft();
-	}else if( desination == 3){
+	}else if( desination == this.simplePathFind.DIRECTION.TOP_RIGHT){
 		this.moveTopRight();
-	}else if(desination == 4){
+	}else if(desination == this.simplePathFind.DIRECTION.RIGHT){
 		this.moveRight();
-	}else if(desination == 5){
+	}else if(desination == this.simplePathFind.DIRECTION.BOTTOM_RIGHT){
 		this.moveBottomRight();
-	}else if(desination == 6){
+	}else if(desination == this.simplePathFind.DIRECTION.BOTTOM_LEFT){
 		this.moveBottomLeft();
 	}
 	else{

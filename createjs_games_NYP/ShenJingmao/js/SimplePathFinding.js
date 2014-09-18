@@ -12,10 +12,22 @@
 
 function SimplePathFinding() {
 	this.catOriginalTile = 0;
+		this.DIRECTION = {
+			LEFT: 1,
+			TOP_LEFT: 2,
+			TOP_RIGHT:3,
+			RIGHT:4,
+			BOTTOM_RIGHT:5,
+			BOTTOM_LEFT:5
+		}
 }
 
 
-SimplePathFinding.prototype.privateLeftCheck = function( map ){
+/**
+* @ private
+*  checking the left direction
+*/
+SimplePathFinding.prototype.LeftCheck = function( map ){
 	if(Check.outOfBound(map.catTile)){
 		map.setCatTile(this.catOriginalTile);
 		return true;
@@ -25,11 +37,14 @@ SimplePathFinding.prototype.privateLeftCheck = function( map ){
 		return false;
 	}
     map.setCatTile(map.catTile - 1);
-	return this.privateLeftCheck( map);
+	return this.LeftCheck( map);
 };
 
- 
-SimplePathFinding.prototype.privateRightCheck = function( map ){
+/**
+* @ private
+*  checking the right direction
+*/
+SimplePathFinding.prototype.RightCheck = function( map ){
 	if(Check.outOfBound(map.catTile)){
 		map.setCatTile(this.catOriginalTile);
 		return true;
@@ -40,11 +55,15 @@ SimplePathFinding.prototype.privateRightCheck = function( map ){
 	}
 
     map.setCatTile(map.catTile + 1);
-	return this.privateRightCheck( map);
+	return this.RightCheck( map);
 };
 
 
-SimplePathFinding.prototype.privateTopLeftCheck = function(map){
+/**
+* @ private
+*  checking the Topleft direction
+*/
+SimplePathFinding.prototype.TopLeftCheck = function(map){
 	var row = Math.floor(map.catTile / 9 );
 	console.log(row);
 	if(Check.outOfBound(map.catTile)){
@@ -58,18 +77,22 @@ SimplePathFinding.prototype.privateTopLeftCheck = function(map){
 			return false;
 		}	
 		  map.setCatTile(map.catTile - 10);
-		return this.privateTopLeftCheck(map);
+		return this.TopLeftCheck(map);
 	}else{
 		if(map.isCellClicked(map.catTile - 9) ){
 			map.setCatTile(this.catOriginalTile);
 			return false;
 		}	
 		  map.setCatTile(map.catTile - 9);
-		return this.privateTopLeftCheck(map);
+		return this.TopLeftCheck(map);
 	}
 };
 
-SimplePathFinding.prototype.privateTopRightCheck = function(map){
+/**
+* @ private
+*  checking the topRight direction
+*/
+SimplePathFinding.prototype.TopRightCheck = function(map){
 	var row = Math.floor(map.catTile / 9 );
 	console.log(row);
 	if(Check.outOfBound(map.catTile)){
@@ -81,18 +104,20 @@ SimplePathFinding.prototype.privateTopRightCheck = function(map){
 				return false;
 		}	
 		  map.setCatTile(map.catTile - 9);
-		return this.privateTopRightCheck(map);
+		return this.TopRightCheck(map);
 	}else{
 		if(map.isCellClicked(map.catTile - 8) ){
 				return false;
 		}	
 		  map.setCatTile(map.catTile - 8);
-		return this.privateTopRightCheck(map);
+		return this.TopRightCheck(map);
 	}
 };
-
-
-SimplePathFinding.prototype.privateBottomLeftCheck = function(map){
+/**
+* @ private
+*  checking the Bottom Left direction
+*/
+SimplePathFinding.prototype.BottomLeftCheck = function(map){
 	var row = Math.floor(map.catTile / 9 );
 	console.log(row);
 	if(Check.outOfBound(map.catTile)){
@@ -106,20 +131,22 @@ SimplePathFinding.prototype.privateBottomLeftCheck = function(map){
 			return false;
 		}	
 		  map.setCatTile(map.catTile + 8);
-		return this.privateBottomLeftCheck(map);
+		return this.BottomLeftCheck(map);
 	}else{
 		if(map.isCellClicked(map.catTile + 9) ){
 			map.setCatTile(this.catOriginalTile);
 			return false;
 		}	
 		  map.setCatTile(map.catTile + 9);
-		return this.privateBottomLeftCheck(map);
+		return this.BottomLeftCheck(map);
 	}
 };
 
-
-
-SimplePathFinding.prototype.privateBottomRightCheck = function(map){
+/**
+* @ private
+*  checking the Bottom right direction
+*/
+SimplePathFinding.prototype.BottomRightCheck = function(map){
 	var row = Math.floor(map.catTile / 9 );
 	console.log(row);
 	if(Check.outOfBound(map.catTile)){
@@ -133,38 +160,44 @@ SimplePathFinding.prototype.privateBottomRightCheck = function(map){
 			return false;
 		}	
 		  map.setCatTile(map.catTile + 9);
-		return this.privateBottomRightCheck(map);
+		return this.BottomRightCheck(map);
 	}else{
 		if(map.isCellClicked(map.catTile + 10) ){
 			map.setCatTile(this.catOriginalTile);
 			return false;
 		}	
 		  map.setCatTile(map.catTile + 10);
-		return this.privateBottomRightCheck(map);
+		return this.BottomRightCheck(map);
 	}
 };
 
 
-SimplePathFinding.prototype.publicPathFinding = function(map){
+
+
+/**
+* @ public
+* to find the path
+*/
+SimplePathFinding.prototype.findPath = function(map){
 	this.catOriginalTile = map.catTile;
 	if(!Check.outOfBound( map.catTile)){
-		if(this.privateLeftCheck(map)){
-			return 1;
+		if(this.LeftCheck(map)){
+			return this.DIRECTION.LEFT;
 		}
-		else if(this.privateTopLeftCheck(map)){
-			return 2;
+		else if(this.TopLeftCheck(map)){
+			return this.DIRECTION.TOP_LEFT;
 		}
-		else if(this.privateTopRightCheck(map)){
-			return 3;
+		else if(this.TopRightCheck(map)){
+			return this.DIRECTION.TOP_RIGHT;
 		}
-		else if(this.privateRightCheck(map)){
-			return 4;
+		else if(this.RightCheck(map)){
+			return this.DIRECTION.RIGHT;
 		}
-		else if(this.privateBottomRightCheck(map)){
-			return 5;
+		else if(this.BottomRightCheck(map)){
+			return this.DIRECTION.BOTTOM_RIGHT;
 		}
-		else if(this.privateBottomLeftCheck(map)){
-			return 6;
+		else if(this.BottomLeftCheck(map)){
+			return this.DIRECTION.BOTTOM_LEFT;
 		}
 		else{
 			return 0;
