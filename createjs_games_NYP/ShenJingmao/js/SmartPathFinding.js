@@ -16,6 +16,8 @@ function SmartPathFinding() {
 		this.smallestValue = 0;
 		this.shortestPathIndex = 0;
 		
+		this.pathList = [];
+		
 		this.NumberOfStepOfEachDirection = [];
 		
 		for(var i = 0 ; i < 6;i++ ){
@@ -25,29 +27,32 @@ function SmartPathFinding() {
 
 
 
-SmartPathFinding.prototype.findPathStep = function(map, seed , index) {
+SmartPathFinding.prototype.findPathStep = function(map, seed , index , start , end) {
     var seed = (seed != undefined) ? seed : map.catTile;
 	this.NumberOfStepOfEachDirection[index] += 1;
     if(map.isCellClicked(seed)) {
         return false;
     } else if(UtilCheck.outOfBound(seed)) {
-		this.NumberOfStepOfEachDirection[index] += 1;
+		this.pathList.push(new Path(this.NumberOfStepOfEachDirection[index] , index ) );
+		this.NumberOfStepOfEachDirection[index] -= 1;
         return true;
     }
     else {
         map.markCellColored(seed);
         var surrounding = map.getSurroundingTiles(seed);
-        for(var i=0; i<surrounding.length; ++i){
-            var tile = surrounding[i];
+		var temp = start;
+		while(temp != end ){
+            var tile = surrounding[temp];
             if(!map.isCellClicked(tile) && tile != map.catTile){
-                if( this.findPathStep(map, tile , index )) {
-                    return true;
-                }	
+                this.findPathStep(map, tile , index , start , end)
             }
+			temp++;
+			if (temp > surrounding.length - 1 && end != surrounding.length ){
+				temp = 0;
+			}
         }
     }
-	console.log("hi");
-	this.NumberOfStepOfEachDirection[index] = 0;
+	this.NumberOfStepOfEachDirection[index] -= 1;
 	return false;
 };
 
@@ -66,24 +71,28 @@ SmartPathFinding.prototype.getSmallerStep = function(value , index) {
 SmartPathFinding.prototype.findPath = function(map) {
   
   if( ! UtilCheck.outOfBound(map.catTile)){
-		for(var i = 0 ; i < 6;i++ ){
-				this.NumberOfStepOfEachDirection[i] = 0;
-			}
-			
+		
 		this.smallestValue = 0;
 		this.shortestPathIndex = 0;
-			
+		
+		this.pathList = [];
 	  
 		var surrounding = map.getSurroundingTiles(map.catTile);
-		for(var i=0; i< 6; ++i){
-			var tile = surrounding[i];
-			if(!map.isCellClicked(tile)){
-				this.findPathStep(map.clone(),tile, i);
-				this.getSmallerStep(this.NumberOfStepOfEachDirection[i] , i +1);
-			}
+	
+		for(var i=0; i<  surrounding.length; ++i){
+			for(var start=0; start<  surrounding.length; ++start){
+				this.NumberOfStepOfEachDirection[i] = 0;
+				var tile = surrounding[i];
+				if(!map.isCellClicked(tile)){
+					this.findPathStep(map.clone(),tile, i, start, surrounding.length - start );
+				}
+			  }
 		  }
-		console.log(this.NumberOfStepOfEachDirection);
-		console.log(this.NumberOfStepOfEachDirection);
+		  
+		  for(var i = 0; i < this.pathList.length; i++ ){
+			this.getSmallerStep(this.pathList[i].step_ , this.pathList[i].directionID_ + 1);
+		  }
+
 		 if(this.shortestPathIndex  == this.DIRECTION.LEFT){
 			return this.DIRECTION.LEFT;
 		}else if( this.shortestPathIndex  == this.DIRECTION.TOP_LEFT){

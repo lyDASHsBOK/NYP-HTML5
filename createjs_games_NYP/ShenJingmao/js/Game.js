@@ -133,6 +133,8 @@ Game.prototype.reset = function() {
 	this.cat.whichTile_ = startTile;
 	this.cat.isWeiZhu = false;
 	this.cat.changeAnimation();
+	
+	 this.mapTileModel.setCatTile(this.cat.whichTile_);
 
 
 	
@@ -172,6 +174,7 @@ Game.prototype.onMouseClick = function(e) {
 		var tempYValue = Math.floor((e.localY - 500) / 60) ;
 		for(var i = tempYValue *9; i <  tempYValue *9 + 9; i++ ){
 			if( Util.collision(this.mapTileView[i].x + this.mapTileView[i].getRadius() ,this.mapTileView[i].y + this.mapTileView[i].getRadius(), this.mapTileView[i].getRadius() , e.localX ,e.localY) &&  !this.mapTileModel.isCellClicked(i) ){
+				
 				this.numberOfMove +=1;
 				this.mapTileModel.markCellColored(i);
                 this.mapTileModel.setCatTile(this.cat.whichTile_);
@@ -180,9 +183,20 @@ Game.prototype.onMouseClick = function(e) {
 		
 				//find the cat which row is on
 				this.catWhichRow = Math.floor((this.cat.y + this.mapTileView[40].getRadius()*2 - 500) / 60) ;
-	
-
-				this.moveDecision( this.pathFind.findPath( this.mapTileModel.clone() ) );
+				if(!this.cat.isWeiZhu){
+					this.moveDecision( this.pathFind.findPath( this.mapTileModel.clone() ) );
+				}else{
+					var surrounding = this.mapTileModel.getSurroundingTiles(this.mapTileModel.catTile);
+					console.log(this.mapTileModel.catTile);
+					for(var i = 0;i < surrounding.length; i++){
+						if(!this.mapTileModel.isCellClicked(surrounding[i])){
+							this.moveDecision(i + 1);	
+							break;
+						}
+					
+					}
+					this.moveDecision(this.pathFind.DIRECTION.NO_DIRECTION);
+				}
 			}
 		}
 	}
@@ -210,6 +224,10 @@ Game.prototype.moveDecision = function(desination){
 		this.moveBottomLeft();
 	}
 	else if(desination == this.pathFind.DIRECTION.NO_DIRECTION){
+			 this.checkCondition();
+	}
+};
+Game.prototype.checkCondition = function(){
 		if( UtilCheck.checkLose(this.mapTileModel.clone()) ){
 				this.gameOver = true;
 				this.hud.addGameOver(true);
@@ -227,8 +245,8 @@ Game.prototype.moveDecision = function(desination){
 			this.cat.isWeiZhu = true;
 			this.cat.changeAnimation();
 		}
-	}
-};
+}
+
 /**
  * @ movement
  * find the cat at which row,
@@ -250,6 +268,7 @@ Game.prototype.moveTopLeft = function(){
 			this.cat.whichTile_ = this.cat.whichTile_ -9;
 		}
 	}
+	 this.mapTileModel.setCatTile(this.cat.whichTile_);
 };
 
 Game.prototype.moveTopRight = function(){
@@ -267,6 +286,7 @@ Game.prototype.moveTopRight = function(){
 			this.cat.whichTile_ = this.cat.whichTile_ -8;
 		}
 	}
+	 this.mapTileModel.setCatTile(this.cat.whichTile_);
 };
 
 Game.prototype.moveLeft = function(){
@@ -274,6 +294,7 @@ Game.prototype.moveLeft = function(){
 		this.cat.x = this.mapTileView[this.cat.whichTile_ -1].x;
 		this.cat.whichTile_ = this.cat.whichTile_ -1;
 	}
+	 this.mapTileModel.setCatTile(this.cat.whichTile_);
 };
 
 Game.prototype.moveRight = function(){
@@ -281,6 +302,7 @@ Game.prototype.moveRight = function(){
 		this.cat.x = this.mapTileView[this.cat.whichTile_ +1].x;
 		this.cat.whichTile_ = this.cat.whichTile_ +1;
 	}
+	 this.mapTileModel.setCatTile(this.cat.whichTile_);
 };
 
 Game.prototype.moveBottomLeft = function(){
@@ -298,6 +320,7 @@ Game.prototype.moveBottomLeft = function(){
 			this.cat.whichTile_ = this.cat.whichTile_ +9;
 		}
 	}
+	this.mapTileModel.setCatTile(this.cat.whichTile_);
 };
 Game.prototype.moveBottomRight = function(){
 	if(this.catWhichRow % 2 == 0){
@@ -314,6 +337,7 @@ Game.prototype.moveBottomRight = function(){
 			this.cat.whichTile_ = this.cat.whichTile_ + 10;
 		}
 	}
+	this.mapTileModel.setCatTile(this.cat.whichTile_);
 };
 /**
  * @ start
