@@ -94,14 +94,15 @@ SmartPathFinding.prototype.findPath = function(map) {
 			this.getSmallerStep(this.pathList[i].step_ , this.pathList[i].directionID_ + 1);
 		  }
 		  
-		  	  
+		  if( this.pathList.length > 2){
 		  for(var i = 0; i < this.pathList.length; i++ ){
 			if(this.smallestValue == this.pathList[i].step_){
 				shortestPathList.push(this.pathList[i]);
 			}
 		  }
-		  
-		  this.shortestPathIndex = shortestPathList[Util.RandomRange(0,shortestPathList.length-1)].directionID_ + 1;
+		
+			this.shortestPathIndex = shortestPathList[Util.RandomRange(0,shortestPathList.length-1)].directionID_ + 1;
+		  }
 		  
 
 		 if(this.shortestPathIndex  == this.DIRECTION.LEFT){
