@@ -23,5 +23,5 @@ Util.collision = function (x,y,r,x1,y1){
  * */
 Util.RandomRange = function (min,max){
 	var range = ( max - min ) + 1;
-	return (Math.random() * range ) + min;
+	return Math.floor( (Math.random() * range ) + min );
 };
