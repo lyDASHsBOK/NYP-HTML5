@@ -36,7 +36,7 @@ function Game(stage, imgContainer){
 	this.reply.x = this.hud.x + 340;
 	this.reply.y = this.hud.y + 500;
 	
-	this.simplePathFind = new SimplePathFinding();
+	this.pathFind = new SmartPathFinding();
 	
 	this.tempY = 500;
 	this.tempX = 10;
@@ -182,7 +182,7 @@ Game.prototype.onMouseClick = function(e) {
 				this.catWhichRow = Math.floor((this.cat.y + this.mapTileView[40].getRadius()*2 - 500) / 60) ;
 	
 
-				this.moveDecision( this.simplePathFind.findPath( this.mapTileModel.clone() ) );
+				this.moveDecision( this.pathFind.findPath( this.mapTileModel.clone() ) );
 			}
 		}
 	}
@@ -196,20 +196,20 @@ Game.prototype.onMouseClick = function(e) {
  * */
 Game.prototype.moveDecision = function(desination){
 	//console.log(desination);
-	if(desination  == this.simplePathFind.DIRECTION.LEFT){
+	if(desination  == this.pathFind.DIRECTION.LEFT){
 		this.moveLeft();
-	}else if( desination == this.simplePathFind.DIRECTION.TOP_LEFT){
+	}else if( desination == this.pathFind.DIRECTION.TOP_LEFT){
 		this.moveTopLeft();
-	}else if( desination == this.simplePathFind.DIRECTION.TOP_RIGHT){
+	}else if( desination == this.pathFind.DIRECTION.TOP_RIGHT){
 		this.moveTopRight();
-	}else if(desination == this.simplePathFind.DIRECTION.RIGHT){
+	}else if(desination == this.pathFind.DIRECTION.RIGHT){
 		this.moveRight();
-	}else if(desination == this.simplePathFind.DIRECTION.BOTTOM_RIGHT){
+	}else if(desination == this.pathFind.DIRECTION.BOTTOM_RIGHT){
 		this.moveBottomRight();
-	}else if(desination == this.simplePathFind.DIRECTION.BOTTOM_LEFT){
+	}else if(desination == this.pathFind.DIRECTION.BOTTOM_LEFT){
 		this.moveBottomLeft();
 	}
-	else if(desination == this.simplePathFind.DIRECTION.NO_DIRECTION){
+	else if(desination == this.pathFind.DIRECTION.NO_DIRECTION){
 		if( UtilCheck.checkLose(this.mapTileModel.clone()) ){
 				this.gameOver = true;
 				this.hud.addGameOver(true);
