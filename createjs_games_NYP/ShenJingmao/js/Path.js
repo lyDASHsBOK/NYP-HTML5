@@ -1,3 +1,5 @@
-function Path() {
-	this.value_ = [];
+function Path(step , directionID_) {
+	
+	this.step_ = step ;
+	this.directionID_ = directionID_;
 }
