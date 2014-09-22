@@ -45,14 +45,36 @@ Game.prototype.tick = function(e) {
 		this.mapView.scrolRight();
 	}
 	*/
-	if(this.keyBoard.getKeyPressThroughtName(" ")){
-		this.mario.jumpAnimation();
-	}else if(this.keyBoard.getKeyPressThroughtName("d")){	
-		this.mario.walkRightAnimation();
-	}else if(this.keyBoard.getKeyPressThroughtName("a")){
-		this.mario.walkLeftAnimation();
+	if(this.mario.y+8 < 272+16){
+		this.mario.y += 3;
 	}else{
-		this.mario.idleAnimation();
+		this.mario.onGround = true;
+	}
+	
+	if(this.keyBoard.getKeyPressThroughtName(" ") && this.mario.onGround){
+		this.mario.y -= 70;
+		if( this.mario.currentSide == "Left"){		
+			this.mario.jumpLeftAnimation();	
+		}else{		
+			this.mario.jumpRightAnimation();	
+		}	
+		this.mario.onGround = false;
+	}else if(this.keyBoard.getKeyPressThroughtName("d")){	
+		this.mario.x += 2;
+		if(this.mario.onGround){
+			this.mario.walkRightAnimation();
+		}
+	}else if(this.keyBoard.getKeyPressThroughtName("a")){
+		this.mario.x -= 2;
+		if(this.mario.onGround){
+			this.mario.walkLeftAnimation();
+		}
+	}else if(this.mario.onGround){
+		if(this.mario.currentSide == "Left"){
+			this.mario.idleLeftAnimation();
+		}else{
+			this.mario.idleRightAnimation();
+		}
 	}
 };
 /**
