@@ -56,7 +56,7 @@ function MapView(x,y , MapModule , bgWidth) {
 
         for (var row = 0; row < this.mapHeight; row++) {
             for (var col = 0; col < this.mapWidth; col++) {
-				if(this.firstLevel[row][col] > -1){
+				
 					this.tileClone[row].push(this.tile.clone());
 					this.tileClone[row][col].name = "t_" + row + "_" + col;
 					this.tileClone[row][col].gotoAndStop(this.firstLevel[row][col]);
@@ -65,6 +65,7 @@ function MapView(x,y , MapModule , bgWidth) {
 					if( this.tileClone[row][col].x > this.bgWidth_ - this.tileSheet.frames.width || this.tileClone[row][col].x < 0 ){
 						this.tileClone[row][col].visible = false;
 					}
+					if(this.firstLevel[row][col] > -1){
 					this.addChild(this.tileClone[row][col]);
 				}
             }
@@ -74,6 +75,36 @@ function MapView(x,y , MapModule , bgWidth) {
 }
 
 
+MapView.prototype.scrolLeft = function() {
+	this.x -= 1;
+	  for (var row = 0; row < this.mapHeight; row++) {
+            for (var col = 0; col < this.mapWidth; col++) {
+				if(this.firstLevel[row][col] > -1){
+					if( this.tileClone[row][col].x + this.x > this.bgWidth_ + this.tileSheet.frames.width || this.tileClone[row][col].x  + this.x < - this.tileSheet.frames.width ){
+						this.tileClone[row][col].visible = false;
+					}else{
+						this.tileClone[row][col].visible = true;
+					}
+				}
+            }
+        }
+};
+
+
+MapView.prototype.scrolRight = function() {
+	this.x += 1;
+	  for (var row = 0; row < this.mapHeight; row++) {
+            for (var col = 0; col < this.mapWidth; col++) {
+				if(this.firstLevel[row][col] > -1){
+					if( this.tileClone[row][col].x + this.x > this.bgWidth_ + this.tileSheet.frames.width || this.tileClone[row][col].x  + this.x < - this.tileSheet.frames.width ){
+						this.tileClone[row][col].visible = false;
+					}else{
+						this.tileClone[row][col].visible = true;
+					}
+				}
+            }
+        }
+};
 
 
 

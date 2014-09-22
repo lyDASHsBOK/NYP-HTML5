@@ -19,6 +19,11 @@ function MapModule(mapRow , mapCol){
 			 this.firstLevel[row][col] = 0;
 		}
 	}
+	for (var row = this.mapHeight - 2; row < this.mapHeight; row++) {
+		for (var col =  this.mapWidth -2; col <  this.mapWidth ; col++) {
+			 this.firstLevel[row][col] = 2;
+		}
+	}
 	
 }
 

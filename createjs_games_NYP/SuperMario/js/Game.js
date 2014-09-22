@@ -9,8 +9,8 @@ function Game(stage, imgContainer){
 	
 	
 	this.mapModule = new MapModule(20,45);
-	this.KeyBoard = new KeyBoardCode();
-	this.MapView = new MapView(0,0,this.mapModule , this.bg.image.width);
+	this.keyBoard = new KeyBoardCode();
+	this.mapView = new MapView(0,0,this.mapModule , this.bg.image.width);
 	this.stage_.addEventListener('mousedown', Delegate.create(this,this.onMouseClick));
 	
 	document.addEventListener("keydown", Delegate.create(this,this.keyBoardDown));
@@ -20,13 +20,13 @@ function Game(stage, imgContainer){
  * @ keyBoardDown
  * */
 Game.prototype.keyBoardDown = function(e) {
-		this.KeyBoard.setKeyPress(e.keyCode,true);	
+		this.keyBoard.setKeyPress(e.keyCode,true);	
 };
 /**
  * @ keyBoardUp
  * */
 Game.prototype.keyBoardUp = function(e) {
-	this.KeyBoard.setKeyPress(e.keyCode,false);
+	this.keyBoard.setKeyPress(e.keyCode,false);
 };
 /**
  * @ onMouseClick
@@ -35,6 +35,13 @@ Game.prototype.onMouseClick = function(e) {
 
 };
 Game.prototype.tick = function(e) {
+	if(this.keyBoard.getKeyPressThroughtName("d")){
+		this.mapView.scrolLeft();
+	}
+	
+	if(this.keyBoard.getKeyPressThroughtName("a")){
+		this.mapView.scrolRight();
+	}
 	
 };
 /**
@@ -42,7 +49,7 @@ Game.prototype.tick = function(e) {
  * */
 Game.prototype.loadImage = function() {
 		this.stage_.addChild(this.bg);
-		this.stage_.addChild(this.MapView);
+		this.stage_.addChild(this.mapView);
 		
 };
 /**
