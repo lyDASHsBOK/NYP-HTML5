@@ -92,18 +92,20 @@ MapView.prototype.scrolLeft = function() {
 
 
 MapView.prototype.scrolRight = function() {
-	this.x += 1;
-	  for (var row = 0; row < this.mapHeight; row++) {
-            for (var col = 0; col < this.mapWidth; col++) {
-				if(this.firstLevel[row][col] > -1){
-					if( this.tileClone[row][col].x + this.x > this.bgWidth_ + this.tileSheet.frames.width || this.tileClone[row][col].x  + this.x < - this.tileSheet.frames.width ){
-						this.tileClone[row][col].visible = false;
-					}else{
-						this.tileClone[row][col].visible = true;
+	if(this.x <= 0 ){
+		  this.x += 1;
+		  for (var row = 0; row < this.mapHeight; row++) {
+				for (var col = 0; col < this.mapWidth; col++) {
+					if(this.firstLevel[row][col] > -1){
+						if( this.tileClone[row][col].x + this.x > this.bgWidth_ + this.tileSheet.frames.width || this.tileClone[row][col].x  + this.x < - this.tileSheet.frames.width ){
+							this.tileClone[row][col].visible = false;
+						}else{
+							this.tileClone[row][col].visible = true;
+						}
 					}
 				}
-            }
-        }
+			}
+		}
 };
 
 

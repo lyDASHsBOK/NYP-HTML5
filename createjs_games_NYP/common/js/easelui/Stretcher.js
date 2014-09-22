@@ -51,12 +51,35 @@ Stretcher.prototype.layout_ = function() {
 
     var scaleX = wWidth / this.dWidth_;
     var scaleY = wHeight / this.dHeight_;
-    var scale = scaleX < scaleY ? scaleX : scaleY;
-    var cWidth = this.dWidth_ * scale;
+	var currentScreenRatio = wWidth / wHeight;
+	
+	
+	
+	var scale = Math.min(scaleX, scaleY);
+	
+	var cWidth = this.dWidth_ * scale;
     var cHeight = this.dHeight_ * scale;
-
-    this.canvasDom.width = wWidth;
-    this.canvasDom.height = wHeight;
+	
+	if(currentScreenRatio < 2){
+	 cWidth = this.dWidth_ * scale;
+     cHeight = this.dHeight_ * scale;
+	 
+ 
     this.set({scaleX: scale, scaleY: scale, x:(wWidth - cWidth) / 2, y:(wHeight - cHeight) / 2 });
+	 
+	}
+	else{
+		cWidth = wWidth ;
+		cHeight = this.dHeight_ * scale;
+		
+ 
+		this.set({scaleX: scaleX, scaleY: scale, x:(wWidth - cWidth) / 2, y:(wHeight - cHeight) / 2 });
+	}
+	 
+	
+	this.canvasDom.width = wWidth;
+	this.canvasDom.height = wHeight;
+       
+
 };
 
