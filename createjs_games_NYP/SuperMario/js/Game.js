@@ -48,22 +48,17 @@ Game.prototype.tick = function(e) {
 
 	
 
-	if(this.mario.y+8 < 272+16){
-		this.mario.y += 3;
-	}else{
-		this.mario.onGround = true;
-	}
+	this.mario.gravity();	
 	
 	if(this.keyBoard.getKeyPressThroughtName(" ") && this.mario.onGround){
-		this.mario.y -= 70;
+		this.mario.jumpPower();
 		if( this.mario.currentSide == "Left"){		
 			this.mario.jumpLeftAnimation();	
 		}else{		
 			this.mario.jumpRightAnimation();	
 		}	
-		this.mario.onGround = false;
 	}else if(this.keyBoard.getKeyPressThroughtName("d")){	
-		this.mario.x += 2;
+		this.mario.moveRight();
 		if(this.mario.onGround){
 			this.mario.walkRightAnimation();
 		}
@@ -73,7 +68,7 @@ Game.prototype.tick = function(e) {
 			}
 		}
 	}else if(this.keyBoard.getKeyPressThroughtName("a")){
-		this.mario.x -= 2;
+		this.mario.moveLeft();
 		if(this.mario.onGround){
 			this.mario.walkLeftAnimation();
 		}
