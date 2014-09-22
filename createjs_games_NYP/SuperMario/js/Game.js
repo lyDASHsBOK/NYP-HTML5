@@ -8,7 +8,7 @@ function Game(stage, imgContainer){
 	this.bg = new createjs.Bitmap(imgContainer["imgs/bg.png"]);
 	
 	
-	this.mapModule = new MapModule(20,45);
+	this.mapModule = new MapModule(20,213);
 	this.keyBoard = new KeyBoardCode();
 	this.mapView = new MapView(0,0,this.mapModule , this.bg.image.width);
 	this.stage_.addEventListener('mousedown', Delegate.create(this,this.onMouseClick));
@@ -37,14 +37,17 @@ Game.prototype.onMouseClick = function(e) {
 };
 Game.prototype.tick = function(e) {
 	/*
+	
 	if(this.keyBoard.getKeyPressThroughtName("d")){
 		this.mapView.scrolLeft();
 	}
 	
 	if(this.keyBoard.getKeyPressThroughtName("a")){
 		this.mapView.scrolRight();
-	}
-	*/
+	}*/
+
+	
+
 	if(this.mario.y+8 < 272+16){
 		this.mario.y += 3;
 	}else{
@@ -64,10 +67,20 @@ Game.prototype.tick = function(e) {
 		if(this.mario.onGround){
 			this.mario.walkRightAnimation();
 		}
+		if(this.mario.x >= this.bg.image.width * 0.5){
+			if(this.mapView.scrolLeft()){
+				this.mario.x = this.bg.image.width * 0.5;
+			}
+		}
 	}else if(this.keyBoard.getKeyPressThroughtName("a")){
 		this.mario.x -= 2;
 		if(this.mario.onGround){
 			this.mario.walkLeftAnimation();
+		}
+		if(this.mario.x <= this.bg.image.width * 0.5){
+			if(this.mapView.scrolRight()){
+				this.mario.x = this.bg.image.width * 0.5;
+			}
 		}
 	}else if(this.mario.onGround){
 		if(this.mario.currentSide == "Left"){
@@ -76,6 +89,7 @@ Game.prototype.tick = function(e) {
 			this.mario.idleRightAnimation();
 		}
 	}
+
 };
 /**
  * @ loadImage
