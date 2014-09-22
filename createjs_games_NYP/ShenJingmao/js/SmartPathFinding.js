@@ -160,17 +160,18 @@ SmartPathFinding.prototype.findPathLy = function(map) {
 };
 
 SmartPathFinding.prototype.findPath = function(map) {
-    var t = new Date().getTime();
-    this.findPathLy(map.clone());
-    console.log('algorithm elapse: '+(new Date().getTime() - t));
 
-    t = new Date().getTime();
+    this.findPathLy(map.clone());
+
+
+
   if( ! UtilCheck.outOfBound(map.catTile)){
 		
 		this.smallestValue = 0;
 		this.shortestPathIndex = 0;
 		
 		this.pathList = [];
+		var shortestPathList = [];
 	  
 		var surrounding = map.getSurroundingTiles(map.catTile);
 	
@@ -187,8 +188,17 @@ SmartPathFinding.prototype.findPath = function(map) {
 		  for(var i = 0; i < this.pathList.length; i++ ){
 			this.getSmallerStep(this.pathList[i].step_ , this.pathList[i].directionID_ + 1);
 		  }
-      console.log('Choose: '+this.smallestValue + '@'+this.shortestPathIndex);
-      console.log('algorithm elapse: '+(new Date().getTime() - t));
+		  
+		  if( this.pathList.length > 2){
+		  for(var i = 0; i < this.pathList.length; i++ ){
+			if(this.smallestValue == this.pathList[i].step_){
+				shortestPathList.push(this.pathList[i]);
+			}
+		  }
+		
+			this.shortestPathIndex = shortestPathList[Util.RandomRange(0,shortestPathList.length-1)].directionID_ + 1;
+		  }
+		  
 
 		 if(this.shortestPathIndex  == this.DIRECTION.LEFT){
 			return this.DIRECTION.LEFT;
