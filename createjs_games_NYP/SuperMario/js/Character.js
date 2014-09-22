@@ -100,3 +100,26 @@ Character.prototype.jumpLeftAnimation = function(){
 	}
 };
 
+Character.prototype.gravity = function(){
+	if(this.y+8 < 272+16){
+		this.y += 5;
+	}else{
+		this.onGround = true;
+	}
+};
+
+Character.prototype.jumpPower = function(){
+	this.y -= 15;
+	
+	if( this.y < 200 ){
+		this.onGround = false;
+	}
+};
+
+Character.prototype.moveRight = function(){
+	this.x += 2;
+};
+
+Character.prototype.moveLeft = function(){
+	this.x -= 2;
+};
