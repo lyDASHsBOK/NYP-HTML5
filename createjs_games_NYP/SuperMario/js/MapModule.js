@@ -114,7 +114,38 @@ MapModule.prototype.buildLevelOne =  function (){
 		temp++;
 	}
 	
+	for (var row = this.mapHeight - 10; row < this.mapHeight -2; row++) {
+		for (var col = 159; col <  168 ; col++) {
+			if(col  >=  168 - temp){
+				this.firstLevel[row][col] = 33;
+			}
+		}
+		temp++;
+	}
+	
 	this.firstLevel[this.mapHeight -3][176] = 33;
+	
+	temp = 1;
+	for (var row = this.mapHeight - 5; row < this.mapHeight -2; row++) {
+		for (var col = 0; col <  4 ; col++) {
+			if(col  ==  3 - temp){
+				this.firstLevel[row][col] = 272;
+			}
+		}
+		temp++;
+	}
+	
+	temp = 3;
+	for (var row = this.mapHeight - 5; row < this.mapHeight -2; row++) {
+		for (var col = 3; col <  7 ; col++) {
+			if(col  ==  7 - temp){
+				this.firstLevel[row][col] = 274;
+			}
+		}
+		temp--;
+	}
+	
+		this.firstLevel[this.mapHeight -6][3] = 273;
 };
 
 
