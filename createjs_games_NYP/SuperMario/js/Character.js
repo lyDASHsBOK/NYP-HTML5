@@ -104,14 +104,15 @@ Character.prototype.gravity = function(){
 	if(this.y+8 < 272+16){
 		this.y += 5;
 	}else{
+		this.y = 272 + 8;
 		this.onGround = true;
 	}
 };
 
 Character.prototype.jumpPower = function(){
-	this.y -= 15;
+	this.y -= 10;
 	
-	if( this.y < 200 ){
+	if( this.y < 272 - 16 * 3 ){
 		this.onGround = false;
 	}
 };
@@ -121,5 +122,6 @@ Character.prototype.moveRight = function(){
 };
 
 Character.prototype.moveLeft = function(){
+	if(this.x > 4)
 	this.x -= 2;
 };

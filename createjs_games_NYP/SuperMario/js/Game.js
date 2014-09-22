@@ -57,7 +57,8 @@ Game.prototype.tick = function(e) {
 		}else{		
 			this.mario.jumpRightAnimation();	
 		}	
-	}else if(this.keyBoard.getKeyPressThroughtName("d")){	
+	}
+	if(this.keyBoard.getKeyPressThroughtName("d")){	
 		this.mario.moveRight();
 		if(this.mario.onGround){
 			this.mario.walkRightAnimation();
@@ -67,7 +68,7 @@ Game.prototype.tick = function(e) {
 				this.mario.x = this.bg.image.width * 0.5;
 			}
 		}
-	}else if(this.keyBoard.getKeyPressThroughtName("a")){
+	} else if(this.keyBoard.getKeyPressThroughtName("a")){
 		this.mario.moveLeft();
 		if(this.mario.onGround){
 			this.mario.walkLeftAnimation();

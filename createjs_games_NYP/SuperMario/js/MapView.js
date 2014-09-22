@@ -74,10 +74,9 @@ function MapView(x,y , MapModule , bgWidth) {
 	this.y = y;
 }
 
-
 MapView.prototype.scrolLeft = function() {
 	if(this.x > - ( (this.tileClone[0].length - 1) * this.tileSheet.frames.width - this.bgWidth_ ) ){
-	this.x -= 5;
+	this.x -= 3;
 	  for (var row = 0; row < this.mapHeight; row++) {
             for (var col = 0; col < this.mapWidth; col++) {
 				if(this.firstLevel[row][col] > -1){
@@ -94,8 +93,8 @@ MapView.prototype.scrolLeft = function() {
 	return false;
 };
 MapView.prototype.scrolRight = function() {
-	if(this.x <= -this.tileSheet.frames.width ){
-		this.x += 5;
+	if(this.x <= -this.tileSheet.frames.width *0.1){
+		this.x += 3;
 		  for (var row = 0; row < this.mapHeight; row++) {
 				for (var col = 0; col < this.mapWidth; col++) {
 					if(this.firstLevel[row][col] > -1){
