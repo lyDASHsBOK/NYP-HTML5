@@ -16,15 +16,20 @@ BOK.inherits(Character, createjs.Container);
 		// width, height & registration point of each sprite
 		frames    : {width: 16, height: 16, regX: 8 , regY: 8 },
 		animations: {    
-			idle: [0, "idle"],
-			walk: [1, 3, "walk"],
+			idle:{ frames: [0] },
 			flag: [7, 8, "flag"],
 			
-			dead: { frames: [6] },
+			walk: {
+				frames: [1, 2, 3],
+				speed: 2.5
+			},
+			
 			jump: {
-				frames: [4,5],
-				speed: 1.5
-			}
+				frames: [5],
+				speed: 2
+			},
+			
+			dead: { frames: [6] }
 		}
 	};
 	this.marioSpriteSheet = new createjs.SpriteSheet(this.marioData);
@@ -33,8 +38,12 @@ BOK.inherits(Character, createjs.Container);
 	
 	// able to  reverse the sprite
 	createjs.SpriteSheetUtils.addFlippedFrames(this.marioSpriteSheet, true, false, false);
-	this.currentAnimation = "idle";
+	this.currentAnimation = "idle_h";
 	this.marioAnimation.gotoAndStop(this.currentAnimation);
+	
+	this.jumpSpeed = 0;
+	this.onGround = true;
+	this.currentSide = "Right";
 	
     //we store the reference of creep img in a member varibale so it can be accessed later
     this.addChild(this.marioAnimation);
@@ -46,27 +55,47 @@ BOK.inherits(Character, createjs.Container);
 Character.prototype.walkRightAnimation = function(){
 	if(this.currentAnimation != "walk" ){
 		this.currentAnimation = "walk";
+		this.currentSide = "Right";
 		this.marioAnimation.gotoAndPlay(this.currentAnimation);
 	}
 };
 
 Character.prototype.walkLeftAnimation = function(){
-	if(this.currentAnimation != "walk_h" ){
+	if(this.currentAnimation != "walk_h"){
 		this.currentAnimation = "walk_h";
+		this.currentSide = "Left";
 		this.marioAnimation.gotoAndPlay(this.currentAnimation);
 	}
 };
 
-Character.prototype.idleAnimation = function(){
+Character.prototype.idleRightAnimation = function(){
 	if(this.currentAnimation != "idle" ){
 		this.currentAnimation = "idle";
+		this.currentSide = "Right";
 		this.marioAnimation.gotoAndPlay(this.currentAnimation);
 	}
 };
 
-Character.prototype.jumpAnimation = function(){
+Character.prototype.idleLeftAnimation = function(){
+	if(this.currentAnimation != "idle_h" ){
+		this.currentAnimation = "idle_h";
+		this.currentSide = "Left";
+		this.marioAnimation.gotoAndPlay(this.currentAnimation);
+	}
+};
+
+Character.prototype.jumpRightAnimation = function(){
 	if(this.currentAnimation != "jump" ){
 		this.currentAnimation = "jump";
+		this.currentSide = "Right";
+		this.marioAnimation.gotoAndPlay(this.currentAnimation);
+	}
+};
+
+Character.prototype.jumpLeftAnimation = function(){
+	if(this.currentAnimation != "jump_h" ){
+		this.currentAnimation = "jump_h";
+		this.currentSide = "Left";
 		this.marioAnimation.gotoAndPlay(this.currentAnimation);
 	}
 };

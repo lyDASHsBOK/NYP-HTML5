@@ -75,6 +75,12 @@ MapModule.prototype.buildLevelOne =  function (){
 		temp--;
 	}
 	
+	for (var row = this.mapHeight - 3; row < this.mapHeight - 2; row++) {
+		for (var col = 116; col <  118 ; col++) {
+			this.firstLevel[row][col] = 375;
+		}
+	}
+	
 	
 	
 	temp = 2;

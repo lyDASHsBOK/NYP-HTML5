@@ -89,11 +89,13 @@ MapView.prototype.scrolLeft = function() {
 				}
             }
         }
+		return true;
 	}
+	return false;
 };
 MapView.prototype.scrolRight = function() {
 	if(this.x <= -this.tileSheet.frames.width ){
-		  this.x += 5;
+		this.x += 5;
 		  for (var row = 0; row < this.mapHeight; row++) {
 				for (var col = 0; col < this.mapWidth; col++) {
 					if(this.firstLevel[row][col] > -1){
@@ -105,7 +107,9 @@ MapView.prototype.scrolRight = function() {
 					}
 				}
 			}
+			return true;
 		}
+	return false;
 };
 
 
