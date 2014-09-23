@@ -49,9 +49,10 @@ Game.prototype.tick = function(e) {
 	if(this.keyBoard.getKeyPressThroughtName("a")){
 		this.mapView.scrolRight();
 	}*/
-
 	
-	this.mario.gravity();	
+	
+	
+	
 	
 	if(this.keyBoard.getKeyPressThroughtName(" ") && !this.mario.jumping){
 	
@@ -90,6 +91,27 @@ Game.prototype.tick = function(e) {
 			this.mario.idleRightAnimation();
 		}
 	}
+	
+	this.mario.gravity();	
+	
+	this.mario.onGround  = this.CheckWalkableUpDown(-1);
+	
+	if(this.mario.onGround){
+		this.mario.velocity = 0;
+		this.mario.jumping = false;
+	}else if(!this.mario.onGround){
+		//this.mario.velocity = 0;
+		this.mario.jumping = true;
+	}
+	
+	
+	
+	if(this.CheckWalkableUpDown(1) && this.mario.jumping){
+		if( this.mario.velocity < 0){
+			this.mario.velocity *= -1;
+		 }
+	}
+	
 
 };
 
@@ -123,22 +145,27 @@ Game.prototype.CheckWalkableUpDown = function(diry) {
             formulaC = Math.floor((this.mario.y - this.mario.getHeight() * 0.5) / this.mapView.tileSheet.frames.height);
             formulaD = Math.floor((this.mario.y + this.mario.getHeight() * 0.5) / this.mapView.tileSheet.frames.height);
 			
-            if (diry === 1) { // left
+            if (diry === 1) { // up
                 formulaA = Math.floor(((this.mario.x - this.mario.getWidth() * 0.5 ) - this.mapView.x) / this.mapView.tileSheet.frames.width );
 				formulaB = Math.floor(((this.mario.x + this.mario.getWidth() * 0.5 ) - this.mapView.x) / this.mapView.tileSheet.frames.width );
 				
 				var topLeft =  this.mapModule.walkable(formulaC ,formulaA);
-                var topRight = this.mapModule.walkable(formulaD , formulaB);
+                var topRight = this.mapModule.walkable(formulaC , formulaB);
+                return (topLeft || topRight);
 				
-                return (topLeft && topRight);
-				
-            } else if (dirx === -1) { // right
+            } else if (diry === -1) { // down
                formulaB = Math.floor(((this.mario.x - this.mario.getWidth() * 0.5) - this.mapView.x ) / this.mapView.tileSheet.frames.width);
 			   formulaA = Math.floor(((this.mario.x + this.mario.getWidth() * 0.5) - this.mapView.x ) / this.mapView.tileSheet.frames.width);
 			   
 			   var bottomLeft = this.mapModule.walkable(formulaD, formulaA);
                 var bottomRight = this.mapModule.walkable(formulaD ,formulaB);
-                return (bottomLeft && bottomRight); 
+				
+				if( bottomLeft || bottomRight){
+					this.mario.y =  formulaD   * this.mapView.tileSheet.frames.width - this.mapView.tileSheet.frames.width * 0.5;
+				}
+				
+				
+                return (bottomLeft || bottomRight); 
             }
 };
 /**

@@ -46,8 +46,10 @@ BOK.inherits(Character, createjs.Container);
 	this.jumping = false;
 	this.velocity = 0;
 	this.maxVelocity = -8;
-	this.gravityValue = +1;
+	this.gravityValue = 1;
 	this.moveSpeed = 5;
+	
+	this.onGround = true;
 	
     //we store the reference of creep img in a member varibale so it can be accessed later
     this.addChild(this.marioAnimation);
@@ -131,10 +133,10 @@ Character.prototype.gravity = function(){
 		this.velocity += this.gravityValue;
 		
 		if( this.y > 272+8 ){
-			this.y = 272+8;
-			this.velocity = 0;
-			this.jumping = false;
-			this.maxVelocity = -8;
+			//this.y = 272+8;
+			//this.velocity = 0;
+			//this.jumping = false;
+			//this.maxVelocity = -8;
 		}
 	}else{
 		this.velocity = 0;
