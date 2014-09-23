@@ -17,6 +17,8 @@ function MapModule(mapRow , mapCol){
 	
 	this.buildLevelOne();
 	
+	this.walkableTile = [-1 ,272 ,274,273 , 375 ];
+	
 	
 }
 /**
@@ -27,11 +29,6 @@ MapModule.prototype.buildLevelOne =  function (){
 	for (var row = this.mapHeight - 2; row < this.mapHeight; row++) {
 		for (var col = 0; col <  this.mapWidth ; col++) {
 			 this.firstLevel[row][col] = 0;
-		}
-	}
-	for (var row = this.mapHeight - 2; row < this.mapHeight; row++) {
-		for (var col =  this.mapWidth -2; col <  this.mapWidth ; col++) {
-			 this.firstLevel[row][col] = 2;
 		}
 	}
 	
@@ -126,9 +123,28 @@ MapModule.prototype.buildLevelOne =  function (){
 	
 	this.firstLevel[this.mapHeight -3][176] = 33;
 	
+	
+	//random Block Tile
+	this.firstLevel[this.mapHeight -6][16] = 24;
+	
+	this.firstLevel[this.mapHeight -6][20] = 1;
+	this.firstLevel[this.mapHeight -6][21] = 24;
+	this.firstLevel[this.mapHeight -6][22] = 1;
+	this.firstLevel[this.mapHeight -6][23] = 24;
+	this.firstLevel[this.mapHeight -6][24] = 1;
+	this.firstLevel[this.mapHeight -10][22] = 24;
+	
+	
+	//piple
+	this.createVPiple(28 , this.mapHeight -3 , 2 );
+	this.createVPiple(38 , this.mapHeight -3 , 3 );
+	this.createVPiple(46 , this.mapHeight -3 , 4 );
+	this.createVPiple(56 , this.mapHeight -3 , 4 );
+	
+	//hill
 	temp = 1;
-	for (var row = this.mapHeight - 5; row < this.mapHeight -2; row++) {
-		for (var col = 0; col <  4 ; col++) {
+	for (var row = this.mapHeight - 4; row < this.mapHeight -2; row++) {
+		for (var col = 0; col <  3 ; col++) {
 			if(col  ==  3 - temp){
 				this.firstLevel[row][col] = 272;
 			}
@@ -136,17 +152,34 @@ MapModule.prototype.buildLevelOne =  function (){
 		temp++;
 	}
 	
-	temp = 3;
-	for (var row = this.mapHeight - 5; row < this.mapHeight -2; row++) {
-		for (var col = 3; col <  7 ; col++) {
-			if(col  ==  7 - temp){
+	temp = 2;
+	for (var row = this.mapHeight - 4; row < this.mapHeight -2; row++) {
+		for (var col = 3; col <  6 ; col++) {
+			if(col  ==  6 - temp){
 				this.firstLevel[row][col] = 274;
 			}
 		}
 		temp--;
 	}
+	this.firstLevel[this.mapHeight -5][3] = 273;
+};
+
+MapModule.prototype.createVPiple =  function (startX , startY , height ){
+
+	for (var row = startY; row > startY - height; row--) {
+		for (var col = startX; col <  startX + 2 ; col++) {
+			if(col == startX){
+				this.firstLevel[row][col] = 297;
+			}
+			else{
+				this.firstLevel[row][col] = 298
+			}
+		}
+	}
 	
-	this.firstLevel[this.mapHeight -6][3] = 273;
+	this.firstLevel[startY - height + 1][startX] = 264;
+	this.firstLevel[startY - height + 1][startX+1] = 265;
+	
 };
 
 
@@ -155,9 +188,11 @@ MapModule.prototype.getMapData =  function (){
 };
 
 MapModule.prototype.walkable =  function (row, col) {
-	if (this.firstLevel[row][col] === 0) {
-		return false;
-	} else {
-		return true;
+	
+	for(var i = 0; i < this.walkableTile.length; i++){
+		if (this.firstLevel[row][col] === this.walkableTile[i] ) {
+			return false;
+		}
 	}
+		return true;
 };

@@ -46,8 +46,6 @@ Game.prototype.tick = function(e) {
 		this.mapView.scrolRight();
 	}*/
 
-	
-
 	this.mario.gravity();	
 	
 	if(this.keyBoard.getKeyPressThroughtName(" ") && this.mario.onGround){
@@ -58,7 +56,8 @@ Game.prototype.tick = function(e) {
 			this.mario.jumpRightAnimation();	
 		}	
 	}
-	if(this.keyBoard.getKeyPressThroughtName("d")){	
+	
+	if(this.keyBoard.getKeyPressThroughtName("d") && !this.CheckWalkable(1)){	
 		this.mario.moveRight();
 		if(this.mario.onGround){
 			this.mario.walkRightAnimation();
@@ -68,7 +67,7 @@ Game.prototype.tick = function(e) {
 				this.mario.x = this.bg.image.width * 0.5;
 			}
 		}
-	} else if(this.keyBoard.getKeyPressThroughtName("a")){
+	} else if(this.keyBoard.getKeyPressThroughtName("a") && !this.CheckWalkable(-1)){
 		this.mario.moveLeft();
 		if(this.mario.onGround){
 			this.mario.walkLeftAnimation();
@@ -85,6 +84,30 @@ Game.prototype.tick = function(e) {
 			this.mario.idleRightAnimation();
 		}
 	}
+
+};
+
+Game.prototype.CheckWalkable = function(dirx) {
+        
+        var formulaA, formulaB, formulaC, formulaD;
+      
+            formulaC = Math.floor((this.mario.y - this.mario.getHeight() * 0.5) / this.mapView.tileSheet.frames.height);
+            formulaD = Math.floor((this.mario.y + this.mario.getHeight() * 0.5) / this.mapView.tileSheet.frames.height);
+			
+            if (dirx === -1) { // left
+                formulaA = Math.floor(((this.mario.x - this.mario.getWidth() * 0.5 ) - this.mapView.x) / this.mapView.tileSheet.frames.width );
+				var topLeft =  this.mapModule.walkable(formulaC ,formulaA);
+                var bottomLeft = this.mapModule.walkable(formulaD , formulaA);
+				
+                return (topLeft && bottomLeft);
+				
+            } else if (dirx === 1) { // right
+               formulaB = Math.floor(((this.mario.x - this.mario.getWidth() * 0.5) - this.mapView.x ) / this.mapView.tileSheet.frames.width);
+			   var topRight = this.mapModule.walkable(formulaC,formulaB +1);
+                var bottomRight = this.mapModule.walkable(formulaD , formulaB+1);
+                return (topRight && bottomRight); 
+            }
+			
 
 };
 /**

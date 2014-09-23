@@ -125,3 +125,12 @@ Character.prototype.moveLeft = function(){
 	if(this.x > 4)
 	this.x -= 2;
 };
+
+
+Character.prototype.getHeight = function(){
+	return this.marioData.frames.height;
+};
+
+Character.prototype.getWidth = function(){
+	return this.marioData.frames.width;
+};
