@@ -28,7 +28,7 @@ Game.prototype.keyBoardDown = function(e) {
  * */
 Game.prototype.keyBoardUp = function(e) {
 	if(this.keyBoard.getKeyPressThroughtName(" ") && !this.mario.jumping){
-		this.mario.maxVelocity = -10;
+		this.mario.maxVelocity = -8;
 		this.mario.jump();
 	}
 	this.keyBoard.setKeyPress(e.keyCode,false);
@@ -56,14 +56,14 @@ Game.prototype.tick = function(e) {
 	if(this.keyBoard.getKeyPressThroughtName(" ") && !this.mario.jumping){
 	
 		if( this.mario.maxVelocity <= -15 ){
-			this.mario.maxVelocity = -15;
+			this.mario.maxVelocity = -12;
 			this.mario.jump();
 		}else{
 			this.mario.maxVelocity -= 1;
 		}
 	}	
 	
-	if(this.keyBoard.getKeyPressThroughtName("d") && !this.CheckWalkable(1)){	
+	if(this.keyBoard.getKeyPressThroughtName("d") && !this.CheckWalkableLeftRight(1)){	
 		this.mario.moveRight();
 		if(!this.mario.jumping){
 			this.mario.walkRightAnimation();
@@ -73,7 +73,7 @@ Game.prototype.tick = function(e) {
 				this.mario.x = this.bg.image.width * 0.5;
 			}
 		}
-	} else if(this.keyBoard.getKeyPressThroughtName("a") && !this.CheckWalkable(-1)){
+	} else if(this.keyBoard.getKeyPressThroughtName("a") && !this.CheckWalkableLeftRight(-1)){
 		this.mario.moveLeft();
 		if(!this.mario.jumping){
 			this.mario.walkLeftAnimation();
@@ -93,7 +93,7 @@ Game.prototype.tick = function(e) {
 
 };
 
-Game.prototype.CheckWalkable = function(dirx) {
+Game.prototype.CheckWalkableLeftRight = function(dirx) {
         
         var formulaA, formulaB, formulaC, formulaD;
       
@@ -114,7 +114,32 @@ Game.prototype.CheckWalkable = function(dirx) {
                 return (topRight && bottomRight); 
             }
 			
+};
 
+Game.prototype.CheckWalkableUpDown = function(diry) {
+        
+        var formulaA, formulaB, formulaC, formulaD;
+      
+            formulaC = Math.floor((this.mario.y - this.mario.getHeight() * 0.5) / this.mapView.tileSheet.frames.height);
+            formulaD = Math.floor((this.mario.y + this.mario.getHeight() * 0.5) / this.mapView.tileSheet.frames.height);
+			
+            if (diry === 1) { // left
+                formulaA = Math.floor(((this.mario.x - this.mario.getWidth() * 0.5 ) - this.mapView.x) / this.mapView.tileSheet.frames.width );
+				formulaB = Math.floor(((this.mario.x + this.mario.getWidth() * 0.5 ) - this.mapView.x) / this.mapView.tileSheet.frames.width );
+				
+				var topLeft =  this.mapModule.walkable(formulaC ,formulaA);
+                var topRight = this.mapModule.walkable(formulaD , formulaB);
+				
+                return (topLeft && topRight);
+				
+            } else if (dirx === -1) { // right
+               formulaB = Math.floor(((this.mario.x - this.mario.getWidth() * 0.5) - this.mapView.x ) / this.mapView.tileSheet.frames.width);
+			   formulaA = Math.floor(((this.mario.x + this.mario.getWidth() * 0.5) - this.mapView.x ) / this.mapView.tileSheet.frames.width);
+			   
+			   var bottomLeft = this.mapModule.walkable(formulaD, formulaA);
+                var bottomRight = this.mapModule.walkable(formulaD ,formulaB);
+                return (bottomLeft && bottomRight); 
+            }
 };
 /**
  * @ loadImage
