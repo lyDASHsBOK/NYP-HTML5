@@ -36,6 +36,11 @@ function loadingStart(){
     preloaderApp.addEventListener(Event.COMPLETE, assetsLoaded);
 
     preloaderApp.start();
+	
+	createjs.Sound.registerSound("sound/01-main-theme-overworld.mp3","bgm");
+	createjs.Sound.registerSound("sound/smb_jump-small.wav","jumpsmall");
+	createjs.Sound.registerSound("sound/smb_jump-super.wav","jumpsuper");
+	createjs.Sound.registerSound("sound/smb_bump.wav","bump");
 }
 /**
  * @ assetsLoaded
