@@ -27,6 +27,10 @@ Game.prototype.keyBoardDown = function(e) {
  * @ keyBoardUp
  * */
 Game.prototype.keyBoardUp = function(e) {
+	if(this.keyBoard.getKeyPressThroughtName(" ") && !this.mario.jumping){
+		this.mario.maxVelocity = -10;
+		this.mario.jump();
+	}
 	this.keyBoard.setKeyPress(e.keyCode,false);
 };
 /**
@@ -46,20 +50,22 @@ Game.prototype.tick = function(e) {
 		this.mapView.scrolRight();
 	}*/
 
+	
 	this.mario.gravity();	
 	
-	if(this.keyBoard.getKeyPressThroughtName(" ") && this.mario.onGround){
-		this.mario.jumpPower();
-		if( this.mario.currentSide == "Left"){		
-			this.mario.jumpLeftAnimation();	
-		}else{		
-			this.mario.jumpRightAnimation();	
-		}	
-	}
+	if(this.keyBoard.getKeyPressThroughtName(" ") && !this.mario.jumping){
+	
+		if( this.mario.maxVelocity <= -15 ){
+			this.mario.maxVelocity = -15;
+			this.mario.jump();
+		}else{
+			this.mario.maxVelocity -= 1;
+		}
+	}	
 	
 	if(this.keyBoard.getKeyPressThroughtName("d") && !this.CheckWalkable(1)){	
 		this.mario.moveRight();
-		if(this.mario.onGround){
+		if(!this.mario.jumping){
 			this.mario.walkRightAnimation();
 		}
 		if(this.mario.x >= this.bg.image.width * 0.5){
@@ -69,7 +75,7 @@ Game.prototype.tick = function(e) {
 		}
 	} else if(this.keyBoard.getKeyPressThroughtName("a") && !this.CheckWalkable(-1)){
 		this.mario.moveLeft();
-		if(this.mario.onGround){
+		if(!this.mario.jumping){
 			this.mario.walkLeftAnimation();
 		}
 		if(this.mario.x <= this.bg.image.width * 0.5){
@@ -77,7 +83,7 @@ Game.prototype.tick = function(e) {
 				this.mario.x = this.bg.image.width * 0.5;
 			}
 		}
-	}else if(this.mario.onGround){
+	}else if(!this.mario.jumping){
 		if(this.mario.currentSide == "Left"){
 			this.mario.idleLeftAnimation();
 		}else{

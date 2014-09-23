@@ -41,9 +41,13 @@ BOK.inherits(Character, createjs.Container);
 	this.currentAnimation = "idle_h";
 	this.marioAnimation.gotoAndStop(this.currentAnimation);
 	
-	this.jumpSpeed = 0;
-	this.onGround = true;
 	this.currentSide = "Right";
+	
+	this.jumping = false;
+	this.velocity = 0;
+	this.maxVelocity = -10;
+	this.gravityValue = +1;
+	this.moveSpeed = 5;
 	
     //we store the reference of creep img in a member varibale so it can be accessed later
     this.addChild(this.marioAnimation);
@@ -51,6 +55,7 @@ BOK.inherits(Character, createjs.Container);
 	this.x = x;
 	this.y = y;
 }
+
 
 Character.prototype.walkRightAnimation = function(){
 	if(this.currentAnimation != "walk" ){
@@ -84,6 +89,9 @@ Character.prototype.idleLeftAnimation = function(){
 	}
 };
 
+/**
+ * @ private jumpRight
+ * */
 Character.prototype.jumpRightAnimation = function(){
 	if(this.currentAnimation != "jump" ){
 		this.currentAnimation = "jump";
@@ -92,6 +100,9 @@ Character.prototype.jumpRightAnimation = function(){
 	}
 };
 
+/**
+ * @ private JumpLeft
+ * */
 Character.prototype.jumpLeftAnimation = function(){
 	if(this.currentAnimation != "jump_h" ){
 		this.currentAnimation = "jump_h";
@@ -100,21 +111,36 @@ Character.prototype.jumpLeftAnimation = function(){
 	}
 };
 
-Character.prototype.gravity = function(){
-	if(this.y+8 < 272+16){
-		this.y += 5;
-	}else{
-		this.y = 272 + 8;
-		this.onGround = true;
-	}
+/**
+ * @ Jump
+ * */
+ Character.prototype.jump = function(){
+	this.jumping = true;
+	this.velocity = this.maxVelocity;
+	if( this.currentSide == "Left"){		
+		this.jumpLeftAnimation();	
+	}else{		
+		this.jumpRightAnimation();	
+	}	
 };
 
-Character.prototype.jumpPower = function(){
-	this.y -= 10;
-	
-	if( this.y < 272 - 16 * 3 ){
-		this.onGround = false;
+Character.prototype.gravity = function(){
+
+	if(this.jumping){
+		this.y += this.velocity;
+		this.velocity += this.gravityValue;
+		
+		if( this.y > 272+8 ){
+			this.y = 272+8;
+			this.velocity = 0;
+			this.jumping = false;
+			this.maxVelocity = -10;
+		}
+	}else{
+		this.velocity = 0;
+		this.jumping = false;
 	}
+	
 };
 
 Character.prototype.moveRight = function(){
@@ -125,7 +151,6 @@ Character.prototype.moveLeft = function(){
 	if(this.x > 4)
 	this.x -= 2;
 };
-
 
 Character.prototype.getHeight = function(){
 	return this.marioData.frames.height;
