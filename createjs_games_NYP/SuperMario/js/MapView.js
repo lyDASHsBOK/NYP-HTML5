@@ -39,7 +39,7 @@ function MapView(x,y , MapModule , bgWidth) {
 		// image to use
 		images    : [imgContainer["imgs/tileSet2.png"]], 
 		// width, height & registration point of each sprite
-		frames    : {width: 16, height: 16}, 
+		frames    : {width: 16, height: 16 , regX: 0 , regY: 0}, 
 	};
 	
 	
@@ -56,10 +56,8 @@ function MapView(x,y , MapModule , bgWidth) {
 
         for (var row = 0; row < this.mapHeight; row++) {
             for (var col = 0; col < this.mapWidth; col++) {
-				
-					this.tileClone[row].push(this.tile.clone());
+					this.tileClone[row].push(new createjs.Bitmap(createjs.SpriteSheetUtils.extractFrame(this.tileSpriteSheet,this.firstLevel[row][col])));
 					this.tileClone[row][col].name = "t_" + row + "_" + col;
-					this.tileClone[row][col].gotoAndStop(this.firstLevel[row][col]);
 					this.tileClone[row][col].x = col * this.tileSheet.frames.width;
 					this.tileClone[row][col].y = row * this.tileSheet.frames.height;
 					if( this.tileClone[row][col].x > this.bgWidth_ - this.tileSheet.frames.width || this.tileClone[row][col].x < 0 ){
