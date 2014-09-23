@@ -31,6 +31,7 @@ function loadingStart(){
     preloaderApp = new CanvasPreloaderApp([
         'imgs/bg.png',
 		'imgs/tileSet2.png',
+		'imgs/character_small.png',
     ], imgContainer, stretcher);
     preloaderApp.addEventListener(Event.COMPLETE, assetsLoaded);
 
