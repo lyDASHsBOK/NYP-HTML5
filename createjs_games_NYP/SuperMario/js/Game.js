@@ -3,6 +3,7 @@
  * */
 function Game(stage, imgContainer){
 
+	createjs.Sound.play("bgm",0,0,0,-1,1,0);
     this.stage_ = stage;
 	
 	this.bg = new createjs.Bitmap(imgContainer["imgs/bg.png"]);
@@ -29,6 +30,7 @@ Game.prototype.keyBoardDown = function(e) {
 Game.prototype.keyBoardUp = function(e) {
 	if(this.keyBoard.getKeyPressThroughtName(" ") && !this.mario.jumping){
 		this.mario.maxVelocity = -8;
+		createjs.Sound.play("jumpsmall");
 		this.mario.jump();
 	}
 	this.keyBoard.setKeyPress(e.keyCode,false);
@@ -58,6 +60,7 @@ Game.prototype.tick = function(e) {
 	
 		if( this.mario.maxVelocity <= -15 ){
 			this.mario.maxVelocity = -12;
+			createjs.Sound.play("jumpsuper");
 			this.mario.jump();
 		}else{
 			this.mario.maxVelocity -= 1;
@@ -107,6 +110,7 @@ Game.prototype.tick = function(e) {
 	if(!this.mario.onGround){
 		if(this.CheckWalkableUpDown(1)){
 			if( this.mario.velocity < 0){
+				createjs.Sound.play("bump");
 				this.mario.velocity *= -1;
 			 }
 		}
