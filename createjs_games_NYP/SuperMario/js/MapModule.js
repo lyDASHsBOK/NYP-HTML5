@@ -181,8 +181,6 @@ MapModule.prototype.createVPiple =  function (startX , startY , height ){
 	this.firstLevel[startY - height + 1][startX+1] = 265;
 	
 };
-
-
 MapModule.prototype.getMapData =  function (){
 	return this.firstLevel;
 };
@@ -195,4 +193,8 @@ MapModule.prototype.walkable =  function (row, col) {
 		}
 	}
 		return true;
+};
+
+MapModule.prototype.getID = function(row,col) {
+	return this.firstLevel[row][col];
 };

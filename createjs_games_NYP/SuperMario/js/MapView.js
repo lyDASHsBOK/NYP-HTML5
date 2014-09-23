@@ -45,10 +45,6 @@ function MapView(x,y , MapModule , bgWidth) {
 	
 	this.tileSpriteSheet = new createjs.SpriteSheet(this.tileSheet);
 	
-
-	this.tile = new createjs.Sprite(this.tileSpriteSheet);
-	
-
 	this.tileClone = [];	
 	 for (var row = 0; row < this.mapHeight; row++) {
 		this.tileClone.push([]);
@@ -56,10 +52,8 @@ function MapView(x,y , MapModule , bgWidth) {
 
         for (var row = 0; row < this.mapHeight; row++) {
             for (var col = 0; col < this.mapWidth; col++) {
-					this.tileClone[row].push(new createjs.Bitmap(createjs.SpriteSheetUtils.extractFrame(this.tileSpriteSheet,this.firstLevel[row][col])));
-					this.tileClone[row][col].name = "t_" + row + "_" + col;
-					this.tileClone[row][col].x = col * this.tileSheet.frames.width;
-					this.tileClone[row][col].y = row * this.tileSheet.frames.height;
+					var image = new createjs.Bitmap(createjs.SpriteSheetUtils.extractFrame(this.tileSpriteSheet,this.firstLevel[row][col]));
+					this.tileClone[row].push(new tileView(col * this.tileSheet.frames.width,row * this.tileSheet.frames.height,image , 0) );
 					if( this.tileClone[row][col].x > this.bgWidth_ - this.tileSheet.frames.width || this.tileClone[row][col].x < 0 ){
 						this.tileClone[row][col].visible = false;
 					}
@@ -108,6 +102,26 @@ MapView.prototype.scrolRight = function() {
 		}
 	return false;
 };
+
+MapView.prototype.move = function(row,col) {
+	this.tileClone[row][col].isMove = true;
+	
+};
+
+MapView.prototype.update = function() {
+  var start = Math.floor(this.x  * -1 / this.tileSheet.frames.width);
+  for (var row = 0; row < this.mapHeight; row++) {
+	for (var col = start ; col < start + 40; col++) {
+			this.tileClone[row][col].move();
+		}
+	}
+	
+};
+
+
+
+
+
 
 
 
