@@ -114,6 +114,7 @@ MapModule.prototype.buildLevelOne =  function (){
 		temp++;
 	}
 	
+	temp = 1;
 	for (var row = this.mapHeight - 10; row < this.mapHeight -2; row++) {
 		for (var col = 159; col <  168 ; col++) {
 			if(col  >=  168 - temp){
@@ -145,7 +146,7 @@ MapModule.prototype.buildLevelOne =  function (){
 		temp--;
 	}
 	
-		this.firstLevel[this.mapHeight -6][3] = 273;
+	this.firstLevel[this.mapHeight -6][3] = 273;
 };
 
 
