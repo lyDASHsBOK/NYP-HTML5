@@ -53,9 +53,6 @@ Game.prototype.tick = function(e) {
 	}*/
 	
 	
-	
-	
-	
 	if(this.keyBoard.getKeyPressThroughtName(" ") && !this.mario.jumping){
 	
 		if( this.mario.maxVelocity <= -15 ){
@@ -161,8 +158,14 @@ Game.prototype.CheckWalkableUpDown = function(diry) {
 				if(this.mapModule.getID(formulaC,formulaB) == 1 || this.mapModule.getID(formulaC,formulaA) == 1
 				|| this.mapModule.getID(formulaC,formulaB) == 24 || this.mapModule.getID(formulaC,formulaA) == 24){
 					
+					var formulaCenterX = Math.floor(((this.mario.x  - this.mapView.x) / this.mapView.tileSheet.frames.width ))
 					if(topLeft){
-						this.mapView.move(formulaC,formulaA);
+						if(this.mario.currentSide == "Left"){
+							this.mapView.move(formulaC,formulaA);
+						}
+						else{
+							this.mapView.move(formulaC,formulaCenterX);
+						}
 					}
 					else if(topRight){
 						this.mapView.move(formulaC,formulaB);
@@ -177,11 +180,10 @@ Game.prototype.CheckWalkableUpDown = function(diry) {
             } else if (diry === -1) { // down
                
 			   if(this.mario.currentSide == "Right"){
-			   formulaB = Math.floor(((this.mario.x - this.mario.getWidth() * 0.5) - this.mapView.x ) / this.mapView.tileSheet.frames.width);
+					formulaB = Math.floor(((this.mario.x + this.mario.getWidth() * 0.48) - this.mapView.x ) / this.mapView.tileSheet.frames.width);
 			   }
 			   else{
-			   formulaB = Math.floor(((this.mario.x + this.mario.getWidth() * 0.5) - this.mapView.x ) / this.mapView.tileSheet.frames.width);
-			   
+			   formulaB = Math.floor(((this.mario.x - this.mario.getWidth() * 0.48) - this.mapView.x ) / this.mapView.tileSheet.frames.width);
 			   }
 			   formulaA = Math.floor(((this.mario.x ) - this.mapView.x ) / this.mapView.tileSheet.frames.width);
 			   
@@ -192,7 +194,6 @@ Game.prototype.CheckWalkableUpDown = function(diry) {
 				if( bottomLeft || bottomRight){
 					this.mario.y =  formulaD   * this.mapView.tileSheet.frames.width - this.mapView.tileSheet.frames.width * 0.5;
 				}
-				
 				return (bottomLeft || bottomRight); 
             }
 };
