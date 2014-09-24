@@ -18,6 +18,10 @@ function Game(stage, imgContainer){
 	this.fireBall = new FireBall(0+8,272+8);
 	this.timeCountDown = 400;
 	
+	this.monster = [];
+	this.monster.push( new Monster(48+8,272, "mushroom") );
+	this.monster.push( new Monster(96+8,266, "turtle") );
+	
 	document.addEventListener("keydown", Delegate.create(this,this.keyBoardDown));
     document.addEventListener("keyup", Delegate.create(this,this.keyBoardUp));
 };
@@ -131,6 +135,40 @@ Game.prototype.tick = function(e) {
 		}
 	}
 	
+	if(this.mario.getAlpha() != 0.5){
+	
+		// collision for monster and character
+		for( var i = 0; i < this.monster.length ; i ++){
+			if(this.mario.currentSide  == "Left"){
+				if(Util.boxCollision(this.mario.x, this.mario.y, this.mario.getWidth() * 0.5, this.mario.getHeight() * 0.5,
+					this.monster[i].x, this.monster[i].y, this.monster[i].getWidth() , this.monster[i].getHeight() , -1)){
+					
+					console.log(this.mario.y);
+					if(this.mario.y < this.monster[i].y + this.monster[i].getHeight() * 0.5){
+						this.monster[i].dead();
+					}else{
+						this.mario.deadAnimation();
+					}
+				}
+			}
+			else{
+				if(Util.boxCollision(this.mario.x, this.mario.y, this.mario.getWidth() * 0.5, this.mario.getHeight() * 0.5,
+					this.monster[i].x, this.monster[i].y, this.monster[i].getWidth() , this.monster[i].getHeight() , 1)){
+					
+					console.log(this.mario.y);
+					if(this.mario.y < this.monster[i].y + this.monster[i].getHeight() * 0.5){
+						this.monster[i].dead();
+					}else{
+						this.mario.deadAnimation();
+					}
+				}
+			}
+		}
+	
+	}
+	
+	this.mario.update(e.delta/1000);
+	
 	this.mapView.update();
 	
 
@@ -220,6 +258,10 @@ Game.prototype.loadImage = function() {
 		this.stage_.addChild(this.mapView);
 		this.stage_.addChild(this.mario);
 		this.stage_.addChild(this.fireBall);
+		
+		for( var i=0; i < this.monster.length ; i++){
+			this.stage_.addChild(this.monster[i]);
+		}
 };
 /**
  * @ start
