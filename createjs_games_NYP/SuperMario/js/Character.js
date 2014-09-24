@@ -108,6 +108,8 @@ BOK.inherits(Character, createjs.Container);
 	this.gravityValue = 1;
 	this.moveSpeed = 5;
 	
+	this.invisibleTime = 2;
+	
 	this.onGround = true;
 	
     //we store the reference of creep img in a member varibale so it can be accessed later
@@ -150,6 +152,27 @@ Character.prototype.idleLeftAnimation = function(){
 	}
 };
 
+Character.prototype.deadAnimation = function(){
+	
+	if(this.size == "small"){
+		if(this.currentAnimation != "dead" ){
+			this.currentAnimation = "dead";
+			this.playAnimation();
+		}
+	}else{
+		if(this.size == "redlarge"){
+			this.largeMarioAnimation.alpha = 0.5;
+			this.removeChild(this.redLargeMarioAnimation);
+			this.addChild(this.largeMarioAnimation);
+			this.size = "large";
+		}else{
+			this.marioAnimation.alpha = 0.5;
+			this.removeChild(this.largeMarioAnimation);
+			this.addChild(this.marioAnimation);			
+			this.size = "small";
+		}
+	}
+};
 /**
  * @ private jumpRight
  * */
@@ -249,4 +272,36 @@ Character.prototype.growth = function(){
 		this.addChild(this.redLargeMarioAnimation);
 		this.size = "redlarge";
 	}
+};
+
+Character.prototype.getAlpha = function(){
+	if( this.size == "small" ){
+		return this.marioAnimation.alpha;
+	}else if(  this.size == "large" ){
+		return this.largeMarioAnimation.alpha;
+	}else if(  this.size == "redlarge" ){ 
+		return this.redLargeMarioAnimation.alpha;
+	}
+};
+
+Character.prototype.setAlpha = function(alpha){
+	if( this.size == "small" ){
+		this.marioAnimation.alpha = alpha;
+	}else if(  this.size == "large" ){
+		this.largeMarioAnimation.alpha = alpha;
+	}else if(  this.size == "redlarge" ){ 
+		this.redLargeMarioAnimation.alpha = alpha;
+	}
+};
+
+Character.prototype.update = function(deltaTime){
+
+		if( this.getAlpha() == 0.5 ){
+			this.invisibleTime -= deltaTime;
+			if(this.invisibleTime < 0){
+				this.setAlpha(1);
+				this.invisibleTime = 2;
+			}
+		}
+	
 };
