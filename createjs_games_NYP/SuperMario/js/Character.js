@@ -223,11 +223,20 @@ Character.prototype.moveLeft = function(){
 };
 
 Character.prototype.getHeight = function(){
-	return this.marioData.frames.height;
+	if( this.size == "small" ){
+		return this.marioData.frames.height;
+	}
+	else{
+		return this.largeMarioData.frames.height;
+	}
 };
 
 Character.prototype.getWidth = function(){
-	return this.marioData.frames.width;
+	if( this.size == "small" ){
+		return this.marioData.frames.width;
+	}else{
+		return this.largeMarioData.frames.width;
+	}
 };
 
 Character.prototype.growth = function(){

@@ -66,17 +66,9 @@ MapModule.prototype.buildLevelOne =  function (){
 	
 	
 	
-	this.firstLevel[this.mapHeight -3][183] = 33;
+	this.firstLevel[this.mapHeight -3][190] = 33;
 	
 
-	
-	
-
-	
-	
-	
-	
-	
 	
 	//random Block Tile
 	this.firstLevel[this.mapHeight -6][16] = 24;
@@ -127,8 +119,8 @@ MapModule.prototype.buildLevelOne =  function (){
 	this.firstLevel[this.mapHeight -10][119] = 24;
 	this.firstLevel[this.mapHeight -10][120] = 1;
 	this.firstLevel[this.mapHeight -6][157] = 1;
-	this.firstLevel[this.mapHeight -6][158] = 1;
-	this.firstLevel[this.mapHeight -6][159] = 1;
+	this.firstLevel[this.mapHeight -6][158] = 24;
+	this.firstLevel[this.mapHeight -6][159] = 24;
 	this.firstLevel[this.mapHeight -6][160] = 1;
 	//piple
 	this.createVPiple(28 , this.mapHeight -3 , 2 );
@@ -248,7 +240,6 @@ MapModule.prototype.getMapData =  function (){
 };
 
 MapModule.prototype.walkable =  function (row, col) {
-	
 	if(row < 0 || col < 0 || row > this.mapHeight -1 ||  col > this.mapWidth -1 ){
 		return false;
 	}

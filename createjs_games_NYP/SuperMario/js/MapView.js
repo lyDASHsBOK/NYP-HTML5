@@ -111,7 +111,7 @@ MapView.prototype.move = function(row,col) {
 MapView.prototype.update = function() {
   var start = Math.floor(this.x  * -1 / this.tileSheet.frames.width);
   for (var row = 0; row < this.mapHeight; row++) {
-	for (var col = start ; col < start + 40; col++) {
+	for (var col = start ; col < start + 26; col++) {
 			this.tileClone[row][col].move();
 		}
 	}
