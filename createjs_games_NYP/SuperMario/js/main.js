@@ -32,6 +32,8 @@ function loadingStart(){
         'imgs/bg.png',
 		'imgs/tileSet2.png',
 		'imgs/character_small.png',
+		'imgs/character_large.png',
+		'imgs/fireball.png',
     ], imgContainer, stretcher);
     preloaderApp.addEventListener(Event.COMPLETE, assetsLoaded);
 
