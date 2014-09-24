@@ -15,6 +15,9 @@ function Game(stage, imgContainer){
 	this.stage_.addEventListener('mousedown', Delegate.create(this,this.onMouseClick));
 	this.mario = new Character(0+8,272+8);
 	
+	this.fireBall = new FireBall(0+8,272+8);
+	this.timeCountDown = 400;
+	
 	document.addEventListener("keydown", Delegate.create(this,this.keyBoardDown));
     document.addEventListener("keyup", Delegate.create(this,this.keyBoardUp));
 };
@@ -32,6 +35,15 @@ Game.prototype.keyBoardUp = function(e) {
 		this.mario.maxVelocity = -8;
 		createjs.Sound.play("jumpsmall");
 		this.mario.jump();
+	}
+	if(this.keyBoard.getKeyPressThroughtName("x")){
+		this.mario.growth();
+	}
+	if(this.keyBoard.getKeyPressThroughtName("z")){
+		this.fireBall.x = this.mario.x-4;
+		this.fireBall.y = this.mario.y-8;
+		this.fireBall.updateX = this.mario.x-4; 
+		this.fireBall.updateY = this.mario.y-8;
 	}
 	this.keyBoard.setKeyPress(e.keyCode,false);
 };
@@ -52,6 +64,9 @@ Game.prototype.tick = function(e) {
 		this.mapView.scrolRight();
 	}*/
 	
+	this.fireBall.update((e.delta/10));
+	
+	this.timeCountDown -= (e.delta/1000);
 	
 	if(this.keyBoard.getKeyPressThroughtName(" ") && !this.mario.jumping){
 	
@@ -204,6 +219,7 @@ Game.prototype.loadImage = function() {
 		this.stage_.addChild(this.bg);
 		this.stage_.addChild(this.mapView);
 		this.stage_.addChild(this.mario);
+		this.stage_.addChild(this.fireBall);
 };
 /**
  * @ start
