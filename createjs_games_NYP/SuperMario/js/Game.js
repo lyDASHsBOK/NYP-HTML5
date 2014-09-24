@@ -20,7 +20,21 @@ function Game(stage, imgContainer){
 	
 	this.monster = [];
 	this.monster.push( new Monster(48+8,272, "mushroom") );
-	this.monster.push( new Monster(96+8,266, "turtle") );
+	this.monster.push( new Monster(500,272, "mushroom") );
+	this.monster.push( new Monster(650,272, "mushroom") );
+	this.monster.push( new Monster(670,272, "mushroom") );
+	this.monster.push( new Monster(670,272, "mushroom") );
+	this.monster.push( new Monster(1200,272, "mushroom") );
+	this.monster.push( new Monster(1250,272, "mushroom") );
+	this.monster.push( new Monster(1400,272, "mushroom") );
+	this.monster.push( new Monster(1500,272, "mushroom") );
+	this.monster.push( new Monster(1600,266, "turtle") );
+	this.monster.push( new Monster(1700,272, "mushroom") );
+	this.monster.push( new Monster(1750,272, "mushroom") );
+	this.monster.push( new Monster(1800,272, "mushroom") );
+	this.monster.push( new Monster(1850,272, "mushroom") );
+	this.monster.push( new Monster(2400,272, "mushroom") );
+	this.monster.push( new Monster(2600,272, "mushroom") );
 	
 	document.addEventListener("keydown", Delegate.create(this,this.keyBoardDown));
     document.addEventListener("keyup", Delegate.create(this,this.keyBoardUp));
@@ -95,6 +109,9 @@ Game.prototype.tick = function(e) {
 		if(this.mario.x >= this.bg.image.width * 0.5){
 			if(this.mapView.scrolLeft()){
 				this.mario.x = this.bg.image.width * 0.5;
+				for( var i = 0; i < this.monster.length ; i ++){
+					this.monster[i].x  -= 3;
+				}
 			}
 		}
 	} else if(this.keyBoard.getKeyPressThroughtName("a") && !this.CheckWalkableLeftRight(-1,this.mario)){
@@ -105,6 +122,9 @@ Game.prototype.tick = function(e) {
 		if(this.mario.x <= this.bg.image.width * 0.5){
 			if(this.mapView.scrolRight()){
 				this.mario.x = this.bg.image.width * 0.5;
+				for( var i = 0; i < this.monster.length ; i ++){
+					this.monster[i].x  += 3;
+				}
 			}
 		}
 	}else if(!this.mario.jumping){
@@ -139,32 +159,30 @@ Game.prototype.tick = function(e) {
 	
 		// collision for monster and character
 		for( var i = 0; i < this.monster.length ; i ++){
-			if(this.mario.currentSide  == "Left"){
-				if(Util.boxCollision(this.mario.x, this.mario.y, this.mario.getWidth() * 0.5, this.mario.getHeight() * 0.5,
-					this.monster[i].x, this.monster[i].y, this.monster[i].getWidth() , this.monster[i].getHeight() , -1)){
-					
-					console.log(this.mario.y);
-					if(this.mario.y < this.monster[i].y + this.monster[i].getHeight() * 0.5){
-						this.monster[i].dead();
-					}else{
-						this.mario.deadAnimation();
+			if(  this.monster[i].x < this.stage_.dWidth_){
+				if(this.mario.currentSide  == "Left"){
+					if(Util.boxCollision(this.mario.x, this.mario.y, this.mario.getWidth() * 0.5, this.mario.getHeight() * 0.5,
+						this.monster[i].x, this.monster[i].y, this.monster[i].getWidth() , this.monster[i].getHeight() , -1)){
+						
+						if(this.mario.y < this.monster[i].y ){
+							this.monster[i].dead();
+						}else{
+							this.mario.deadAnimation();
+						}
 					}
 				}
-			}
-			else{
-				if(Util.boxCollision(this.mario.x, this.mario.y, this.mario.getWidth() * 0.5, this.mario.getHeight() * 0.5,
-					this.monster[i].x, this.monster[i].y, this.monster[i].getWidth() , this.monster[i].getHeight() , 1)){
-					
-					console.log(this.mario.y);
-					if(this.mario.y < this.monster[i].y + this.monster[i].getHeight() * 0.5){
-						this.monster[i].dead();
-					}else{
-						this.mario.deadAnimation();
+				else{
+					if(Util.boxCollision(this.mario.x, this.mario.y, this.mario.getWidth() * 0.5, this.mario.getHeight() * 0.5,
+						this.monster[i].x, this.monster[i].y, this.monster[i].getWidth() , this.monster[i].getHeight() , 1)){
+						if(this.mario.y < this.monster[i].y ){
+							this.monster[i].dead();
+						}else{
+							this.mario.deadAnimation();
+						}
 					}
 				}
 			}
 		}
-	
 	}
 	
 	this.mario.update(e.delta/1000);
@@ -245,7 +263,7 @@ Game.prototype.CheckWalkableUpDown = function(diry ,object) {
 			   var bottomLeft = this.mapModule.walkable(formulaD, formulaA);
                 var bottomRight = this.mapModule.walkable(formulaD ,formulaB);
 				if( bottomLeft || bottomRight){
-					object.y =  formulaD   * this.mapView.tileSheet.frames.width - this.mapView.tileSheet.frames.width * 0.5;
+					object.y =  formulaD   * this.mapView.tileSheet.frames.width - object.getHeight() * 0.5 ;
 				}
 				return (bottomLeft || bottomRight); 
             }
@@ -257,7 +275,7 @@ Game.prototype.loadImage = function() {
 		this.stage_.addChild(this.bg);
 		this.stage_.addChild(this.mapView);
 		this.stage_.addChild(this.mario);
-		this.stage_.addChild(this.fireBall);
+		//this.stage_.addChild(this.fireBall);
 		
 		for( var i=0; i < this.monster.length ; i++){
 			this.stage_.addChild(this.monster[i]);
