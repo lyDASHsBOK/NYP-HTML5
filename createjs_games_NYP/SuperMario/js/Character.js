@@ -38,7 +38,7 @@ BOK.inherits(Character, createjs.Container);
 		framerate : 5,
 		images    : [imgContainer["imgs/character_large.png"]], 
 		// width, height & registration point of each sprite
-		frames    : {width: 16, height: 32, regX: 8 , regY: 24 },
+		frames    : {width: 16, height: 32, regX: 8 , regY: 16 },
 		animations: {    
 			idle:{ frames: [0] },
 			flag: [7, 8, "flag"],
@@ -62,7 +62,7 @@ BOK.inherits(Character, createjs.Container);
 		framerate : 5,
 		images    : [imgContainer["imgs/character_large.png"]], 
 		// width, height & registration point of each sprite
-		frames    : {width: 16, height: 32, regX: 8 , regY: 24 },
+		frames    : {width: 16, height: 32, regX: 8 , regY: 16 },
 		animations: {    
 			idle:{ frames: [0+42] },
 			flag: [7+42, 8+42, "flag"],
