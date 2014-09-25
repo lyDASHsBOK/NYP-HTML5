@@ -1,3 +1,4 @@
+//TODO: Class name should be begin with Upper case letter
 BOK.inherits(tileView, createjs.Container);
 
 function tileView (x,y,image,type){
@@ -23,6 +24,7 @@ function tileView (x,y,image,type){
 
 
 tileView.prototype.move = function(){
+    //TODO: if(this.isMove) is sufficient for this
 	if(this.isMove == true){
 	
 		

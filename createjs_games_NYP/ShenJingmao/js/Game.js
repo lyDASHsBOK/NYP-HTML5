@@ -223,9 +223,8 @@ Game.prototype.moveDecision = function(desination){
 	}else if(desination == this.pathFind.DIRECTION.BOTTOM_LEFT){
 		this.moveBottomLeft();
 	}
-	else if(desination == this.pathFind.DIRECTION.NO_DIRECTION){
-			 this.checkCondition();
-	}
+
+    this.checkCondition();
 };
 Game.prototype.checkCondition = function(){
 		if( UtilCheck.checkLose(this.mapTileModel.clone()) ){
