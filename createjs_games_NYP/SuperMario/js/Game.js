@@ -80,13 +80,9 @@ Game.prototype.tick = function(e) {
 	for( var i = 0; i < this.fireBall.length ; i++){
 		if(this.fireBall[i].getAlive()){
 	
-			if(this.CheckWalkableUpDown(-1,this.fireBall[i])){
-				this.fireBall[i].setToBounce();
-				
-			}
-	
+		
 			var checkFireBallCollide = false;
-			if(this.fireBall.currentSide == "Left"){
+			if(this.fireBall[i].currentSide == "Left"){
 				checkFireBallCollide = this.CheckWalkableLeftRight(-1,this.fireBall[i]);
 				
 			}
@@ -97,9 +93,31 @@ Game.prototype.tick = function(e) {
 			if(checkFireBallCollide){
 				this.fireBall[i].setToBomb();
 			}
+			
+			if(this.fireBall[i].state != "bomb"){
+				if(this.CheckWalkableUpDown(-1,this.fireBall[i])){
+					this.fireBall[i].setToBounce();
+				}
+			}
 				
 			this.fireBall[i].update((e.delta/200));
 		}
+		
+		if( this.fireBall[i].x < 0 || this.fireBall[i].x > this.stage_.dWidth_){
+			this.fireBall[i].setAliveFalse();
+		}
+		
+			for( var j = 0; j < this.monster.length ; j ++){
+						if(  this.monster[j].x < this.stage_.dWidth_ + this.monster[j].getWidth() && this.monster[j].x > -this.monster[j].getWidth() && this.monster[j].alive ){
+							if(Util.boxCollision(this.fireBall[i].x, this.fireBall[i].y, this.fireBall[i].getWidth() * 0.5 , this.fireBall[i].getHeight() * 0.5,
+								this.monster[j].x, this.monster[j].y, this.monster[j].getWidth() * 0.5, this.monster[j].getHeight() * 0.5, 1)){
+								this.fireBall[i].setToBomb();
+								this.monster[j].dead();
+								break;
+							}
+						}
+					}
+		
 	}
 	
 	this.timeCountDown -= (e.delta/1000);
@@ -125,6 +143,9 @@ Game.prototype.tick = function(e) {
 				for( var i = 0; i < this.monster.length ; i ++){
 					this.monster[i].x  -= 3;
 				}
+				for( var i = 0; i < this.fireBall.length ; i++){
+					this.fireBall[i].x -=3;
+				}
 			}
 		}
 	} else if(this.keyBoard.getKeyPressThroughtName("a") && !this.CheckWalkableLeftRight(-1,this.mario)){
@@ -137,6 +158,9 @@ Game.prototype.tick = function(e) {
 				this.mario.x = this.bg.image.width * 0.5;
 				for( var i = 0; i < this.monster.length ; i ++){
 					this.monster[i].x  += 3;
+				}
+				for( var i = 0; i < this.fireBall.length ; i++){
+					this.fireBall[i].x +=3;
 				}
 			}
 		}
@@ -185,8 +209,8 @@ Game.prototype.tick = function(e) {
 							this.monster[i].x, this.monster[i].y, this.monster[i].getWidth() * 0.5 , this.monster[i].getHeight() * 0.5, 1);
 							
 						if(leftCheck || rightCheck){
-							console.log(this.monster[i].y + ":" + this.mario.y)
-							if(this.mario.y  < this.monster[i].y ){
+							console.log(this.monster[i].y + ":" + (this.mario.y + this.mario.getHeight() * 0.5 ) )
+							if( (this.mario.y  < this.monster[i].y && this.mario.size =="small")|| (this.mario.y + this.mario.getHeight() * 0.5 < this.monster[i].y && this.mario.size !="small") ){
 								this.monster[i].dead();
 								this.mario.jump(-4);
 							}else{
@@ -201,9 +225,6 @@ Game.prototype.tick = function(e) {
 							this.monster[i].changeDirection();
 						}
 					}
-					
-					
-					
 					
 					for( var j = 0; j < this.monster.length ; j ++){
 						if(  this.monster[j].x < this.stage_.dWidth_ + this.monster[j].getWidth() && this.monster[j].x > -this.monster[j].getWidth() && i !=j){

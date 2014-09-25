@@ -111,9 +111,11 @@ FireBall.prototype.getWidth = function(){
 };
  
 FireBall.prototype.setToBounce = function(){
-	this.state = "bounce";
-	this.deltaTime = 0;
-	this.updateY = this.y;
+	if(this.state !=  "bomb"){
+		this.state = "bounce";
+		this.deltaTime = 0;
+		this.updateY = this.y;
+	}
 };
 
 FireBall.prototype.setToBomb = function(){
