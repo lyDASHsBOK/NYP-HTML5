@@ -122,6 +122,12 @@ BOK.inherits(Character, createjs.Container);
 	this.y = y;
 }
 
+Character.prototype.clone = function(){
+    var newCharacter = new Character(this.x,this.y);
+    //newCharacter.cells_ = BOK.cloneObject(this.cells_);
+	newCharacter.currentSide = this.currentSide;
+    return newCharacter;
+};
 
 Character.prototype.walkRightAnimation = function(){
 	if(this.currentAnimation != "walk" ){
