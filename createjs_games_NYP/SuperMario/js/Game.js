@@ -50,9 +50,8 @@ Game.prototype.keyBoardDown = function(e) {
  * */
 Game.prototype.keyBoardUp = function(e) {
 	if(this.keyBoard.getKeyPressThroughtName(" ") && !this.mario.jumping){
-		this.mario.maxVelocity = -8;
 		createjs.Sound.play("jumpsmall");
-		this.mario.jump();
+		this.mario.jump(-8);
 	}
 	if(this.keyBoard.getKeyPressThroughtName("x")){
 		this.mario.growth();
@@ -92,12 +91,11 @@ Game.prototype.tick = function(e) {
 	
 	if(this.keyBoard.getKeyPressThroughtName(" ") && !this.mario.jumping){
 	
-		if( this.mario.maxVelocity <= -15 ){
-			this.mario.maxVelocity = -12;
+		if( this.mario.count > 3 ){
 			createjs.Sound.play("jumpsuper");
-			this.mario.jump();
+			this.mario.jump(-12);
 		}else{
-			this.mario.maxVelocity -= 1;
+			this.mario.count += 1;
 		}
 	}	
 	
@@ -155,31 +153,31 @@ Game.prototype.tick = function(e) {
 		}
 	}
 	
+	// if mario is invisible
 	if(this.mario.getAlpha() != 0.5){
-	
+		var leftCheck = false;
+		var rightCheck = false;
 		// collision for monster and character
 		for( var i = 0; i < this.monster.length ; i ++){
-			if(  this.monster[i].x < this.stage_.dWidth_){
-				if(this.mario.currentSide  == "Left"){
-					if(Util.boxCollision(this.mario.x, this.mario.y, this.mario.getWidth() * 0.5, this.mario.getHeight() * 0.5,
-						this.monster[i].x, this.monster[i].y, this.monster[i].getWidth() , this.monster[i].getHeight() , -1)){
+			this.monster[i].update();
+			if(this.monster[i].alive){
+				if(  this.monster[i].x < this.stage_.dWidth_){
+				
+					leftCheck =	Util.boxCollision(this.mario.x, this.mario.y, this.mario.getWidth() * 0.5, this.mario.getHeight() * 0.5,
+							this.monster[i].x, this.monster[i].y, this.monster[i].getWidth() , this.monster[i].getHeight() , -1);
+		
+					rightCheck = Util.boxCollision(this.mario.x, this.mario.y, this.mario.getWidth() * 0.5, this.mario.getHeight() * 0.5,
+							this.monster[i].x, this.monster[i].y, this.monster[i].getWidth() , this.monster[i].getHeight() , 1);
+							
+						if(leftCheck || rightCheck){
+							if(this.mario.y < this.monster[i].y ){
+								this.monster[i].dead();
+								this.mario.jump(-4);
+							}else{
+								this.mario.deadAnimation();
+							}
+						}
 						
-						if(this.mario.y < this.monster[i].y ){
-							this.monster[i].dead();
-						}else{
-							this.mario.deadAnimation();
-						}
-					}
-				}
-				else{
-					if(Util.boxCollision(this.mario.x, this.mario.y, this.mario.getWidth() * 0.5, this.mario.getHeight() * 0.5,
-						this.monster[i].x, this.monster[i].y, this.monster[i].getWidth() , this.monster[i].getHeight() , 1)){
-						if(this.mario.y < this.monster[i].y ){
-							this.monster[i].dead();
-						}else{
-							this.mario.deadAnimation();
-						}
-					}
 				}
 			}
 		}

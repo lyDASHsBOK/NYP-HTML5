@@ -15,9 +15,28 @@ BOK.inherits(Monster, createjs.Container);
 		this.spawnTurtle();
 	}
 	this.type_ = type;
+	this.alive = true;
+	
 	this.x = x;
 	this.y = y;
 }
+
+Monster.prototype.update = function() {
+	if(!this.alive){
+		this.alpha -= 0.05;
+		if(this.alpha == 0){
+			this.visible = false;
+		}
+	}
+};
+
+Monster.prototype.setDead = function() {
+	this.alive = false;
+};
+
+Monster.prototype.isDead = function() {
+	return this.alive;
+};
 
 Monster.prototype.spawnMushroom = function() {
 	this.mushroomData = {
@@ -29,7 +48,7 @@ Monster.prototype.spawnMushroom = function() {
 		animations: {    
 			walk: {
 				frames: [0, 1],
-				speed: 1
+				speed: 0.1
 			},
 
 			dead:{
@@ -66,7 +85,7 @@ Monster.prototype.spawnTurtle = function() {
 		animations: {    
 			walk: {
 				frames: [0, 1],
-				speed: 0.5
+				speed: 0.1
 			},
 
 			dead:{
@@ -111,6 +130,7 @@ Monster.prototype.getWidth = function(){
 
 Monster.prototype.dead = function(){
 	this.currentAnimation = "dead";
+	this.setDead();
 	if(this.type_ == "mushroom"){	
 		this.mushroomAnimation.gotoAndPlay(this.currentAnimation);	
 	}else if(this.type_ == "turtle"){
