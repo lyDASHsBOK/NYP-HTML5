@@ -113,6 +113,7 @@ BOK.inherits(Character, createjs.Container);
 	this.onGround = true;
 	
     //we store the reference of creep img in a member varibale so it can be accessed later
+    //TODO: you can probably add all 3 animations here and use 'visible' to control which one to be displayed
     this.addChild(this.marioAnimation);
 	
 	this.x = x;
@@ -274,6 +275,8 @@ Character.prototype.growth = function(){
 	}
 };
 
+//TODO: if all three animations are added to this container and be controlled by visibility
+//the getAlpha() and setAlpha() can be done on 'this' instead of each animation. which will make this function alot easier
 Character.prototype.getAlpha = function(){
 	if( this.size == "small" ){
 		return this.marioAnimation.alpha;
