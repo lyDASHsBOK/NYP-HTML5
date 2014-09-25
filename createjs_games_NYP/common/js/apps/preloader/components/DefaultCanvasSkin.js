@@ -15,14 +15,16 @@ goog.require("org.createjs.easeljs.EaselJS");
 BOK.inherits(DefaultCanvasSkin, createjs.Container);
 BOK.implement(DefaultCanvasSkin, IPreloaderSkin);
 
-function DefaultCanvasSkin()
+function DefaultCanvasSkin(stage)
 {
     createjs.Container.call(this);
     
     this.skinReadyCallback = null;
     this.displayFinishCallback = null;
+	this.stage_ = stage;
 
-    this.BAR_HEIGHT = 21;
+
+    this.BAR_HEIGHT = this.stage_.dHeight_ * 0.03;
     this.BAR_WIDTH = 500;
 
     this.bars_ = [];
@@ -46,6 +48,7 @@ DefaultCanvasSkin.prototype.update = function(loadingPercentage)
     var lastBarIndex = this.bars_.length-1;
 
     this.removeChild(this.bars_[lastBarIndex]);
+	var yPosition = this.stage_.dWidth_ * 0.5;
 
     for(var i = lastBarIndex; i < fullBarNum; ++i)
     {
@@ -54,9 +57,9 @@ DefaultCanvasSkin.prototype.update = function(loadingPercentage)
         var s1 = new createjs.Shape();
         var s2 = new createjs.Shape();
         var s3 = new createjs.Shape();
-        s1.graphics.beginFill('rgba(212,177,92,1)').drawRect(50 + i * BAR_WIDTH, 400, BAR_WIDTH - 1, this.BAR_HEIGHT/3);
-        s2.graphics.beginFill('rgba(212,177,92,1)').drawRect(50 + i * BAR_WIDTH, 400+this.BAR_HEIGHT/3, BAR_WIDTH - 1, this.BAR_HEIGHT/3);
-        s3.graphics.beginFill('rgba(212,177,92,1)').drawRect(50 + i * BAR_WIDTH, 400+this.BAR_HEIGHT*2/3, BAR_WIDTH - 1, this.BAR_HEIGHT/3);
+        s1.graphics.beginFill('rgba(212,177,92,1)').drawRect(50 + i * BAR_WIDTH, yPosition, this.BAR_HEIGHT/3);
+        s2.graphics.beginFill('rgba(212,177,92,1)').drawRect(50 + i * BAR_WIDTH, yPosition+this.BAR_HEIGHT/3, BAR_WIDTH - 1, this.BAR_HEIGHT/3);
+        s3.graphics.beginFill('rgba(212,177,92,1)').drawRect(50 + i * BAR_WIDTH, yPosition+this.BAR_HEIGHT*2/3, BAR_WIDTH - 1, this.BAR_HEIGHT/3);
         this.addChild(s1);
         this.addChild(s2);
         this.addChild(s3);

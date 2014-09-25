@@ -25,7 +25,7 @@ BOK.inherits(CanvasPreloaderApp, AbstractPreloaderApp);
  * */
 function CanvasPreloaderApp(assetsList, assetsContainer, rootStage, preloaderSkin)
 {
-    var skin = preloaderSkin || new DefaultCanvasSkin();
+    var skin = preloaderSkin || new DefaultCanvasSkin(rootStage);
     rootStage.addChild(skin);
 
     AbstractPreloaderApp.call(this, assetsList, assetsContainer, skin);
