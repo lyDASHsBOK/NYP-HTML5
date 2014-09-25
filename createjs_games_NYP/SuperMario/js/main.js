@@ -36,6 +36,7 @@ function loadingStart(){
 		'imgs/fireball.png',
 		'imgs/monster1.png',
 		'imgs/monster2.png',
+		'imgs/fireballeffect.png',
     ], imgContainer, stretcher);
     preloaderApp.addEventListener(Event.COMPLETE, assetsLoaded);
 

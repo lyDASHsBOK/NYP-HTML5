@@ -15,7 +15,10 @@ function Game(stage, imgContainer){
 	this.stage_.addEventListener('mousedown', Delegate.create(this,this.onMouseClick));
 	this.mario = new Character(0+8,272+8);
 	
-	this.fireBall = new FireBall(0+8,272+8);
+	this.fireBall = [];
+	this.fireBall.push ( new FireBall(0,0) );
+	this.fireBall.push ( new FireBall(0,0) );
+	
 	this.timeCountDown = 400;
 	
 	this.monster = [];
@@ -55,12 +58,14 @@ Game.prototype.keyBoardUp = function(e) {
 	if(this.keyBoard.getKeyPressThroughtName("x")){
 		this.mario.growth();
 	}
-	if(this.keyBoard.getKeyPressThroughtName("z")){
-		this.fireBall.x = this.mario.x-4;
-		this.fireBall.y = this.mario.y-8;
-		this.fireBall.updateX = this.mario.x-4; 
-		this.fireBall.updateY = this.mario.y-8;
-		this.fireBall.currentSide = this.mario.currentSide;
+	if(this.keyBoard.getKeyPressThroughtName("z") && this.mario.size == "redlarge"){
+		
+		for( var i = 0; i < this.fireBall.length ; i++){
+			if(!this.fireBall[i].visible){
+				this.fireBall[i].shoot( this.mario.clone() );
+				break;
+			}
+		}
 	}
 	this.keyBoard.setKeyPress(e.keyCode,false);
 };
@@ -72,21 +77,32 @@ Game.prototype.onMouseClick = function(e) {
 };
 Game.prototype.tick = function(e) {
 
+	for( var i = 0; i < this.fireBall.length ; i++){
+		if(this.fireBall[i].getAlive()){
 	
-	this.fireBall.update((e.delta/10));
+			if(this.CheckWalkableUpDown(-1,this.fireBall[i])){
+				this.fireBall[i].setToBounce();
+				
+			}
+	
+			var checkFireBallCollide = false;
+			if(this.fireBall.currentSide == "Left"){
+				checkFireBallCollide = this.CheckWalkableLeftRight(-1,this.fireBall[i]);
+				
+			}
+			else{
+				checkFireBallCollide = this.CheckWalkableLeftRight(1,this.fireBall[i]);
+			}
+						
+			if(checkFireBallCollide){
+				this.fireBall[i].setToBomb();
+			}
+				
+			this.fireBall[i].update((e.delta/200));
+		}
+	}
 	
 	this.timeCountDown -= (e.delta/1000);
-	var checkFireBallCollide = false;
-	if(this.fireBall.currentSide == "Left"){
-		//checkFireBallCollide = this.CheckWalkableLeftRight(-1,this.fireBall);
-	}
-	else{
-		//checkFireBallCollide = this.CheckWalkableLeftRight(1,this.fireBall);
-	}
-	
-	//if(this.CheckWalkableUpDown(-1,this.fireBall)){
-		//console.log("collide");
-	//}
 	
 	if(this.keyBoard.getKeyPressThroughtName(" ") && !this.mario.jumping){
 	
@@ -295,7 +311,9 @@ Game.prototype.loadImage = function() {
 		this.stage_.addChild(this.bg);
 		this.stage_.addChild(this.mapView);
 		this.stage_.addChild(this.mario);
-		//this.stage_.addChild(this.fireBall);
+		for( var i=0; i < this.fireBall.length ; i++){
+			this.stage_.addChild(this.fireBall[i]);
+		}
 		
 		for( var i=0; i < this.monster.length ; i++){
 			this.stage_.addChild(this.monster[i]);
