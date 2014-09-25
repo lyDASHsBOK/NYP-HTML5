@@ -19,22 +19,21 @@ function Game(stage, imgContainer){
 	this.timeCountDown = 400;
 	
 	this.monster = [];
-	this.monster.push( new Monster(48+8,272, "mushroom") );
-	this.monster.push( new Monster(500,272, "mushroom") );
-	this.monster.push( new Monster(650,272, "mushroom") );
-	this.monster.push( new Monster(670,272, "mushroom") );
-	this.monster.push( new Monster(670,272, "mushroom") );
-	this.monster.push( new Monster(1200,272, "mushroom") );
-	this.monster.push( new Monster(1250,272, "mushroom") );
-	this.monster.push( new Monster(1400,272, "mushroom") );
-	this.monster.push( new Monster(1500,272, "mushroom") );
-	this.monster.push( new Monster(1600,266, "turtle") );
-	this.monster.push( new Monster(1700,272, "mushroom") );
-	this.monster.push( new Monster(1750,272, "mushroom") );
-	this.monster.push( new Monster(1800,272, "mushroom") );
-	this.monster.push( new Monster(1850,272, "mushroom") );
-	this.monster.push( new Monster(2400,272, "mushroom") );
-	this.monster.push( new Monster(2600,272, "mushroom") );
+	this.monster.push( new Monster(340,220, "mushroom") );
+	this.monster.push( new Monster(500,280, "mushroom") );
+	this.monster.push( new Monster(650,280, "mushroom") );
+	this.monster.push( new Monster(680,280, "mushroom") );
+	this.monster.push( new Monster(1200,280, "mushroom") );
+	this.monster.push( new Monster(1250,280, "mushroom") );
+	this.monster.push( new Monster(1400,280, "mushroom") );
+	this.monster.push( new Monster(1500,280, "mushroom") );
+	this.monster.push( new Monster(1600,260, "turtle") );
+	this.monster.push( new Monster(1700,280, "mushroom") );
+	this.monster.push( new Monster(1750,280, "mushroom") );
+	this.monster.push( new Monster(1800,280, "mushroom") );
+	this.monster.push( new Monster(1850,280, "mushroom") );
+	this.monster.push( new Monster(2400,280, "mushroom") );
+	this.monster.push( new Monster(2600,280, "mushroom") );
 	
 	document.addEventListener("keydown", Delegate.create(this,this.keyBoardDown));
     document.addEventListener("keyup", Delegate.create(this,this.keyBoardUp));
@@ -159,24 +158,47 @@ Game.prototype.tick = function(e) {
 		var rightCheck = false;
 		// collision for monster and character
 		for( var i = 0; i < this.monster.length ; i ++){
-			this.monster[i].update();
+			if(  this.monster[i].x < this.stage_.dWidth_  + this.monster[i].getWidth()  && this.monster[i].x > -this.monster[i].getWidth() * 1.1){
+				this.monster[i].update();
 			if(this.monster[i].alive){
-				if(  this.monster[i].x < this.stage_.dWidth_){
 				
 					leftCheck =	Util.boxCollision(this.mario.x, this.mario.y, this.mario.getWidth() * 0.5, this.mario.getHeight() * 0.5,
-							this.monster[i].x, this.monster[i].y, this.monster[i].getWidth() , this.monster[i].getHeight() , -1);
+							this.monster[i].x, this.monster[i].y, this.monster[i].getWidth() * 0.5 , this.monster[i].getHeight() * 0.5 , -1);
 		
 					rightCheck = Util.boxCollision(this.mario.x, this.mario.y, this.mario.getWidth() * 0.5, this.mario.getHeight() * 0.5,
-							this.monster[i].x, this.monster[i].y, this.monster[i].getWidth() , this.monster[i].getHeight() , 1);
+							this.monster[i].x, this.monster[i].y, this.monster[i].getWidth() * 0.5 , this.monster[i].getHeight() * 0.5, 1);
 							
 						if(leftCheck || rightCheck){
-							if(this.mario.y < this.monster[i].y ){
+							console.log(this.monster[i].y + ":" + this.mario.y)
+							if(this.mario.y  < this.monster[i].y ){
 								this.monster[i].dead();
 								this.mario.jump(-4);
 							}else{
 								this.mario.deadAnimation();
 							}
 						}
+						
+					this.monster[i].onGround = this.CheckWalkableUpDown(-1 ,this.monster[i]);
+					
+					if(this.monster[i].onGround){
+						if( this.CheckWalkableLeftRight(1,this.monster[i]) || this.CheckWalkableLeftRight(-1,this.monster[i]) ){
+							this.monster[i].changeDirection();
+						}
+					}
+					
+					
+					
+					
+					for( var j = 0; j < this.monster.length ; j ++){
+						if(  this.monster[j].x < this.stage_.dWidth_ + this.monster[j].getWidth() && this.monster[j].x > -this.monster[j].getWidth() && i !=j){
+							if(Util.boxCollision(this.monster[i].x, this.monster[i].y, this.monster[i].getWidth() * 0.5 , this.monster[i].getHeight() * 0.5,
+								this.monster[j].x, this.monster[j].y, this.monster[j].getWidth() * 0.5, this.monster[j].getHeight() * 0.5, 1)){
+								this.monster[i].changeDirection();
+								this.monster[j].changeDirection();
+								break;
+							}
+						}
+					}
 						
 				}
 			}
@@ -198,8 +220,8 @@ Game.prototype.CheckWalkableLeftRight = function(dirx , object) {
 			
             if (dirx === -1) { // left
                 formulaA = Math.floor(((object.x - object.getWidth() * 0.5 ) - this.mapView.x) / this.mapView.tileSheet.frames.width );
-				var topLeft =  this.mapModule.walkable(formulaC ,formulaA);
-                var bottomLeft = this.mapModule.walkable(formulaD , formulaA);
+				var topLeft =  this.mapModule.walkable(formulaC ,formulaA );
+                var bottomLeft = this.mapModule.walkable(formulaD , formulaA );
 				
                 return (topLeft && bottomLeft);
 				

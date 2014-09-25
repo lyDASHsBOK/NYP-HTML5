@@ -258,5 +258,8 @@ MapModule.prototype.walkable =  function (row, col) {
 };
 
 MapModule.prototype.getID = function(row,col) {
+	if(row < 0 || col < 0 || row > this.mapHeight -1 ||  col > this.mapWidth -1 ){
+		return -100;
+	}
 	return this.firstLevel[row][col];
 };
