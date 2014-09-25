@@ -21,6 +21,10 @@ function MapModule(mapRow , mapCol){
 	
 	
 }
+
+
+//TODO: this function will keep growing when we add more levels. try to make levels into level JSON data
+//and this can be a generic level generation function
 /**
  * @ private 
  * genrate level 1 map
