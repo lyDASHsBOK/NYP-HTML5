@@ -63,6 +63,7 @@ Game.prototype.keyBoardUp = function(e) {
 		for( var i = 0; i < this.fireBall.length ; i++){
 			if(!this.fireBall[i].visible){
 				this.fireBall[i].shoot( this.mario.clone() );
+				createjs.Sound.play("fireball");
 				break;
 			}
 		}
@@ -112,7 +113,8 @@ Game.prototype.tick = function(e) {
 							if(Util.boxCollision(this.fireBall[i].x, this.fireBall[i].y, this.fireBall[i].getWidth() * 0.5 , this.fireBall[i].getHeight() * 0.5,
 								this.monster[j].x, this.monster[j].y, this.monster[j].getWidth() * 0.5, this.monster[j].getHeight() * 0.5, 1)){
 								this.fireBall[i].setToBomb();
-								this.monster[j].dead();
+								this.monster[j].dead(2);
+								createjs.Sound.play("kick");
 								break;
 							}
 						}
@@ -211,7 +213,8 @@ Game.prototype.tick = function(e) {
 						if(leftCheck || rightCheck){
 							console.log(this.monster[i].y + ":" + (this.mario.y + this.mario.getHeight() * 0.5 ) )
 							if( (this.mario.y  < this.monster[i].y && this.mario.size =="small")|| (this.mario.y + this.mario.getHeight() * 0.5 < this.monster[i].y && this.mario.size !="small") ){
-								this.monster[i].dead();
+								this.monster[i].dead(1);
+								createjs.Sound.play("stomp");
 								this.mario.jump(-4);
 							}else{
 								this.mario.deadAnimation();

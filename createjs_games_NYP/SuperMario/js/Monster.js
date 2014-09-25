@@ -16,6 +16,7 @@ BOK.inherits(Monster, createjs.Container);
 	}
 	this.type_ = type;
 	this.alive = true;
+	this.alive2 = true;
 	
 	this.currentSide = "Left";
 	
@@ -29,8 +30,9 @@ Monster.prototype.update = function() {
 		if(this.alpha == 0){
 			this.visible = false;
 		}
-	}
-	else{
+	}else if(!this.alive2){
+	
+	}else{
 		if(this.currentSide == "Left"){
 			this.x -= 1;
 		}
@@ -65,6 +67,15 @@ Monster.prototype.isDead = function() {
 	return this.alive;
 };
 
+Monster.prototype.setDead2 = function() {
+	this.currentAnimation = "walk_v";
+	this.alive2 = false;
+};
+
+Monster.prototype.isDead2 = function() {
+	return this.alive2;
+};
+
 Monster.prototype.spawnMushroom = function() {
 	this.mushroomData = {
 		// image to use
@@ -90,7 +101,7 @@ Monster.prototype.spawnMushroom = function() {
 	this.mushroomAnimation = new createjs.Sprite(this.mushroomSpriteSheet);
 	
 	// able to  reverse the sprite
-	createjs.SpriteSheetUtils.addFlippedFrames(this.mushroomSpriteSheet, true, false, false);
+	createjs.SpriteSheetUtils.addFlippedFrames(this.mushroomSpriteSheet, true, true, false);
 	
 	this.currentAnimation = "walk";
 	this.mushroomAnimation.gotoAndPlay(this.currentAnimation);
@@ -126,7 +137,7 @@ Monster.prototype.spawnTurtle = function() {
 	this.turtleAnimation = new createjs.Sprite(this.turtleSpriteSheet);
 	
 	// able to  reverse the sprite
-	createjs.SpriteSheetUtils.addFlippedFrames(this.turtleSpriteSheet, true, false, false);
+	createjs.SpriteSheetUtils.addFlippedFrames(this.turtleSpriteSheet, true, true, false);
 	
 	this.currentAnimation = "walk";
 	this.turtleAnimation.gotoAndPlay(this.currentAnimation);
@@ -156,9 +167,14 @@ Monster.prototype.getWidth = function(){
 	}
 };
 
-Monster.prototype.dead = function(){
-	this.currentAnimation = "dead";
-	this.setDead();
+Monster.prototype.dead = function( value ){
+
+	if(value == 1){	
+		this.setDead();
+	}else{
+		this.setDead2();
+	}
+	
 	if(this.type_ == "mushroom"){	
 		this.mushroomAnimation.gotoAndPlay(this.currentAnimation);	
 	}else if(this.type_ == "turtle"){

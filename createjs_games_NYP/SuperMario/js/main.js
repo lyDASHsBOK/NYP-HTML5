@@ -46,6 +46,9 @@ function loadingStart(){
 	createjs.Sound.registerSound("sound/smb_jump-small.wav","jumpsmall");
 	createjs.Sound.registerSound("sound/smb_jump-super.wav","jumpsuper");
 	createjs.Sound.registerSound("sound/smb_bump.wav","bump");
+	createjs.Sound.registerSound("sound/smb_fireball.wav","fireball");
+	createjs.Sound.registerSound("sound/smb_stomp.wav","stomp");
+	createjs.Sound.registerSound("sound/smb_kick.wav","kick");
 }
 /**
  * @ assetsLoaded
