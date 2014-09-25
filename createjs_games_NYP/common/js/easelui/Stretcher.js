@@ -23,9 +23,12 @@ function Stretcher(canvasDom, defaultWidth, defaultHeight) {
     this.stage = new createjs.Stage(canvasDom);
     this.stage.addChild(this);
 
+    this.fps_ = new createjs.Text('', "25px Arial bold", "#FFFFFF");
+    this.stage.addChild(this.fps_);
+
     //stage setup
     createjs.Ticker.setFPS(40);
-    createjs.Ticker.addEventListener("tick", Delegate.create(this.stage, this.stage.update));
+    createjs.Ticker.addEventListener("tick", Delegate.create(this, this.update_));
     createjs.Touch.enable(this.stage);
 
     this.layout_();
@@ -44,6 +47,17 @@ Stretcher.prototype.onWindowResize_ = function() {
     }), 500);
 };
 
+Stretcher.prototype.update_ = function() {
+    this.stage.update();
+    if(this.fps_.visible){
+        var now = new Date().getTime();
+        if(this.then_ && !this.showFpsInterval_--){
+            this.fps_.text = 'FPS: ' + Math.ceil(1000 / (now - this.then_));
+            this.showFpsInterval_ = 20;
+        }
+        this.then_ = now;
+    }
+};
 Stretcher.prototype.layout_ = function() {
     //give 2 px space to prevent scroll bar
     var wWidth = window.innerWidth - 2;
@@ -51,33 +65,22 @@ Stretcher.prototype.layout_ = function() {
 
     var scaleX = wWidth / this.dWidth_;
     var scaleY = wHeight / this.dHeight_;
-	var currentScreenRatio = wWidth / wHeight;
-
-
-
-	var scale = Math.min(scaleX, scaleY);
-
-	var cWidth = this.dWidth_ * scale;
+    var scale = scaleX < scaleY ? scaleX : scaleY;
+    var cWidth = this.dWidth_ * scale;
     var cHeight = this.dHeight_ * scale;
 
-	if(currentScreenRatio < 1.5){
-	 cWidth = this.dWidth_ * scale;
-     cHeight = this.dHeight_ * scale;
+    this.canvasDom.width = cWidth;
+    this.canvasDom.height = cHeight;
+    this.canvasDom.style.left = (wWidth - cWidth) / 2 + 'px';
+    this.canvasDom.style.top = (wHeight - cHeight) / 2 + 'px';
+    this.set({scaleX: scale, scaleY: scale, x:0, y:0 });
+};
 
+Stretcher.prototype.hideFPS = function() {
+    this.fps_.visible = false;
+};
 
-    this.set({scaleX: scale, scaleY: scale, x:(wWidth - cWidth) / 2, y:(wHeight - cHeight) / 2 });
-
-	}
-	else{
-		cWidth = wWidth ;
-		cHeight = this.dHeight_ * scale;
-
-
-		this.set({scaleX: scaleX, scaleY: scale, x:(wWidth - cWidth) / 2, y:(wHeight - cHeight) / 2 });
-	}
-
-
-	this.canvasDom.width = wWidth;
-	this.canvasDom.height = wHeight;
+Stretcher.prototype.showFPS = function() {
+    this.fps_.visible = true;
 };
 
