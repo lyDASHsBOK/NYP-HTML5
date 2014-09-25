@@ -17,6 +17,8 @@ BOK.inherits(Monster, createjs.Container);
 	this.type_ = type;
 	this.alive = true;
 	
+	this.currentSide = "Left";
+	
 	this.x = x;
 	this.y = y;
 }
@@ -27,6 +29,31 @@ Monster.prototype.update = function() {
 		if(this.alpha == 0){
 			this.visible = false;
 		}
+	}
+	else{
+		if(this.currentSide == "Left"){
+			this.x -= 1;
+		}
+		else{
+			this.x +=1;
+		}
+		
+		if(this.x <= -17){
+			this.currentSide = "Right";
+		}
+		if(!this.onGround){
+			this.y += 3;
+		}
+	}
+};
+
+
+Monster.prototype.changeDirection = function() {
+	if(this.currentSide == "Left"){
+		this.currentSide = "Right";
+	}
+	else{
+		this.currentSide = "Left";
 	}
 };
 
@@ -44,7 +71,7 @@ Monster.prototype.spawnMushroom = function() {
 		framerate : 5,
 		images    : [imgContainer["imgs/monster1.png"]], 
 		// width, height & registration point of each sprite
-		frames    : {width: 16, height: 16},
+		frames    : {width: 16, height: 16 ,regX: 8 , regY: 8},
 		animations: {    
 			walk: {
 				frames: [0, 1],
@@ -81,7 +108,7 @@ Monster.prototype.spawnTurtle = function() {
 		framerate : 5,
 		images    : [imgContainer["imgs/monster2.png"]], 
 		// width, height & registration point of each sprite
-		frames    : {width: 16, height: 22},
+		frames    : {width: 16, height: 22 , regX: 8 , regY:11},
 		animations: {    
 			walk: {
 				frames: [0, 1],
@@ -105,6 +132,7 @@ Monster.prototype.spawnTurtle = function() {
 	this.turtleAnimation.gotoAndPlay(this.currentAnimation);
 	
 	this.currentSide = "Left";
+	this.onGround = true;
 	
     //we store the reference of creep img in a member varibale so it can be accessed later
     this.addChild(this.turtleAnimation);

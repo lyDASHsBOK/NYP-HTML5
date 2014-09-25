@@ -31,9 +31,9 @@ Util.RandomRange = function (min,max){
  * */
  Util.boxCollision = function(x, y, w, h, x1, y1, w1, h1 ,dirX){
 	if(dirX == 1){
-		return( x < x1+w1 && x+w > x1 && y < y1+h1  && y+h > y1);
+		return( x < x1+w1 && x+w > x1-w1 && ((y < y1+h1  && y+h > y1) || (y+h < y1+h1  && y+h > y1 -h1) ) );
 	}
 	else{
-		return( x > x1 && x-w < x1+w1 && y < y1+h1  && y+h > y1);
+		return( x > x1 && x-w < x1+w1 && ( (y < y1+h1  && y+h > y1) || (y+h < y1+h1  && y+h > y1 -h1) ));
 	}
  };
