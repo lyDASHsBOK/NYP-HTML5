@@ -76,3 +76,11 @@ Stretcher.prototype.layout_ = function() {
     this.set({scaleX: scale, scaleY: scale, x:0, y:0 });
 };
 
+Stretcher.prototype.hideFPS = function() {
+    this.fps_.visible = false;
+};
+
+Stretcher.prototype.showFPS = function() {
+    this.fps_.visible = true;
+};
+
