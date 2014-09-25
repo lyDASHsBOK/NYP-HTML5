@@ -31,7 +31,10 @@ Monster.prototype.update = function() {
 			this.visible = false;
 		}
 	}else if(!this.alive2){
-	
+		this.y += 3;
+		if(this.y > 320){
+			this.visible = false;
+		}
 	}else{
 		if(this.currentSide == "Left"){
 			this.x -= 1;
@@ -60,6 +63,7 @@ Monster.prototype.changeDirection = function() {
 };
 
 Monster.prototype.setDead = function() {
+	this.currentAnimation = "dead";
 	this.alive = false;
 };
 
