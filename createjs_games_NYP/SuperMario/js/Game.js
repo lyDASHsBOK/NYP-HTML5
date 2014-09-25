@@ -26,10 +26,10 @@ function Game(stage, imgContainer){
 	this.monster.push( new Monster(500,280, "mushroom") );
 	this.monster.push( new Monster(650,280, "mushroom") );
 	this.monster.push( new Monster(680,280, "mushroom") );
-	this.monster.push( new Monster(1200,280, "mushroom") );
-	this.monster.push( new Monster(1250,280, "mushroom") );
-	this.monster.push( new Monster(1400,280, "mushroom") );
+	this.monster.push( new Monster(1300,160, "mushroom") );
+	this.monster.push( new Monster(1350,160, "mushroom") );
 	this.monster.push( new Monster(1500,280, "mushroom") );
+	this.monster.push( new Monster(1550,280, "mushroom") );
 	this.monster.push( new Monster(1600,260, "turtle") );
 	this.monster.push( new Monster(1700,280, "mushroom") );
 	this.monster.push( new Monster(1750,280, "mushroom") );
