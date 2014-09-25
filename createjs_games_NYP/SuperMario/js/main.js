@@ -32,6 +32,10 @@ function loadingStart(){
         'imgs/bg.png',
 		'imgs/tileSet2.png',
 		'imgs/character_small.png',
+		'imgs/character_large.png',
+		'imgs/fireball.png',
+		'imgs/monster1.png',
+		'imgs/monster2.png',
     ], imgContainer, stretcher);
     preloaderApp.addEventListener(Event.COMPLETE, assetsLoaded);
 

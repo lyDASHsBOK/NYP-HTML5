@@ -45,56 +45,97 @@ MapModule.prototype.buildLevelOne =  function (){
 	}
 	
 	for (var row = this.mapHeight - 2; row < this.mapHeight; row++) {
-		for (var col = 132; col <  134 ; col++) {
+		for (var col = 142; col <  144 ; col++) {
 			 this.firstLevel[row][col] = -1;
 		}
 	}
 	
 	//green block
 	
-	this.createGreenBlock(112 , this.mapHeight - 6 , 4 , 4, true);
-	this.createGreenBlock(118 , this.mapHeight - 6 , 4 , 4, false);
-	this.createGreenBlock(134 , this.mapHeight - 6 , 4 , 4, false);
-	
-	this.createGreenBlock(159 , this.mapHeight - 10 , 8 , 8 , true);
-	this.createGreenBlock(167 , this.mapHeight - 10 , 8 , 1, true);
+	this.createGreenBlock(122 , this.mapHeight - 6 , 4 , 4, true);
+	this.createGreenBlock(128 , this.mapHeight - 6 , 4 , 4, false);
+	this.createGreenBlock(144 , this.mapHeight - 6 , 4 , 4, false);
 	
 
-	this.createGreenBlock(127 , this.mapHeight - 6 , 4 , 4 , true);
-	this.createGreenBlock(131 , this.mapHeight - 6 , 4 , 1 , true);
+
+	this.createGreenBlock(137 , this.mapHeight - 6 , 4 , 4 , true);
+	this.createGreenBlock(141 , this.mapHeight - 6 , 4 , 1 , true);
+	
+	this.createGreenBlock(171 , this.mapHeight - 10 , 8 , 8 , true);
+	this.createGreenBlock(179 , this.mapHeight - 10 , 8 , 1, true);
 	
 	
 	
+	this.firstLevel[this.mapHeight -3][190] = 33;
 	
-	for (var row = this.mapHeight - 3; row < this.mapHeight - 2; row++) {
-		for (var col = 116; col <  118 ; col++) {
-			this.firstLevel[row][col] = 375;
-		}
-	}
-	
-	
-	
-	
-	
-	this.firstLevel[this.mapHeight -3][176] = 33;
-	
+
 	
 	//random Block Tile
 	this.firstLevel[this.mapHeight -6][16] = 24;
-	
 	this.firstLevel[this.mapHeight -6][20] = 1;
 	this.firstLevel[this.mapHeight -6][21] = 24;
 	this.firstLevel[this.mapHeight -6][22] = 1;
+	this.firstLevel[this.mapHeight -10][22] = 24;
 	this.firstLevel[this.mapHeight -6][23] = 24;
 	this.firstLevel[this.mapHeight -6][24] = 1;
-	this.firstLevel[this.mapHeight -10][22] = 24;
+	this.firstLevel[this.mapHeight -6][77] = 1;
+	this.firstLevel[this.mapHeight -6][78] = 24;
+	this.firstLevel[this.mapHeight -6][79] = 1;
+	
+	for(var i = 80; i< 86;i++ ){
+		this.firstLevel[this.mapHeight -10][i] = 1;
+	}
 	
 	
+	for(var i = 89; i< 92;i++ ){
+		this.firstLevel[this.mapHeight -10][i] = 1;
+	}
+	
+	this.firstLevel[this.mapHeight -10][92] = 24;
+	this.firstLevel[this.mapHeight -6][92] = 1;
+	
+	for(var i = 97; i< 99;i++ ){
+		this.firstLevel[this.mapHeight -6][i] = 1;
+	}
+	
+	this.firstLevel[this.mapHeight -6][101] = 24;
+	this.firstLevel[this.mapHeight -6][103] = 24;
+	this.firstLevel[this.mapHeight -10][103] = 24;
+	this.firstLevel[this.mapHeight -6][105] = 24;
+	
+	this.firstLevel[this.mapHeight -6][108] = 1;
+	
+	
+	for(var i = 118; i< 120;i++ ){
+		this.firstLevel[this.mapHeight -6][i] = 1;
+	}
+	
+	for(var i = 110; i< 113;i++ ){
+		this.firstLevel[this.mapHeight -10][i] = 1;
+	}
+	
+	this.firstLevel[this.mapHeight -10][117] = 1;
+	this.firstLevel[this.mapHeight -10][118] = 24;
+	this.firstLevel[this.mapHeight -10][119] = 24;
+	this.firstLevel[this.mapHeight -10][120] = 1;
+	this.firstLevel[this.mapHeight -6][157] = 1;
+	this.firstLevel[this.mapHeight -6][158] = 24;
+	this.firstLevel[this.mapHeight -6][159] = 24;
+	this.firstLevel[this.mapHeight -6][160] = 1;
 	//piple
 	this.createVPiple(28 , this.mapHeight -3 , 2 );
 	this.createVPiple(38 , this.mapHeight -3 , 3 );
 	this.createVPiple(46 , this.mapHeight -3 , 4 );
 	this.createVPiple(56 , this.mapHeight -3 , 4 );
+	this.createVPiple(153 , this.mapHeight -3 , 2 );
+	this.createVPiple(169 , this.mapHeight -3 , 2 );
+	
+	
+	for (var row = this.mapHeight - 3; row < this.mapHeight - 2; row++) {
+		for (var col = 126; col <  128 ; col++) {
+			this.firstLevel[row][col] = 375;
+		}
+	}
 	
 	
 	//hill
@@ -102,8 +143,12 @@ MapModule.prototype.buildLevelOne =  function (){
 	this.createHill(15,this.mapHeight - 3,1, 5);
 	this.createHill(47,this.mapHeight - 4,2, 5);
 	this.createHill(61,this.mapHeight - 3,1, 5);
-	
-	this.createHill(169,this.mapHeight - 4,2, 5);
+	this.createHill(93,this.mapHeight - 4,2, 5);
+	this.createHill(106,this.mapHeight - 3,1, 5);
+	this.createHill(131,this.mapHeight - 4,2, 5);
+	this.createHill(148,this.mapHeight - 3,1, 5);
+	this.createHill(182,this.mapHeight - 4,2, 5);
+
 };
 
 MapModule.prototype.createHill = function(startX , startY , height,width) {
@@ -195,12 +240,16 @@ MapModule.prototype.getMapData =  function (){
 };
 
 MapModule.prototype.walkable =  function (row, col) {
+	if(row < 0 || col < 0 || row > this.mapHeight -1 ||  col > this.mapWidth -1 ){
+		return false;
+	}
 	
 	for(var i = 0; i < this.walkableTile.length; i++){
 		if (this.firstLevel[row][col] === this.walkableTile[i] ) {
 			return false;
 		}
 	}
+	
 		return true;
 };
 

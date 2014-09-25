@@ -60,7 +60,7 @@ Stretcher.prototype.layout_ = function() {
 	var cWidth = this.dWidth_ * scale;
     var cHeight = this.dHeight_ * scale;
 	
-	if(currentScreenRatio < 2){
+	if(currentScreenRatio < 1.5){
 	 cWidth = this.dWidth_ * scale;
      cHeight = this.dHeight_ * scale;
 	 

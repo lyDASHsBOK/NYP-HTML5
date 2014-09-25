@@ -32,22 +32,83 @@ BOK.inherits(Character, createjs.Container);
 			dead: { frames: [6] }
 		}
 	};
+	
+	this.largeMarioData = {
+		// image to use
+		framerate : 5,
+		images    : [imgContainer["imgs/character_large.png"]], 
+		// width, height & registration point of each sprite
+		frames    : {width: 16, height: 32, regX: 8 , regY: 16 },
+		animations: {    
+			idle:{ frames: [0] },
+			flag: [7, 8, "flag"],
+			
+			walk: {
+				frames: [1, 2, 3],
+				speed: 2.5
+			},
+			
+			jump: {
+				frames: [5],
+				speed: 2
+			},
+			
+			dead: { frames: [6] }
+		}
+	};
+	
+	this.redLargeMarioData = {
+		// image to use
+		framerate : 5,
+		images    : [imgContainer["imgs/character_large.png"]], 
+		// width, height & registration point of each sprite
+		frames    : {width: 16, height: 32, regX: 8 , regY: 16 },
+		animations: {    
+			idle:{ frames: [0+42] },
+			flag: [7+42, 8+42, "flag"],
+			
+			walk: {
+				frames: [1+42, 2+42, 3+42],
+				speed: 2.5
+			},
+			
+			jump: {
+				frames: [5+42],
+				speed: 2
+			},
+			
+			dead: { frames: [6+42] }
+		}
+	};
+	
 	this.marioSpriteSheet = new createjs.SpriteSheet(this.marioData);
+	this.largeMarioSpriteSheet = new createjs.SpriteSheet(this.largeMarioData);
+	this.redLargeMarioSpriteSheet = new createjs.SpriteSheet(this.redLargeMarioData);
 	
 	this.marioAnimation = new createjs.Sprite(this.marioSpriteSheet);
+	this.largeMarioAnimation = new createjs.Sprite(this.largeMarioSpriteSheet);
+	this.redLargeMarioAnimation = new createjs.Sprite(this.redLargeMarioSpriteSheet);
 	
 	// able to  reverse the sprite
 	createjs.SpriteSheetUtils.addFlippedFrames(this.marioSpriteSheet, true, false, false);
+	createjs.SpriteSheetUtils.addFlippedFrames(this.largeMarioSpriteSheet, true, false, false);
+	createjs.SpriteSheetUtils.addFlippedFrames(this.redLargeMarioSpriteSheet, true, false, false);
+	
 	this.currentAnimation = "idle_h";
 	this.marioAnimation.gotoAndStop(this.currentAnimation);
+	this.largeMarioAnimation.gotoAndStop(this.currentAnimation);
+	this.redLargeMarioAnimation.gotoAndStop(this.currentAnimation);
 	
 	this.currentSide = "Right";
+	this.size = "small";
 	
 	this.jumping = false;
 	this.velocity = 0;
 	this.maxVelocity = -8;
 	this.gravityValue = 1;
 	this.moveSpeed = 5;
+	
+	this.invisibleTime = 2;
 	
 	this.onGround = true;
 	
@@ -63,7 +124,7 @@ Character.prototype.walkRightAnimation = function(){
 	if(this.currentAnimation != "walk" ){
 		this.currentAnimation = "walk";
 		this.currentSide = "Right";
-		this.marioAnimation.gotoAndPlay(this.currentAnimation);
+		this.playAnimation();
 	}
 };
 
@@ -71,7 +132,7 @@ Character.prototype.walkLeftAnimation = function(){
 	if(this.currentAnimation != "walk_h"){
 		this.currentAnimation = "walk_h";
 		this.currentSide = "Left";
-		this.marioAnimation.gotoAndPlay(this.currentAnimation);
+		this.playAnimation();
 	}
 };
 
@@ -79,7 +140,7 @@ Character.prototype.idleRightAnimation = function(){
 	if(this.currentAnimation != "idle" ){
 		this.currentAnimation = "idle";
 		this.currentSide = "Right";
-		this.marioAnimation.gotoAndPlay(this.currentAnimation);
+			this.playAnimation();
 	}
 };
 
@@ -87,10 +148,31 @@ Character.prototype.idleLeftAnimation = function(){
 	if(this.currentAnimation != "idle_h" ){
 		this.currentAnimation = "idle_h";
 		this.currentSide = "Left";
-		this.marioAnimation.gotoAndPlay(this.currentAnimation);
+		this.playAnimation();
 	}
 };
 
+Character.prototype.deadAnimation = function(){
+	
+	if(this.size == "small"){
+		if(this.currentAnimation != "dead" ){
+			this.currentAnimation = "dead";
+			this.playAnimation();
+		}
+	}else{
+		if(this.size == "redlarge"){
+			this.largeMarioAnimation.alpha = 0.5;
+			this.removeChild(this.redLargeMarioAnimation);
+			this.addChild(this.largeMarioAnimation);
+			this.size = "large";
+		}else{
+			this.marioAnimation.alpha = 0.5;
+			this.removeChild(this.largeMarioAnimation);
+			this.addChild(this.marioAnimation);			
+			this.size = "small";
+		}
+	}
+};
 /**
  * @ private jumpRight
  * */
@@ -98,7 +180,7 @@ Character.prototype.jumpRightAnimation = function(){
 	if(this.currentAnimation != "jump" ){
 		this.currentAnimation = "jump";
 		this.currentSide = "Right";
-		this.marioAnimation.gotoAndPlay(this.currentAnimation);
+		this.playAnimation();
 	}
 };
 
@@ -109,7 +191,7 @@ Character.prototype.jumpLeftAnimation = function(){
 	if(this.currentAnimation != "jump_h" ){
 		this.currentAnimation = "jump_h";
 		this.currentSide = "Left";
-		this.marioAnimation.gotoAndPlay(this.currentAnimation);
+		this.playAnimation();
 	}
 };
 
@@ -144,6 +226,15 @@ Character.prototype.gravity = function(){
 	}
 	
 };
+Character.prototype.playAnimation = function(){
+	if(this.size == "large"){
+		this.largeMarioAnimation.gotoAndPlay(this.currentAnimation);
+	}else if(this.size == "redlarge"){
+		this.redLargeMarioAnimation.gotoAndPlay(this.currentAnimation);
+	}else{
+		this.marioAnimation.gotoAndPlay(this.currentAnimation);
+	}
+};
 
 Character.prototype.moveRight = function(){
 	this.x += 2;
@@ -155,9 +246,62 @@ Character.prototype.moveLeft = function(){
 };
 
 Character.prototype.getHeight = function(){
-	return this.marioData.frames.height;
+	if( this.size == "small" ){
+		return this.marioData.frames.height;
+	}
+	else{
+		return this.largeMarioData.frames.height;
+	}
 };
 
 Character.prototype.getWidth = function(){
-	return this.marioData.frames.width;
+	if( this.size == "small" ){
+		return this.marioData.frames.width;
+	}else{
+		return this.largeMarioData.frames.width;
+	}
+};
+
+Character.prototype.growth = function(){
+	if( this.size == "small" ){
+		this.removeChild(this.marioAnimation);
+		this.addChild(this.largeMarioAnimation);
+		this.size = "large";
+	}else if(  this.size == "large" ){
+		this.removeChild(this.largeMarioAnimation);
+		this.addChild(this.redLargeMarioAnimation);
+		this.size = "redlarge";
+	}
+};
+
+Character.prototype.getAlpha = function(){
+	if( this.size == "small" ){
+		return this.marioAnimation.alpha;
+	}else if(  this.size == "large" ){
+		return this.largeMarioAnimation.alpha;
+	}else if(  this.size == "redlarge" ){ 
+		return this.redLargeMarioAnimation.alpha;
+	}
+};
+
+Character.prototype.setAlpha = function(alpha){
+	if( this.size == "small" ){
+		this.marioAnimation.alpha = alpha;
+	}else if(  this.size == "large" ){
+		this.largeMarioAnimation.alpha = alpha;
+	}else if(  this.size == "redlarge" ){ 
+		this.redLargeMarioAnimation.alpha = alpha;
+	}
+};
+
+Character.prototype.update = function(deltaTime){
+
+		if( this.getAlpha() == 0.5 ){
+			this.invisibleTime -= deltaTime;
+			if(this.invisibleTime < 0){
+				this.setAlpha(1);
+				this.invisibleTime = 2;
+			}
+		}
+	
 };
