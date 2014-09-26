@@ -19,7 +19,6 @@ function MapView(x,y , MapModule , bgWidth) {
     createjs.Container.call(this);
 	
 	
-	
 	this.mapTiles = {};
 	this.bgWidth_ = bgWidth;
 	 

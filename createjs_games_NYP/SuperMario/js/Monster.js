@@ -8,7 +8,7 @@ BOK.inherits(Monster, createjs.Container);
     //this line is a must-have in prototype-chain style inheritance
     //Compare to JAVA this works as super();
     createjs.Container.call(this);
-	
+	this.velocity = 1;
 	if(type == "mushroom"){
 		this.spawnMushroom();
 	}else if(type == "turtle"){
@@ -44,7 +44,7 @@ Monster.prototype.reset = function(){
 		this.currentAnimation = "walk";
 		this.turtleAnimation.gotoAndPlay(this.currentAnimation);
 	}
-	
+	this.velocity = 1;
 };
 
 Monster.prototype.update = function() {
@@ -59,14 +59,20 @@ Monster.prototype.update = function() {
 			this.visible = false;
 		}
 	}else{
-		if(this.currentSide == "Left"){
-			this.x -= 1;
-		}
-		else{
-			this.x +=1;
-		}
-		if(!this.onGround){
-			this.y += 3;
+		if(this.currentAnimation !="dead" || this.turtleDeathMove){
+			if(this.currentSide == "Left"){
+				this.x -= this.velocity;
+			}
+			else{
+				this.x +=this.velocity;
+			}
+			
+			if(!this.onGround){
+				this.y += 3;
+			}
+			if(this.currentAnimation =="dead" && (this.x < 0 || this.x > 400)){
+				this.alive = false;
+			}
 		}
 	}
 };
@@ -82,8 +88,18 @@ Monster.prototype.changeDirection = function() {
 };
 
 Monster.prototype.setDead = function() {
+	console.log("test");
+	if(this.type_ != "turtle"  ){
+		this.alive = false;
+	}
+	
+	if(this.type_ == "turtle" && this.currentAnimation == "dead"){
+		
+		this.turtleDeathMove = true;
+		this.velocity = 3;
+	}
+	
 	this.currentAnimation = "dead";
-	this.alive = false;
 };
 
 Monster.prototype.isDead = function() {
@@ -150,7 +166,7 @@ Monster.prototype.spawnTurtle = function() {
 			},
 
 			dead:{
-				frames: [5],
+				frames: [4],
 				speed: 1
 			}
 		}
@@ -164,6 +180,7 @@ Monster.prototype.spawnTurtle = function() {
 	
 	this.currentAnimation = "walk";
 	this.turtleAnimation.gotoAndPlay(this.currentAnimation);
+	this.turtleDeathMove = false;
 	
 	this.currentSide = "Left";
 	this.onGround = true;

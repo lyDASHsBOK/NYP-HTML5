@@ -211,9 +211,11 @@ Game.prototype.tick = function(e) {
 		}
 	}
 	
-	this.checkMonsterandPlayer();
+
 	
-	this.mario.update(e.delta/1000);
+	this.mario.update(e.delta/1000);	
+	
+	this.checkMonsterandPlayer();
 	
 	this.mapView.update();
 	
@@ -241,12 +243,14 @@ Game.prototype.checkMonsterandPlayer = function() {
 				Check =	Util.boxCollision(this.mario.x, this.mario.y, this.mario.getWidth() * 0.5, this.mario.getHeight() * 0.5,
 						this.monster[i].x, this.monster[i].y, this.monster[i].getWidth() * 0.5 , this.monster[i].getHeight() * 0.5);
 
-					if(Check ){
+					if(Check){
 						if( (this.mario.y  < this.monster[i].y && this.mario.size =="small")|| (this.mario.y + this.mario.getHeight() * 0.5 < this.monster[i].y && this.mario.size !="small") ){
+							this.monster[i].currentSide = this.mario.currentSide;
 							this.monster[i].dead(1);
 							this.scoreCount += 100;
 							createjs.Sound.play("stomp");
 							this.mario.jump(-4);
+							break;
 						}else{
 							this.mario.deadAnimation();
 						}
