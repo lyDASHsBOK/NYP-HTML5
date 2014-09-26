@@ -37,12 +37,14 @@ function loadingStart(){
 		'imgs/monster1.png',
 		'imgs/monster2.png',
 		'imgs/fireballeffect.png',
+		'imgs/hudcoin.png',
     ], imgContainer, stretcher);
     preloaderApp.addEventListener(Event.COMPLETE, assetsLoaded);
 
     preloaderApp.start();
 	
 	createjs.Sound.registerSound("sound/01-main-theme-overworld.mp3","bgm");
+	createjs.Sound.registerSound("sound/18-hurry-overworld-.mp3","bgm1");
 	createjs.Sound.registerSound("sound/smb_jump-small.wav","jumpsmall");
 	createjs.Sound.registerSound("sound/smb_jump-super.wav","jumpsuper");
 	createjs.Sound.registerSound("sound/smb_bump.wav","bump");

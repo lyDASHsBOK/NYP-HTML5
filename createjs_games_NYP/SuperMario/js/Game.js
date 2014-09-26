@@ -8,6 +8,7 @@ function Game(stage, imgContainer){
 	
 	this.bg = new createjs.Bitmap(imgContainer["imgs/bg.png"]);
 	
+	this.hud = new HUD();
 	
 	this.mapModule = new MapModule(20,213);
 	this.keyBoard = new KeyBoardCode();
@@ -20,6 +21,9 @@ function Game(stage, imgContainer){
 	this.fireBall.push ( new FireBall(0,0) );
 	
 	this.timeCountDown = 400;
+	this.scoreCount = 0;
+	this.coinCount = 0;
+	this.musicChange = false;
 	
 	this.monster = [];
 	this.monster.push( new Monster(340,220, "mushroom") );
@@ -80,6 +84,15 @@ Game.prototype.onMouseClick = function(e) {
 };
 Game.prototype.tick = function(e) {
 
+	if(this.timeCountDown < 100 && !this.musicChange){
+		createjs.Sound.stop("bgm");
+		createjs.Sound.play("bgm1");
+		this.musicChange = true;
+	}
+	this.timeCountDown -= (e.delta/1000);
+	
+	this.hud.update(this.timeCountDown, this.scoreCount, this.coinCount);
+	
 	for( var i = 0; i < this.fireBall.length ; i++){
 		if(this.fireBall[i].getAlive()){
 	
@@ -111,6 +124,7 @@ Game.prototype.tick = function(e) {
 								this.monster[j].x, this.monster[j].y, this.monster[j].getWidth() * 0.5, this.monster[j].getHeight() * 0.5)){
 								this.fireBall[i].setToBomb();
 								this.monster[j].dead(2);
+								this.scoreCount += 100;
 								createjs.Sound.play("kick");
 							}
 						}
@@ -122,8 +136,6 @@ Game.prototype.tick = function(e) {
 		}
 		
 	}
-	
-	this.timeCountDown -= (e.delta/1000);
 	
 	if(this.keyBoard.getKeyPressThroughtName(" ") && !this.mario.jumping){
 	
@@ -221,6 +233,7 @@ Game.prototype.checkMonsterandPlayer = function() {
 					if(Check){
 						if( (this.mario.y  < this.monster[i].y && this.mario.size =="small")|| (this.mario.y + this.mario.getHeight() * 0.5 < this.monster[i].y && this.mario.size !="small") ){
 							this.monster[i].dead(1);
+							this.scoreCount += 100;
 							createjs.Sound.play("stomp");
 							this.mario.jump(-4);
 						}else{
@@ -334,6 +347,7 @@ Game.prototype.loadImage = function() {
 		this.stage_.addChild(this.bg);
 		this.stage_.addChild(this.mapView);
 		this.stage_.addChild(this.mario);
+		this.stage_.addChild(this.hud);
 		for( var i=0; i < this.fireBall.length ; i++){
 			this.stage_.addChild(this.fireBall[i]);
 		}
