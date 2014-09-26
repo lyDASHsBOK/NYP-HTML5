@@ -1,7 +1,7 @@
 //TODO: Class name should be begin with Upper case letter
-BOK.inherits(tileView, createjs.Container);
+BOK.inherits(TileView, createjs.Container);
 
-function tileView (x,y,image,type){
+function TileView (x,y,image,type){
 	
 	createjs.Container.call(this);
 	
@@ -23,11 +23,10 @@ function tileView (x,y,image,type){
 
 
 
-tileView.prototype.move = function(){
+TileView.prototype.move = function(){
     //TODO: if(this.isMove) is sufficient for this
-	if(this.isMove == true){
+	if(this.isMove){
 	
-		
 		if(this.MoveY < 0){
 			this.tempY *=-2
 		}

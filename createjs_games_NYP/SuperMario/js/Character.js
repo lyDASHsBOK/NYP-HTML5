@@ -104,22 +104,30 @@ BOK.inherits(Character, createjs.Container);
 	
 	this.jumping = false;
 	this.velocity = 0;
-	this.maxVelocity = -8;
 	this.gravityValue = 1;
 	this.moveSpeed = 5;
 	
+	this.count = 0;
 	this.invisibleTime = 2;
-	
 	this.onGround = true;
 	
-    //we store the reference of creep img in a member varibale so it can be accessed later
-    //TODO: you can probably add all 3 animations here and use 'visible' to control which one to be displayed
-    this.addChild(this.marioAnimation);
+	this.largeMarioAnimation.visible = false;
+	this.redLargeMarioAnimation.visible = false;
+	
+	this.addChild(this.marioAnimation);	
+	this.addChild(this.largeMarioAnimation);		
+	this.addChild(this.redLargeMarioAnimation);
 	
 	this.x = x;
 	this.y = y;
 }
 
+Character.prototype.clone = function(){
+    var newCharacter = new Character(this.x,this.y);
+    //newCharacter.cells_ = BOK.cloneObject(this.cells_);
+	newCharacter.currentSide = this.currentSide;
+    return newCharacter;
+};
 
 Character.prototype.walkRightAnimation = function(){
 	if(this.currentAnimation != "walk" ){
@@ -162,14 +170,14 @@ Character.prototype.deadAnimation = function(){
 		}
 	}else{
 		if(this.size == "redlarge"){
-			this.largeMarioAnimation.alpha = 0.5;
-			this.removeChild(this.redLargeMarioAnimation);
-			this.addChild(this.largeMarioAnimation);
+			this.setAlpha(0.5);
+			this.redLargeMarioAnimation.visible = false;
+			this.largeMarioAnimation.visible = true;
 			this.size = "large";
 		}else{
-			this.marioAnimation.alpha = 0.5;
-			this.removeChild(this.largeMarioAnimation);
-			this.addChild(this.marioAnimation);			
+			this.setAlpha(0.5);
+			this.largeMarioAnimation.visible = false;
+			this.marioAnimation.visible = true;		
 			this.size = "small";
 		}
 	}
@@ -199,9 +207,10 @@ Character.prototype.jumpLeftAnimation = function(){
 /**
  * @ Jump
  * */
- Character.prototype.jump = function(){
+ Character.prototype.jump = function( maxVelocity ){
 	this.jumping = true;
-	this.velocity = this.maxVelocity;
+	this.velocity = maxVelocity;
+	this.count = 0;
 	if( this.currentSide == "Left"){		
 		this.jumpLeftAnimation();	
 	}else{		
@@ -209,6 +218,10 @@ Character.prototype.jumpLeftAnimation = function(){
 	}	
 };
 
+/**
+ * @ Gravity
+ * deal with all jumping
+ * */
 Character.prototype.gravity = function(){
 
 	if(this.jumping){
@@ -216,10 +229,7 @@ Character.prototype.gravity = function(){
 		this.velocity += this.gravityValue;
 		
 		if( this.y > 272+8 ){
-			//this.y = 272+8;
-			//this.velocity = 0;
-			//this.jumping = false;
-			//this.maxVelocity = -8;
+			//charcter dead
 		}
 	}else{
 		this.velocity = 0;
@@ -265,36 +275,22 @@ Character.prototype.getWidth = function(){
 
 Character.prototype.growth = function(){
 	if( this.size == "small" ){
-		this.removeChild(this.marioAnimation);
-		this.addChild(this.largeMarioAnimation);
+		this.marioAnimation.visible = false;
+		this.largeMarioAnimation.visible = true;
 		this.size = "large";
 	}else if(  this.size == "large" ){
-		this.removeChild(this.largeMarioAnimation);
-		this.addChild(this.redLargeMarioAnimation);
+		this.largeMarioAnimation.visible = false;
+		this.redLargeMarioAnimation.visible = true;
 		this.size = "redlarge";
 	}
 };
 
-//TODO: if all three animations are added to this container and be controlled by visibility
-//the getAlpha() and setAlpha() can be done on 'this' instead of each animation. which will make this function alot easier
 Character.prototype.getAlpha = function(){
-	if( this.size == "small" ){
-		return this.marioAnimation.alpha;
-	}else if(  this.size == "large" ){
-		return this.largeMarioAnimation.alpha;
-	}else if(  this.size == "redlarge" ){ 
-		return this.redLargeMarioAnimation.alpha;
-	}
+	return this.alpha;
 };
 
 Character.prototype.setAlpha = function(alpha){
-	if( this.size == "small" ){
-		this.marioAnimation.alpha = alpha;
-	}else if(  this.size == "large" ){
-		this.largeMarioAnimation.alpha = alpha;
-	}else if(  this.size == "redlarge" ){ 
-		this.redLargeMarioAnimation.alpha = alpha;
-	}
+	this.alpha = alpha;
 };
 
 Character.prototype.update = function(deltaTime){

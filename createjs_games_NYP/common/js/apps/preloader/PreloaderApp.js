@@ -25,7 +25,7 @@ BOK.inherits(PreloaderApp, AbstractPreloaderApp);
  * */
 function PreloaderApp(assetsList, assetsContainer, preloaderStage, preloaderSkin)
 {
-    var skin = preloaderSkin || new DefaultPreloaderSkin();
+    var skin = preloaderSkin || new DefaultPreloaderSkin(preloaderStage);
     preloaderStage.appendChild(skin.view);
 
     AbstractPreloaderApp.call(this, assetsList, assetsContainer, skin);

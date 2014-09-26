@@ -15,9 +15,70 @@ BOK.inherits(Monster, createjs.Container);
 		this.spawnTurtle();
 	}
 	this.type_ = type;
+	this.alive = true;
+	this.alive2 = true;
+	
+	this.currentSide = "Left";
+	
 	this.x = x;
 	this.y = y;
 }
+
+Monster.prototype.update = function() {
+	if(!this.alive){
+		this.alpha -= 0.05;
+		if(this.alpha == 0){
+			this.visible = false;
+		}
+	}else if(!this.alive2){
+		this.y += 3;
+		if(this.y > 320){
+			this.visible = false;
+		}
+	}else{
+		if(this.currentSide == "Left"){
+			this.x -= 1;
+		}
+		else{
+			this.x +=1;
+		}
+		
+		if(this.x <= -17){
+			this.currentSide = "Right";
+		}
+		if(!this.onGround){
+			this.y += 3;
+		}
+	}
+};
+
+
+Monster.prototype.changeDirection = function() {
+	if(this.currentSide == "Left"){
+		this.currentSide = "Right";
+	}
+	else{
+		this.currentSide = "Left";
+	}
+};
+
+Monster.prototype.setDead = function() {
+	this.currentAnimation = "dead";
+	this.alive = false;
+};
+
+Monster.prototype.isDead = function() {
+	return this.alive;
+};
+
+Monster.prototype.setDead2 = function() {
+	this.currentAnimation = "walk_v";
+	this.alive2 = false;
+};
+
+Monster.prototype.isDead2 = function() {
+	return this.alive2;
+};
 
 Monster.prototype.spawnMushroom = function() {
 	this.mushroomData = {
@@ -25,11 +86,11 @@ Monster.prototype.spawnMushroom = function() {
 		framerate : 5,
 		images    : [imgContainer["imgs/monster1.png"]], 
 		// width, height & registration point of each sprite
-		frames    : {width: 16, height: 16},
+		frames    : {width: 16, height: 16 ,regX: 8 , regY: 8},
 		animations: {    
 			walk: {
 				frames: [0, 1],
-				speed: 1
+				speed: 0.1
 			},
 
 			dead:{
@@ -44,7 +105,7 @@ Monster.prototype.spawnMushroom = function() {
 	this.mushroomAnimation = new createjs.Sprite(this.mushroomSpriteSheet);
 	
 	// able to  reverse the sprite
-	createjs.SpriteSheetUtils.addFlippedFrames(this.mushroomSpriteSheet, true, false, false);
+	createjs.SpriteSheetUtils.addFlippedFrames(this.mushroomSpriteSheet, true, true, false);
 	
 	this.currentAnimation = "walk";
 	this.mushroomAnimation.gotoAndPlay(this.currentAnimation);
@@ -62,11 +123,11 @@ Monster.prototype.spawnTurtle = function() {
 		framerate : 5,
 		images    : [imgContainer["imgs/monster2.png"]], 
 		// width, height & registration point of each sprite
-		frames    : {width: 16, height: 22},
+		frames    : {width: 16, height: 22 , regX: 8 , regY:11},
 		animations: {    
 			walk: {
 				frames: [0, 1],
-				speed: 0.5
+				speed: 0.1
 			},
 
 			dead:{
@@ -80,12 +141,13 @@ Monster.prototype.spawnTurtle = function() {
 	this.turtleAnimation = new createjs.Sprite(this.turtleSpriteSheet);
 	
 	// able to  reverse the sprite
-	createjs.SpriteSheetUtils.addFlippedFrames(this.turtleSpriteSheet, true, false, false);
+	createjs.SpriteSheetUtils.addFlippedFrames(this.turtleSpriteSheet, true, true, false);
 	
 	this.currentAnimation = "walk";
 	this.turtleAnimation.gotoAndPlay(this.currentAnimation);
 	
 	this.currentSide = "Left";
+	this.onGround = true;
 	
     //we store the reference of creep img in a member varibale so it can be accessed later
     this.addChild(this.turtleAnimation);
@@ -109,8 +171,14 @@ Monster.prototype.getWidth = function(){
 	}
 };
 
-Monster.prototype.dead = function(){
-	this.currentAnimation = "dead";
+Monster.prototype.dead = function( value ){
+
+	if(value == 1){	
+		this.setDead();
+	}else{
+		this.setDead2();
+	}
+	
 	if(this.type_ == "mushroom"){	
 		this.mushroomAnimation.gotoAndPlay(this.currentAnimation);	
 	}else if(this.type_ == "turtle"){
