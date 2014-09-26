@@ -45,6 +45,7 @@ function MapView(x,y , MapModule , bgWidth) {
 	
 	this.tileSpriteSheet = new createjs.SpriteSheet(this.tileSheet);
 	
+	
 	this.tileClone = [];	
 	 for (var row = 0; row < this.mapHeight; row++) {
 		this.tileClone.push([]);
@@ -53,7 +54,12 @@ function MapView(x,y , MapModule , bgWidth) {
         for (var row = 0; row < this.mapHeight; row++) {
             for (var col = 0; col < this.mapWidth; col++) {
 					var image = new createjs.Bitmap(createjs.SpriteSheetUtils.extractFrame(this.tileSpriteSheet,this.firstLevel[row][col]));
-					this.tileClone[row].push(new TileView(col * this.tileSheet.frames.width,row * this.tileSheet.frames.height,image , 0) );
+					if(this.firstLevel[row][col] == 28){
+					this.tileClone[row].push(new TileView(col * this.tileSheet.frames.width + 8,row * this.tileSheet.frames.height,image , 0) );
+					}
+					else{
+						this.tileClone[row].push(new TileView(col * this.tileSheet.frames.width,row * this.tileSheet.frames.height,image , 0) );
+					}
 					if( this.tileClone[row][col].x > this.bgWidth_ - this.tileSheet.frames.width || this.tileClone[row][col].x < 0 ){
 						this.tileClone[row][col].visible = false;
 					}
