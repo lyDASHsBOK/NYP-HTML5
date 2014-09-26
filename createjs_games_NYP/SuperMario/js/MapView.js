@@ -121,8 +121,32 @@ MapView.prototype.update = function() {
 			this.tileClone[row][col].move();
 		}
 	}
-	
 };
+
+MapView.prototype.reset = function() {
+  for (var row = 0; row < this.mapHeight; row++) {
+	for (var col = 0 ; col < this.mapWidth ; col++) {
+			this.tileClone[row][col].reset;
+		}
+	}
+	this.x = 0;
+	this.y = 0;
+	
+	for (var row = 0; row < this.mapHeight; row++) {
+				for (var col = 0; col < this.mapWidth; col++) {
+					if(this.firstLevel[row][col] > -1){
+						if( this.tileClone[row][col].x + this.x > this.bgWidth_ + this.tileSheet.frames.width || this.tileClone[row][col].x  + this.x < - this.tileSheet.frames.width ){
+							this.tileClone[row][col].visible = false;
+						}else{
+							this.tileClone[row][col].visible = true;
+						}
+					}
+				}
+			}
+			
+};
+
+
 
 
 

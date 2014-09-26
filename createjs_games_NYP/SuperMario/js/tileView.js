@@ -10,7 +10,7 @@ function TileView (x,y,image,type){
 	
 	this.addChild(this.image_);
 	
-
+	this.orginalX = x;
 	this.orginalY = y;
 	
 	this.x = x;
@@ -21,7 +21,13 @@ function TileView (x,y,image,type){
 	this.tempY = 0.5;
 }
 
-
+TileView.prototype.reset = function(){
+	this.MoveY = 2;
+	this.isMove =  false;
+	this.tempY = 0.5;
+	this.orginalY = y;
+	this.orginalX = x;
+};
 
 TileView.prototype.move = function(){
     //TODO: if(this.isMove) is sufficient for this

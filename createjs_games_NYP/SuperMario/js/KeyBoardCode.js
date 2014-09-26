@@ -32,6 +32,12 @@ KeyBoardCode.prototype.setKeyPress = function(keyCode , isKeyPress) {
     return this.keycodePress[keyCode] = isKeyPress;
 };
 
+KeyBoardCode.prototype.reset = function() {
+	for(var i  = 0; i < 256;i++){
+		this.keycodePress[i] = false;
+	}
+};
+
 
 
 

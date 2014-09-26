@@ -41,9 +41,16 @@ function HUD() {
 	this.timerText.x = 320;
 	this.timerText.y = this.SECONDROW;
 	
-	//this.coinDisplay = new createjs.Bitmap(imgContainer["imgs/hudcoin.png"]);
-	//this.coinDisplay.x = 120;
-	//this.coinDisplay.y = this.SECONDROW;
+	this.GameOverText = new createjs.Text( "Game Over", "40pt Calibri" ,"White"); 
+	this.GameOverText.x = 80;
+	this.GameOverText.y = 100;
+	this.GameOverText.visible = false;
+	
+	this.resetText = new createjs.Text( "Press r to reset", "20pt Calibri" ,"White"); 
+	this.resetText.x = 120;
+	this.resetText.y = 150;
+	this.resetText.visible = false;
+
 	
 	this.coinDisplayData = {
 		// image to use
@@ -75,6 +82,8 @@ function HUD() {
 	this.addChild(this.worldText);
 	this.addChild(this.coinText);
 	this.addChild(this.timerText);
+	this.addChild(this.GameOverText);
+	this.addChild(this.resetText);
 	
 	this.world(1);
 }
@@ -134,3 +143,14 @@ HUD.prototype.update = function( timer, score, coin){
 	this.score(score);
 	this.coin(coin);
 };
+
+HUD.prototype.ShowGameOver = function(){
+	this.GameOverText.visible = true;
+	this.resetText.visible = true;
+};
+
+HUD.prototype.reset = function(){
+	this.GameOverText.visible = false;
+	this.resetText.visible = false;
+};
+

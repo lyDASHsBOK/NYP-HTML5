@@ -71,7 +71,40 @@ function FireBall(x,y) {
 	
 	this.x = x;
 	this.y = y;
+	
+	this.orginalX = x;
+	this.orginalY = y;
+	
 }
+
+FireBall.prototype.reset = function(){
+	this.currentAnimation = "fire";
+	this.fireBallAnimation.gotoAndPlay(this.currentAnimation);	
+	
+	this.SPEED = 5;
+	
+	this.amplitude = 20;
+	this.deltaTime = 0;
+	this.updateX = 0;
+	this.updateY = 0;
+	this.directionX = 0;
+	this.directionY = 1 * this.SPEED;
+	this.distanceX = 0;
+	
+	this.state = "straight";		
+	this.currentSide = "Right";
+	
+
+	this.x = this.orginalX;
+	this.y = this.orginalY;
+	
+	this.visible = false;
+	this.setToBounce();
+	
+	this.fireBallAnimation.visible = false;
+	this.fireBallEffectAnimation.visible = false;
+	
+};
  
 /**
 * @ shoot
@@ -91,6 +124,7 @@ FireBall.prototype.shoot = function( marioClone ){
 	}else{
 		this.directionX = 1 * this.SPEED;
 	}
+	
 };
 
  

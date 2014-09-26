@@ -4,6 +4,7 @@ function MapModule(mapRow , mapCol){
     this.mapHeight =  mapRow;
 	
 	this.firstLevel = [];
+
 	
 	for (var row = 0; row < this.mapHeight; row++) {
 		 this.firstLevel.push( [] );
@@ -19,6 +20,7 @@ function MapModule(mapRow , mapCol){
 	
 	this.walkableTile = [-1 ,272 ,274,273 ,307,306,305, 375,379 ];
 	
+	this.orginalLevel = this.firstLevel;
 	
 }
 
@@ -308,4 +310,8 @@ MapModule.prototype.getID = function(row,col) {
 		return -100;
 	}
 	return this.firstLevel[row][col];
+};
+
+MapModule.prototype.reset = function() {
+	this.firstLevel = this.orginalLevel;
 };

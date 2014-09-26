@@ -120,7 +120,46 @@ BOK.inherits(Character, createjs.Container);
 	
 	this.x = x;
 	this.y = y;
+	
+	this.orginalX = x;
+	this.orginalY = y;
+	
+	this.alive = true;
+	this.gameOver = false;
 }
+
+
+Character.prototype.reset = function(){
+   	this.x = this.orginalX;
+	this.y = this.orginalY;
+	
+	this.currentAnimation = "idle_h";
+	this.marioAnimation.gotoAndStop(this.currentAnimation);
+	this.largeMarioAnimation.gotoAndStop(this.currentAnimation);
+	this.redLargeMarioAnimation.gotoAndStop(this.currentAnimation);
+	
+	this.currentSide = "Right";
+	this.size = "small";
+	
+	this.jumping = false;
+	this.velocity = 0;
+	this.gravityValue = 1;
+	this.moveSpeed = 5;
+	
+	this.count = 0;
+	this.invisibleTime = 2;
+	this.onGround = true;
+	
+	this.marioAnimation.visible = true;
+	this.largeMarioAnimation.visible = false;
+	this.redLargeMarioAnimation.visible = false;
+	
+	this.alpha = 1.0;
+	
+	this.alive = true;
+	this.gameOver = false;
+	
+};
 
 Character.prototype.clone = function(){
     var newCharacter = new Character(this.x,this.y);
@@ -162,11 +201,13 @@ Character.prototype.idleLeftAnimation = function(){
 };
 
 Character.prototype.deadAnimation = function(){
-	
+
 	if(this.size == "small"){
 		if(this.currentAnimation != "dead" ){
 			this.currentAnimation = "dead";
 			this.playAnimation();
+			this.alive = false;
+			this.y -=5;
 		}
 	}else{
 		if(this.size == "redlarge"){
@@ -227,13 +268,23 @@ Character.prototype.gravity = function(){
 	if(this.jumping){
 		this.y += this.velocity;
 		this.velocity += this.gravityValue;
-		
-		if( this.y > 272+8 ){
+		if( this.y > 350 ){
 			//charcter dead
+			this.alive = false;
+			this.gameOver = true;
 		}
 	}else{
 		this.velocity = 0;
 		this.jumping = false;
+	}
+	
+	if(!this.alive && !this.gameOver ){
+	this.y +=3;
+	if( this.y > 350 ){
+			//charcter dead
+			this.alive = false;
+			this.gameOver = true;
+		}
 	}
 	
 };
@@ -294,7 +345,6 @@ Character.prototype.setAlpha = function(alpha){
 };
 
 Character.prototype.update = function(deltaTime){
-
 		if( this.getAlpha() == 0.5 ){
 			this.invisibleTime -= deltaTime;
 			if(this.invisibleTime < 0){
@@ -302,5 +352,4 @@ Character.prototype.update = function(deltaTime){
 				this.invisibleTime = 2;
 			}
 		}
-	
 };

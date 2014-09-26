@@ -44,8 +44,6 @@ function Game(stage, imgContainer){
 	
 	document.addEventListener("keydown", Delegate.create(this,this.keyBoardDown));
     document.addEventListener("keyup", Delegate.create(this,this.keyBoardUp));
-	
-	this.mapView.x = -3000;
 };
 /**
  * @ keyBoardDown
@@ -57,7 +55,7 @@ Game.prototype.keyBoardDown = function(e) {
  * @ keyBoardUp
  * */
 Game.prototype.keyBoardUp = function(e) {
-	if(this.keyBoard.getKeyPressThroughtName(" ") && !this.mario.jumping){
+	if(this.keyBoard.getKeyPressThroughtName(" ") && !this.mario.jumping && this.mario.alive){
 		createjs.Sound.play("jumpsmall");
 		this.mario.jump(-8);
 	}
@@ -74,6 +72,7 @@ Game.prototype.keyBoardUp = function(e) {
 			}
 		}
 	}
+	
 	this.keyBoard.setKeyPress(e.keyCode,false);
 };
 /**
@@ -96,7 +95,6 @@ Game.prototype.tick = function(e) {
 	for( var i = 0; i < this.fireBall.length ; i++){
 		if(this.fireBall[i].getAlive()){
 	
-		
 			var checkFireBallCollide = false;
 			if(this.fireBall[i].currentSide == "Left"){
 				checkFireBallCollide = this.CheckWalkableLeftRight(-1,this.fireBall[i]);
@@ -137,7 +135,7 @@ Game.prototype.tick = function(e) {
 		
 	}
 	
-	if(this.keyBoard.getKeyPressThroughtName(" ") && !this.mario.jumping){
+	if(this.keyBoard.getKeyPressThroughtName(" ") && !this.mario.jumping && this.mario.alive){
 	
 		if( this.mario.count > 3 ){
 			createjs.Sound.play("jumpsuper");
@@ -145,9 +143,13 @@ Game.prototype.tick = function(e) {
 		}else{
 			this.mario.count += 1;
 		}
+	}
+
+	if(this.keyBoard.getKeyPressThroughtName("r") && this.mario.gameOver){
+		this.reset();
 	}	
 	
-	if(this.keyBoard.getKeyPressThroughtName("d") && !this.CheckWalkableLeftRight(1,this.mario)){	
+	if(this.keyBoard.getKeyPressThroughtName("d") && !this.CheckWalkableLeftRight(1,this.mario) && this.mario.alive){	
 		this.mario.moveRight();
 		if(!this.mario.jumping){
 			this.mario.walkRightAnimation();
@@ -163,7 +165,7 @@ Game.prototype.tick = function(e) {
 				}
 			}
 		}
-	} else if(this.keyBoard.getKeyPressThroughtName("a") && !this.CheckWalkableLeftRight(-1,this.mario)){
+	} else if(this.keyBoard.getKeyPressThroughtName("a") && !this.CheckWalkableLeftRight(-1,this.mario) && this.mario.alive){
 		this.mario.moveLeft();
 		if(!this.mario.jumping){
 			this.mario.walkLeftAnimation();
@@ -179,7 +181,7 @@ Game.prototype.tick = function(e) {
 				}
 			}
 		}
-	}else if(!this.mario.jumping){
+	}else if(!this.mario.jumping && this.mario.alive){
 		if(this.mario.currentSide == "Left"){
 			this.mario.idleLeftAnimation();
 		}else{
@@ -189,21 +191,23 @@ Game.prototype.tick = function(e) {
 	
 	this.mario.gravity();	
 	
-	this.mario.onGround  = this.CheckWalkableUpDown(-1 ,this.mario);
-	
-	if(this.mario.onGround){
-		this.mario.velocity = 0;
-		this.mario.jumping = false;
-	}else if(!this.mario.onGround){
-		this.mario.jumping = true;
-	}
-	
-	if(!this.mario.onGround){
-		if(this.CheckWalkableUpDown(1 ,this.mario)){
-			if( this.mario.velocity < 0){
-				createjs.Sound.play("bump");
-				this.mario.velocity *= -1;
-			 }
+	if(this.mario.alive){
+		this.mario.onGround  = this.CheckWalkableUpDown(-1 ,this.mario);
+
+		if(this.mario.onGround){
+			this.mario.velocity = 0;
+			this.mario.jumping = false;
+		}else if(!this.mario.onGround){
+			this.mario.jumping = true;
+		}
+		
+		if(!this.mario.onGround){
+			if(this.CheckWalkableUpDown(1 ,this.mario)){
+				if( this.mario.velocity < 0){
+					createjs.Sound.play("bump");
+					this.mario.velocity *= -1;
+				 }
+			}
 		}
 	}
 	
@@ -213,14 +217,17 @@ Game.prototype.tick = function(e) {
 	
 	this.mapView.update();
 	
+	if(this.mario.gameOver){
+		this.hud.ShowGameOver();
+	}
+	
 
 };
 Game.prototype.checkMonsterandPlayer = function() {
 
 		// if mario is invisible
-	if(this.mario.getAlpha() != 0.5){
+	if(this.mario.getAlpha() != 0.5 && this.mario.alive){
 		var Check = false;
-		
 		// collision for monster and character
 		for( var i = 0; i < this.monster.length ; i ++){
 			if(  this.monster[i].x < this.stage_.dWidth_  + this.monster[i].getWidth()  && this.monster[i].x > -this.monster[i].getWidth() * 1.1){
@@ -230,7 +237,7 @@ Game.prototype.checkMonsterandPlayer = function() {
 				Check =	Util.boxCollision(this.mario.x, this.mario.y, this.mario.getWidth() * 0.5, this.mario.getHeight() * 0.5,
 						this.monster[i].x, this.monster[i].y, this.monster[i].getWidth() * 0.5 , this.monster[i].getHeight() * 0.5);
 
-					if(Check){
+					if(Check ){
 						if( (this.mario.y  < this.monster[i].y && this.mario.size =="small")|| (this.mario.y + this.mario.getHeight() * 0.5 < this.monster[i].y && this.mario.size !="small") ){
 							this.monster[i].dead(1);
 							this.scoreCount += 100;
@@ -347,14 +354,34 @@ Game.prototype.loadImage = function() {
 		this.stage_.addChild(this.bg);
 		this.stage_.addChild(this.mapView);
 		this.stage_.addChild(this.mario);
-		this.stage_.addChild(this.hud);
+	
 		for( var i=0; i < this.fireBall.length ; i++){
 			this.stage_.addChild(this.fireBall[i]);
 		}
 		
 		for( var i=0; i < this.monster.length ; i++){
 			this.stage_.addChild(this.monster[i]);
-		}
+		}	
+		this.stage_.addChild(this.hud);
+};
+/**
+ * @ reset
+ * */
+Game.prototype.reset = function() {
+	this.mapView.reset();
+	this.mario.reset();
+	this.timeCountDown = 400;
+	this.scoreCount = 0;
+	this.coinCount = 0;
+	
+	for( var i=0; i < this.fireBall.length ; i++){
+		this.fireBall[i].reset();
+	}
+	for( var i=0; i < this.monster.length ; i++){
+		this.monster[i].reset();
+	}
+	this.keyBoard.reset();
+	this.hud.reset();
 };
 /**
  * @ start

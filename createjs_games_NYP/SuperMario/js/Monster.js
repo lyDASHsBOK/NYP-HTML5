@@ -22,7 +22,30 @@ BOK.inherits(Monster, createjs.Container);
 	
 	this.x = x;
 	this.y = y;
+	
+	this.orginalX = x;
+	this.orginalY = y;
 }
+
+Monster.prototype.reset = function(){
+	this.x = this.orginalX;
+	this.y = this.orginalY;
+	this.alive = true;
+	this.alive2 = true;
+	this.currentSide = "Left";
+	this.visible = true;
+	this.alpha = 1;
+	
+	
+	if(this.type_ == "mushroom"){
+		this.currentAnimation = "walk";
+		this.mushroomAnimation.gotoAndPlay(this.currentAnimation);
+	}else if(this.type_ == "turtle"){
+		this.currentAnimation = "walk";
+		this.turtleAnimation.gotoAndPlay(this.currentAnimation);
+	}
+	
+};
 
 Monster.prototype.update = function() {
 	if(!this.alive){
