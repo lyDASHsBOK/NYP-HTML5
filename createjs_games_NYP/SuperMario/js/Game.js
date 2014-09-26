@@ -221,6 +221,10 @@ Game.prototype.tick = function(e) {
 		this.hud.ShowGameOver();
 	}
 	
+	if(this.getMarioTileIDAt(true,false) == 379 || this.getMarioTileIDAt(true,false) == 36){
+		this.hud.ShowGameOver();
+	}
+	
 
 };
 Game.prototype.checkMonsterandPlayer = function() {
@@ -273,79 +277,100 @@ Game.prototype.checkMonsterandPlayer = function() {
 };
 Game.prototype.CheckWalkableLeftRight = function(dirx , object) {
         var formulaA, formulaB, formulaC, formulaD;
-      
-            formulaC = Math.floor((object.y) / this.mapView.tileSheet.frames.height);
-            formulaD = Math.floor((object.y + object.getHeight() * 0.5) / this.mapView.tileSheet.frames.height);
-			
-            if (dirx === -1) { // left
-                formulaA = Math.floor(((object.x - object.getWidth() * 0.5 ) - this.mapView.x) / this.mapView.tileSheet.frames.width );
-				var topLeft =  this.mapModule.walkable(formulaC ,formulaA );
-                var bottomLeft = this.mapModule.walkable(formulaD , formulaA );
-				
-                return (topLeft && bottomLeft);
-				
-            } else if (dirx === 1) { // right
-               formulaB = Math.floor(((object.x - object.getWidth() * 0.5) - this.mapView.x ) / this.mapView.tileSheet.frames.width);
-			   var topRight = this.mapModule.walkable(formulaC,formulaB +1);
-                var bottomRight = this.mapModule.walkable(formulaD , formulaB+1);
-                return (topRight && bottomRight); 
-            }
-			
+
+	formulaC = Math.floor((object.y) / this.mapView.tileSheet.frames.height);
+	formulaD = Math.floor((object.y + object.getHeight() * 0.5) / this.mapView.tileSheet.frames.height);
+	
+	if (dirx === -1) { // left
+		formulaA = Math.floor(((object.x - object.getWidth() * 0.5 ) - this.mapView.x) / this.mapView.tileSheet.frames.width );
+		var topLeft =  this.mapModule.walkable(formulaC ,formulaA );
+		var bottomLeft = this.mapModule.walkable(formulaD , formulaA );
+		
+		return (topLeft && bottomLeft);
+		
+	} else if (dirx === 1) { // right
+	   formulaB = Math.floor(((object.x + object.getWidth() * 0.5) - this.mapView.x ) / this.mapView.tileSheet.frames.width);
+	   var topRight = this.mapModule.walkable(formulaC,formulaB);
+		var bottomRight = this.mapModule.walkable(formulaD , formulaB);
+		return (topRight && bottomRight); 
+	}
+	
+};
+Game.prototype.getMarioTileIDAt = function( xDirection , yDirection ) {
+    var formulaA, formulaB, formulaC, formulaD;
+
+	formulaC = Math.floor((this.mario.y) / this.mapView.tileSheet.frames.height);
+	formulaD = Math.floor((this.mario.y - this.mario.getHeight() * 0.5) / this.mapView.tileSheet.frames.height);
+	
+	if (xDirection) { // left
+		
+		if(this.mario.currentSide == "Left"){
+			formulaB = Math.floor(((this.mario.x - this.mario.getWidth() * 0.5 ) - this.mapView.x) / this.mapView.tileSheet.frames.width );
+		}
+		else{
+			formulaB = Math.floor(((this.mario.x + this.mario.getWidth() * 0.5) - this.mapView.x ) / this.mapView.tileSheet.frames.width);
+		}
+		return this.mapModule.getID(formulaC,formulaB);
+		
+	} else if (yDirection) { // right
+	  formulaB = Math.floor(((this.mario.x ) - this.mapView.x) / this.mapView.tileSheet.frames.width );
+	  return this.mapModule.getID(formulaD,formulaB);
+	}
 };
 
 Game.prototype.CheckWalkableUpDown = function(diry ,object) {
         
         var formulaA, formulaB, formulaC, formulaD;
       
-            formulaC = Math.floor((object.y - object.getHeight() * 0.5) / this.mapView.tileSheet.frames.height);
-            formulaD = Math.floor((object.y + object.getHeight() * 0.5) / this.mapView.tileSheet.frames.height);
+		formulaC = Math.floor((object.y - object.getHeight() * 0.5) / this.mapView.tileSheet.frames.height);
+		formulaD = Math.floor((object.y + object.getHeight() * 0.5) / this.mapView.tileSheet.frames.height);
+		
+		if (diry === 1) { // up
+			formulaA = Math.floor(((object.x - object.getWidth() * 0.5 ) - this.mapView.x) / this.mapView.tileSheet.frames.width );
+			formulaB = Math.floor(((object.x + object.getWidth() * 0.5 ) - this.mapView.x) / this.mapView.tileSheet.frames.width );
 			
-            if (diry === 1) { // up
-                formulaA = Math.floor(((object.x - object.getWidth() * 0.5 ) - this.mapView.x) / this.mapView.tileSheet.frames.width );
-				formulaB = Math.floor(((object.x + object.getWidth() * 0.5 ) - this.mapView.x) / this.mapView.tileSheet.frames.width );
+			var topLeft =  this.mapModule.walkable(formulaC ,formulaA);
+			var topRight = this.mapModule.walkable(formulaC , formulaB);
+			
+			if(this.mapModule.getID(formulaC,formulaB) == 1 || this.mapModule.getID(formulaC,formulaA) == 1
+			|| this.mapModule.getID(formulaC,formulaB) == 24 || this.mapModule.getID(formulaC,formulaA) == 24){
 				
-				var topLeft =  this.mapModule.walkable(formulaC ,formulaA);
-                var topRight = this.mapModule.walkable(formulaC , formulaB);
-				
-				if(this.mapModule.getID(formulaC,formulaB) == 1 || this.mapModule.getID(formulaC,formulaA) == 1
-				|| this.mapModule.getID(formulaC,formulaB) == 24 || this.mapModule.getID(formulaC,formulaA) == 24){
-					
-					var formulaCenterX = Math.floor(((object.x  - this.mapView.x) / this.mapView.tileSheet.frames.width ))
-					if(topLeft){
-						if(object.currentSide == "Right"){
-							this.mapView.move(formulaC,formulaA);
-						}
-						else{
-							this.mapView.move(formulaC,formulaCenterX);
-						}
+				var formulaCenterX = Math.floor(((object.x  - this.mapView.x) / this.mapView.tileSheet.frames.width ))
+				if(topLeft){
+					if(object.currentSide == "Right"){
+						this.mapView.move(formulaC,formulaA);
 					}
-					else if(topRight){
-						this.mapView.move(formulaC,formulaB);
+					else{
+						this.mapView.move(formulaC,formulaCenterX);
 					}
-					
-					return (topLeft || topRight);
 				}
-				else{
-					return (topLeft && topRight);
+				else if(topRight){
+					this.mapView.move(formulaC,formulaB);
 				}
 				
-            } else if (diry === -1) { // down
-               
-			   if(object.currentSide == "Right"){
-					formulaB = Math.floor(((object.x + object.getWidth() * 0.3) - this.mapView.x ) / this.mapView.tileSheet.frames.width);
-			   }
-			   else{
-			   formulaB = Math.floor(((object.x - object.getWidth() * 0.3) - this.mapView.x ) / this.mapView.tileSheet.frames.width);
-			   }
-			   formulaA = Math.floor(((object.x ) - this.mapView.x ) / this.mapView.tileSheet.frames.width);
-			   
-			   var bottomLeft = this.mapModule.walkable(formulaD, formulaA);
-                var bottomRight = this.mapModule.walkable(formulaD ,formulaB);
-				if( bottomLeft || bottomRight){
-					object.y =  formulaD   * this.mapView.tileSheet.frames.width - object.getHeight() * 0.5 ;
-				}
-				return (bottomLeft || bottomRight); 
-            }
+				return (topLeft || topRight);
+			}
+			else{
+				return (topLeft && topRight);
+			}
+			
+		} else if (diry === -1) { // down
+		   
+		   if(object.currentSide == "Right"){
+				formulaB = Math.floor(((object.x + object.getWidth() * 0.3) - this.mapView.x ) / this.mapView.tileSheet.frames.width);
+		   }
+		   else{
+		   formulaB = Math.floor(((object.x - object.getWidth() * 0.3) - this.mapView.x ) / this.mapView.tileSheet.frames.width);
+		   }
+		   formulaA = Math.floor(((object.x ) - this.mapView.x ) / this.mapView.tileSheet.frames.width);
+		   
+		   var bottomLeft = this.mapModule.walkable(formulaD, formulaA);
+			var bottomRight = this.mapModule.walkable(formulaD ,formulaB);
+			if( bottomLeft || bottomRight){
+				object.y =  formulaD   * this.mapView.tileSheet.frames.width - object.getHeight() * 0.5 ;
+			}
+			return (bottomLeft || bottomRight); 
+		}
 };
 /**
  * @ loadImage
