@@ -40,6 +40,8 @@ function Game(stage, imgContainer){
 	
 	document.addEventListener("keydown", Delegate.create(this,this.keyBoardDown));
     document.addEventListener("keyup", Delegate.create(this,this.keyBoardUp));
+	
+	this.mapView.x = -3000;
 };
 /**
  * @ keyBoardDown
@@ -235,7 +237,7 @@ Game.prototype.checkMonsterandPlayer = function() {
 					}
 					
 					for( var j = 0; j < this.monster.length ; j ++){
-						if( this.monster[j].x < this.stage_.dWidth_ + this.monster[j].getWidth() && this.monster[j].x > -this.monster[j].getWidth() && i !=j){
+						if( this.monster[j].x < this.stage_.dWidth_ + this.monster[j].getWidth() && this.monster[j].x > -this.monster[j].getWidth() && i !=j && this.monster[j].isDead() && this.monster[j].isDead2()){
 							if(Util.boxCollision(this.monster[i].x, this.monster[i].y, this.monster[i].getWidth() * 0.5 , this.monster[i].getHeight() * 0.5,
 								this.monster[j].x, this.monster[j].y, this.monster[j].getWidth() * 0.5, this.monster[j].getHeight() * 0.5)){
 								this.monster[i].changeDirection();

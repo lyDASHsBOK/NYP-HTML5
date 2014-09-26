@@ -42,10 +42,6 @@ Monster.prototype.update = function() {
 		else{
 			this.x +=1;
 		}
-		
-		if(this.x <= -17){
-			this.currentSide = "Right";
-		}
 		if(!this.onGround){
 			this.y += 3;
 		}
