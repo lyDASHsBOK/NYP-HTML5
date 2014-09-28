@@ -19,7 +19,6 @@ function MapView(x,y , MapModule , bgWidth) {
     createjs.Container.call(this);
 	
 	
-	
 	this.mapTiles = {};
 	this.bgWidth_ = bgWidth;
 	 
@@ -45,6 +44,7 @@ function MapView(x,y , MapModule , bgWidth) {
 	
 	this.tileSpriteSheet = new createjs.SpriteSheet(this.tileSheet);
 	
+	
 	this.tileClone = [];	
 	 for (var row = 0; row < this.mapHeight; row++) {
 		this.tileClone.push([]);
@@ -53,7 +53,12 @@ function MapView(x,y , MapModule , bgWidth) {
         for (var row = 0; row < this.mapHeight; row++) {
             for (var col = 0; col < this.mapWidth; col++) {
 					var image = new createjs.Bitmap(createjs.SpriteSheetUtils.extractFrame(this.tileSpriteSheet,this.firstLevel[row][col]));
-					this.tileClone[row].push(new TileView(col * this.tileSheet.frames.width,row * this.tileSheet.frames.height,image , 0) );
+					if(this.firstLevel[row][col] == 28){
+					this.tileClone[row].push(new TileView(col * this.tileSheet.frames.width + 8,row * this.tileSheet.frames.height,image , 0) );
+					}
+					else{
+						this.tileClone[row].push(new TileView(col * this.tileSheet.frames.width,row * this.tileSheet.frames.height,image , 0) );
+					}
 					if( this.tileClone[row][col].x > this.bgWidth_ - this.tileSheet.frames.width || this.tileClone[row][col].x < 0 ){
 						this.tileClone[row][col].visible = false;
 					}
@@ -115,8 +120,32 @@ MapView.prototype.update = function() {
 			this.tileClone[row][col].move();
 		}
 	}
-	
 };
+
+MapView.prototype.reset = function() {
+  for (var row = 0; row < this.mapHeight; row++) {
+	for (var col = 0 ; col < this.mapWidth ; col++) {
+			this.tileClone[row][col].reset;
+		}
+	}
+	this.x = 0;
+	this.y = 0;
+	
+	for (var row = 0; row < this.mapHeight; row++) {
+				for (var col = 0; col < this.mapWidth; col++) {
+					if(this.firstLevel[row][col] > -1){
+						if( this.tileClone[row][col].x + this.x > this.bgWidth_ + this.tileSheet.frames.width || this.tileClone[row][col].x  + this.x < - this.tileSheet.frames.width ){
+							this.tileClone[row][col].visible = false;
+						}else{
+							this.tileClone[row][col].visible = true;
+						}
+					}
+				}
+			}
+			
+};
+
+
 
 
 
